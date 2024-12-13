@@ -1,35 +1,63 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";  // Import useNavigate
+import { sendPasswordResetEmail } from "firebase/auth";  
+import { auth } from "../config/firebase";  
 
-const Forgetpassword = () => {
+const ForgetPassword = () => {
+  const [email, setEmail] = useState("");  // State for email
+  const [error, setError] = useState("");  // State for error messages
+  const [successMessage, setSuccessMessage] = useState("");  // State for success messages
+  
+  const navigate = useNavigate();  // Initialize the navigate hook
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");  // Clear previous errors
+    setSuccessMessage("");  // Clear previous success messages
+
+    try {
+      // Send password reset email
+      await sendPasswordResetEmail(auth, email);
+      setSuccessMessage("Password reset email sent! Check your inbox.");
+
+      // Redirect to the sign-in page after success
+      setTimeout(() => {
+        navigate("/signin");  // Navigate to the sign-in page after 2 seconds
+      }, 2000);  // Wait for 2 seconds before redirecting to allow the success message to show
+    } catch (err) {
+      setError("Error: " + err.message);  // Handle errors (e.g., invalid email)
+    }
+  };
+
   return (
     <div>
-      <div class="bg-gradient-to-tr from-[#818cf8] to-[#312e81] flex justify-center items-center min-h-screen">
-        <div class="mx-auto bg-white rounded-2xl max-w-md p-8 shadow-lg">
-          <Link class="flex items-center" to={'/signin'}>
+      <div className="bg-gradient-to-tr from-[#818cf8] to-[#312e81] flex justify-center items-center min-h-screen">
+        <div className="mx-auto bg-white rounded-2xl max-w-md p-8 shadow-lg">
+          <Link className="flex items-center" to={'/signin'}>
             <img src="/images/back.svg" alt="" />
-            <span class="text-sm text-[#6366f1] underline decoration-[#6366f1]">
+            <span className="text-sm text-[#6366f1] underline decoration-[#6366f1]">
               Back
             </span>
           </Link>
-          <div class="mt-4 mb-6">
-            <h1 class="font-bold text-3xl text-center text-[#6366f1] mb-2">
+          <div className="mt-4 mb-6">
+            <h1 className="font-bold text-3xl text-center text-[#6366f1] mb-2">
               Forgot Your Password?
             </h1>
           </div>
           <form
-            class="contents"
-            action=""
-            accept-charset="UTF-8"
-            method="post"
+            className="contents"
+            onSubmit={handleSubmit}  // Use handleSubmit to handle form submission
           >
-            <input
-              type="hidden"
-              name="authenticity_token"
-              value="DRNVThxa2V3kMSDqen-3iMwahNbZrjp4iCxwJXZvkz91AKWLDLlGuFCc9XRGZqxeDozH71bbqK6hZrJixoozQA"
-              autocomplete="off"
-            />
-            <div class="my-5 relative">
+            {/* Error and success message display */}
+            {error && (
+              <p className="text-red-500 text-center mt-2">{error}</p>
+            )}
+            {successMessage && (
+              <p className="text-green-500 text-center mt-2">{successMessage}</p>
+            )}
+            
+            {/* Email input field */}
+            <div className="my-5 relative">
               <img
                 src="/images/email.svg"
                 alt=""
@@ -37,27 +65,23 @@ const Forgetpassword = () => {
               />
               <input
                 required="required"
-                autofocus="autofocus"
-                autocomplete="username"
                 placeholder="Email Address"
-                class="pl-10 block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full focus:border-[#6366f1]"
+                className="pl-10 block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full focus:border-[#6366f1]"
                 type="email"
-                name="email_address"
-                id="email_address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}  // Update email state on change
               />
             </div>
             <input
               type="submit"
-              name="commit"
               value="Email Reset Instructions"
-              class="bg-[#6366f1] text-white rounded-lg py-2 px-3.5 font-medium cursor-pointer w-full mt-8"
-              data-disable-with="Email Reset Instructions"
+              className="bg-[#6366f1] text-white rounded-lg py-2 px-3.5 font-medium cursor-pointer w-full mt-8"
             />
-          </form>{" "}
+          </form>
         </div>
       </div>
     </div>
   );
 };
 
-export default Forgetpassword;
+export default ForgetPassword;

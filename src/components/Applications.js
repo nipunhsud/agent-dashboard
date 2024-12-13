@@ -1,5 +1,5 @@
 import React from "react";
-
+// eslint-disable-next-line
 const images = [
   {
     img: "/images/web-search.svg",
