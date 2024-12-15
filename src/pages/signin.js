@@ -1,12 +1,32 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+import { auth, signInWithEmailAndPassword } from "../config/firebase"; 
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState(""); 
+  const [password, setPassword] = useState(""); 
+  const [error, setError] = useState(""); 
+  const navigate = useNavigate();
+
 
   const togglePasswordVisibility = () => {
     setShowPassword((prevState) => !prevState);
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(""); 
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate('/');
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
   return (
     <>
       <div class="bg-gradient-to-tr from-[#818cf8] to-[#312e81] flex justify-center items-center min-h-screen">
@@ -24,12 +44,7 @@ const SignIn = () => {
             <h4 class="text-gray-600 text-center">Book your AI Agent Today!</h4>
           </div>
 
-          <form
-            class="contents"
-            action=""
-            accept-charset="UTF-8"
-            method="post"
-          >
+          <form class="contents" onSubmit={handleSubmit}>
             <input type="hidden" name="" value="" autocomplete="off" />
             <div class="my-5 relative">
               <img
@@ -46,6 +61,8 @@ const SignIn = () => {
                 type="email"
                 name="email_address"
                 id="email_address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)} 
               />
             </div>
 
@@ -61,6 +78,8 @@ const SignIn = () => {
                   type={showPassword ? "text" : "password"}
                   name="password"
                   id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)} 
                 />
                 <button
                   className="absolute right-2.5 top-1/2 -translate-y-1/2"
@@ -94,6 +113,10 @@ const SignIn = () => {
                 Forgot Password?
               </Link>
             </div>
+
+            {error && (
+              <p className="text-red-500 text-center mt-2">{error}</p> 
+            )}
 
             <input
               type="submit"
