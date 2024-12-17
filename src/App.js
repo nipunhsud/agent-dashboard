@@ -5,6 +5,7 @@ import SignIn from "./pages/signin";
 import SignUp from "./pages/signup";
 import Forgetpassword from "./pages/forgetpassword";
 import { AuthProvider } from "./utils/AuthContext";
+import AgentUI from "./pages/AgentUI";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/forgetpassword" element={<Forgetpassword />} />
+          <Route path="/agent" element={<AgentUI />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
