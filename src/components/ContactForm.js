@@ -6,7 +6,7 @@ const ContactForm = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState(""); 
-  const [statusVisible, setStatusVisible] = useState(true); // Track visibility
+  const [statusVisible, setStatusVisible] = useState(true); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,7 +22,6 @@ const ContactForm = () => {
         setName("");
         setEmail("");
 
-        // Hide the status message after 2 seconds
         setTimeout(() => {
           setStatusVisible(false);
         }, 2000);
