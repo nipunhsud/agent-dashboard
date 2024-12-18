@@ -34,12 +34,12 @@ const Header = () => {
     };
   }, [scrolled]);
   return (
-    <>
-      <header className="container mx-auto items-center justify-center mt-8 sticky top-0 hidden md:flex z-[99999]">
+    <nav class="bg-black sticky top-0">
+      <header className=" container mx-auto items-center justify-center pt-6 pb-6 hidden md:flex z-[99999]">
         <div
-          className={`flex items-center justify-between bg-white transition-all ease-linear duration-300 min-w-fit ${
+          className={`flex items-center justify-between  transition-all ease-linear duration-300 min-w-fit ${
             scrolled
-              ? "w-96 border shadow-lg gap-12 mt-8 rounded-xl p-4 "
+              ? "w-96 border shadow-lg gap-12 mt-0 rounded-xl p-4 "
               : "w-screen shadow-none gap-4 mt-0 rounded-none border-none px-8"
           }   `}
         >
@@ -78,13 +78,13 @@ const Header = () => {
           ) : (
             <nav class="flex gap-2.5">
               <Link
-                className="bg-[#6366f1] text-white rounded-lg py-2 px-3.5 inline-block font-medium cursor-pointer"
+                className="bg-black border border-white text-white rounded-lg py-2 px-3.5 inline-block font-medium cursor-pointer hover:bg-[#6366f1] hover:text-white"
                 to={"/signin"}
               >
                 Login
               </Link>
               <Link
-                className="bg-[#6366f1] text-white rounded-lg py-2 px-3.5 inline-block font-medium cursor-pointer"
+                className="bg-black border border-white text-white rounded-lg py-2 px-3.5 inline-block font-medium cursor-pointer hover:bg-[#6366f1] hover:text-white"
                 to={"/signup"}
               >
                 Sign Up
@@ -116,7 +116,7 @@ const Header = () => {
         </div>
       </div>
       <Drawer isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} authUser={user} onLogout={onLogout} />
-    </>
+    </nav>
   );
 };
 

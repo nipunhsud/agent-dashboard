@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { db } from "../config/firebase";  
 import { collection, addDoc } from "firebase/firestore";
+import footerBot from "../assets/bot-footer.png"; 
 
 const ContactForm = () => {
   const [name, setName] = useState("");
@@ -72,6 +73,11 @@ const ContactForm = () => {
           {status}
         </p>
       )}
+       <img 
+        src={footerBot}
+        alt="Christmas Gifting Agent" 
+        className="mt-8 max-w-[400px] mx-auto" 
+      />
     </section>
   );
 };
