@@ -6,6 +6,7 @@ import Technology from "../components/Technology";
 import Footer from "../components/Footer";
 import {AuthContext} from '../utils/AuthContext'
 import { useNavigate } from 'react-router-dom';
+import ContactForm from "../components/ContactForm";
 
 
 const Home = () => {
@@ -23,6 +24,7 @@ const Home = () => {
       <HeroSection />
       <Applications />
       <Technology />
+      <ContactForm />
       <Footer />
     </div>
   );
