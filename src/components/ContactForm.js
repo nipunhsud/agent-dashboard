@@ -13,7 +13,7 @@ const ContactForm = () => {
 
     if (name && email) {
       try {
-        const docRef = await addDoc(collection(db, "contactMessages"), {
+        const docRef = await addDoc(collection(db, "contactData"), {
           name,
           email,
           timestamp: new Date(),
