@@ -40,7 +40,7 @@ const ContactForm = () => {
       }, 2000);
     }
   };
-
+  
   return (
     <section className="flex items-center flex-col mt-40 container mx-auto text-center mb-40">
       <p className="uppercase text-gray-400 tracking-wider">Community</p>
@@ -50,12 +50,12 @@ const ContactForm = () => {
       <p className="text-gray-500 text-xl xl:text-2xl">
         Give us your email, we will improve your life!
       </p>
-      <form onSubmit={handleSubmit} className="flex flex-col items-center mt-8 mb-8">
+      <form onSubmit={handleSubmit} className="flex flex-col items-center mt-8 mb-8 bg-blue-opacity p-12 rounded-lg">
         <input
           type="text"
           placeholder="Your Name"
           value={name}
-          className="shadow-lg min-w-[400px] mb-4 py-2 px-3 border rounded focus:outline-none focus:ring-2 focus:ring-[#6366f1] focus:text-lg focus:font-semibold"
+          className="pl-10 min-w-[400px] block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full focus:border-[#6366f1]"
           onChange={(e) => setName(e.target.value)}
         />
         <input
@@ -63,9 +63,9 @@ const ContactForm = () => {
           placeholder="Your Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="shadow-lg min-w-[400px] mb-4 py-2 px-3 border rounded focus:outline-none focus:ring-2 focus:ring-[#6366f1] focus:text-lg focus:font-semibold"
+          className="pl-10 min-w-[400px] block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full focus:border-[#6366f1]"
         />
-        <button type="submit" className="bg-[#6366f1] text-white rounded-lg py-2 px-3.5 inline-block font-medium cursor-pointer">Submit</button>
+        <button type="submit" className="bg-[#6366f1] text-white rounded-lg py-2 px-3.5 inline-block font-medium cursor-pointer mt-6">Submit</button>
       </form>
 
       {status && statusVisible && (

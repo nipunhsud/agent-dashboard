@@ -5,7 +5,7 @@ import landingPageBot from "../assets/landing-page-bot.png";
 
 const HeroSection = () => {
   return (
-    <div className="flex items-center flex-col mt-36 mx-auto container border pt-8 pb-8 rounded-lg" style={{ backgroundColor: 'rgba(99, 102, 241, 0.1)' }}>
+    <div className="flex items-center flex-col mt-36 mx-auto container border pt-8 pb-8 rounded-lg bg-blue-opacity">
       <h4 className="text-gray-700 font-black text-center max-w-xl xl:max-w-2xl text-balance mx-2.5 text-4xl 2xl:text-6xl">
         World of Helper Agents
       </h4>
