@@ -1,4 +1,4 @@
-const useCasesData = [
+const benefitsData = [
     {
       imageSrc: "/images/mind.svg",
       altText: "Mind Icon",
@@ -29,5 +29,5 @@ const useCasesData = [
     },
   ];
   
-  export default useCasesData;
+  export default benefitsData;
   

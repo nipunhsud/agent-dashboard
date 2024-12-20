@@ -2,7 +2,7 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer class="bg-gray-800 flex-center py-4 px-8">
+    <footer class="bg-black flex-center py-4 px-8">
       <div class=" container mx-auto text-white flex flex-col gap-8 lg:flex-row items-center justify-between">
         <h5 class="text-3xl font-black">Purnam</h5>
         <nav>

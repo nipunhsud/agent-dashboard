@@ -10,7 +10,6 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  // eslint-disable-next-line
   const { user, token } = useContext(AuthContext);
   const auth = getAuth();
   const navigate = useNavigate();

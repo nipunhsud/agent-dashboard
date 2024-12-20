@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { db } from "../config/firebase";  
+import { db } from "../../config/firebase";  
 import { collection, addDoc } from "firebase/firestore";
-import footerBot from "../assets/bot-footer.png"; 
+import footerBot from "../../assets/bot-footer.png"; 
 
 const ContactForm = () => {
   const [name, setName] = useState("");
@@ -42,14 +42,7 @@ const ContactForm = () => {
   };
   
   return (
-    <section className="flex items-center flex-col mt-40 container mx-auto text-center mb-40">
-      <p className="uppercase text-gray-400 tracking-wider">Community</p>
-      <h4 className="font-black mt-6 xl:mt-10 mb-2.5 xl:mb-4 text-2xl xl:text-4xl text-gray-700 mx-2.5 text-center text-balance"> 
-        Join our newsletter!
-      </h4>
-      <p className="text-gray-500 text-xl xl:text-2xl">
-        Give us your email, we will improve your life!
-      </p>
+    <>
       <form onSubmit={handleSubmit} className="flex flex-col items-center mt-8 mb-8 bg-blue-opacity p-12 rounded-lg">
         <input
           type="text"
@@ -78,7 +71,7 @@ const ContactForm = () => {
         alt="Christmas Gifting Agent" 
         className="mt-8 max-w-[400px] mx-auto" 
       />
-    </section>
+    </>  
   );
 };
 
