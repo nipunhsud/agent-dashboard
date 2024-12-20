@@ -43,12 +43,12 @@ const ContactForm = () => {
   
   return (
     <>
-      <form onSubmit={handleSubmit} className="flex flex-col items-center mt-8 mb-8 bg-blue-opacity p-12 rounded-lg">
+      <form onSubmit={handleSubmit} className="flex flex-col items-center mt-8 mb-8 bg-blue-opacity p-8 md:p-12 rounded-lg w-full max-w-[500px] mx-auto">
         <input
           type="text"
           placeholder="Your Name"
           value={name}
-          className="pl-10 min-w-[400px] block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full focus:border-[#6366f1]"
+          className="pl-10 min-w-[100px] block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full focus:border-[#6366f1]"
           onChange={(e) => setName(e.target.value)}
         />
         <input
@@ -56,20 +56,23 @@ const ContactForm = () => {
           placeholder="Your Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="pl-10 min-w-[400px] block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full focus:border-[#6366f1]"
+          className="pl-10 min-w-[100px] block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full focus:border-[#6366f1]"
         />
-        <button type="submit" className="bg-[#6366f1] text-white rounded-lg py-2 px-3.5 inline-block font-medium cursor-pointer mt-6">Submit</button>
+        <button type="submit" className="bg-[#6366f1] text-white rounded-lg py-2 px-3.5 inline-block font-medium cursor-pointer mt-6">
+          Submit
+        </button>
       </form>
 
       {status && statusVisible && (
-        <p className="bg-white border border-[#6366f1] text-[#6366f1] rounded-lg py-2 px-3.5 inline-block font-medium cursor-pointer transition-opacity duration-1000 opacity-100">
+        <p className="bg-white border border-[#6366f1] text-[#6366f1] rounded-lg py-2 px-3.5 inline-block font-medium cursor-pointer transition-opacity duration-1000 opacity-100 mt-4 mx-auto">
           {status}
         </p>
       )}
-       <img 
+      
+      <img 
         src={footerBot}
         alt="Christmas Gifting Agent" 
-        className="mt-8 max-w-[400px] mx-auto" 
+        className="mt-8 max-w-full mx-auto" 
       />
     </>  
   );

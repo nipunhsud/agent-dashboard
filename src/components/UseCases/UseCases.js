@@ -4,9 +4,9 @@ import benefitsData from "../../helpers/benefitsData";
 
 const UseCases = () => {
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 max-w-4xl mt-20 mx-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-8 max-w-4xl mt-4 mx-6">
       {benefitsData.map((useCase, index) => (
-        <UsesCasesCard
+        <UseCasesCard
           key={index}
           imageSrc={useCase.imageSrc}
           altText={useCase.altText}
@@ -19,3 +19,4 @@ const UseCases = () => {
 };
 
 export default UseCases;
+

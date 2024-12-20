@@ -16,7 +16,17 @@ const Testimonials = () => {
   };
 
   return (
-    <div style={{ position: 'relative', maxWidth: '500px', margin: '0 auto' }}>
+    <div
+      style={{
+        position: 'relative',
+        width: '100%',
+        maxWidth: '500px', // Max width for large screens
+        margin: '0 auto',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+    >
       <div
         style={{
           minHeight: '200px',
@@ -29,8 +39,22 @@ const Testimonials = () => {
           borderRadius: '10px',
           boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
           textAlign: 'center',
+          width: '100%',
+          marginBottom: '20px', // Space for the buttons
         }}
       >
+        <img
+          src={testimonialsData[currentIndex].image}
+          alt={testimonialsData[currentIndex].name}
+          style={{
+            width: '80px',
+            height: '80px',
+            borderRadius: '50%',
+            marginBottom: '20px',
+            objectFit: 'cover',
+            border: '4px solid black',
+          }}
+        />
         <p style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'white' }}>
           {testimonialsData[currentIndex].name}
         </p>
@@ -39,49 +63,43 @@ const Testimonials = () => {
         </p>
       </div>
 
-      {/* Navigation Arrows */}
-      <button
-        onClick={handlePrev}
-        style={{
-          position: 'absolute',
-          top: '50%',
-          left: '-50px',
-          transform: 'translateY(-50%)',
-          background: 'white',
-          border: '2px solid #6366f1',
-          borderRadius: '50%',
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-          cursor: 'pointer',
-          width: '40px',
-          height: '40px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        &lt;
-      </button>
-      <button
-        onClick={handleNext}
-        style={{
-          position: 'absolute',
-          top: '50%',
-          right: '-50px',
-          transform: 'translateY(-50%)',
-          background: 'white',
-          border: '2px solid #6366f1',
-          borderRadius: '50%',
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-          cursor: 'pointer',
-          width: '40px',
-          height: '40px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        &gt;
-      </button>
+      {/* Buttons positioned below the card */}
+      <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
+        <button
+          onClick={handlePrev}
+          style={{
+            background: 'white',
+            border: '2px solid #6366f1',
+            borderRadius: '50%',
+            padding: '10px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '35px',
+            height: '35px',
+          }}
+        >
+          &lt;
+        </button>
+        <button
+          onClick={handleNext}
+          style={{
+            background: 'white',
+            border: '2px solid #6366f1',
+            borderRadius: '50%',
+            padding: '10px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '35px',
+            height: '35px',
+          }}
+        >
+          &gt;
+        </button>
+      </div>
     </div>
   );
 };
