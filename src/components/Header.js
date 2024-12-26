@@ -33,8 +33,8 @@ const Header = () => {
     };
   }, [scrolled]);
   return (
-    <nav class="bg-black sticky top-0">
-      <header className=" container mx-auto items-center justify-center pt-6 pb-6 hidden md:flex z-[99999]">
+    <nav className="bg-black sticky top-0 z-50">
+      <header className="container mx-auto items-center justify-center pt-6 pb-6 hidden md:flex z-[99999]">
         <div
           className={`flex items-center justify-between  transition-all ease-linear duration-300 min-w-fit ${
             scrolled

@@ -1,18 +1,23 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { applicationsData } from "../../helpers/applicationsData"; 
 import ApplicationCard from "./ApplicationCard";
 
 const Applications = () => {
+  const randomizedApplications = useMemo(() => {
+    return [...applicationsData]
+      .sort(() => Math.random() - 0.5);
+  }, []); 
+
   return (
-        <div className="flex flex-wrap gap-24 items-center justify-center">
-          {applicationsData.map((application, index) => (
-            <ApplicationCard
-              key={index}
-              img={application.img}
-              name={application.name}
-            />
-          ))}
-        </div>
+    <div className="flex flex-wrap gap-24 items-center justify-center">
+      {randomizedApplications.map((application) => (
+        <ApplicationCard
+          key={application.name}
+          img={application.img}
+          name={application.name}
+        />
+      ))}
+    </div>
   );
 };
 
