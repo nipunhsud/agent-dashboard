@@ -9,7 +9,7 @@ const Applications = () => {
   }, []); 
 
   return (
-    <div className="flex flex-wrap gap-24 items-center justify-center">
+    <div className="flex flex-wrap gap-20 items-center justify-center">
       {randomizedApplications.map((application) => (
         <ApplicationCard
           key={application.name}
