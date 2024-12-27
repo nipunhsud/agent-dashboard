@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AgentModel from "../components/AgentModel";
+import AgentModel from "../components/Dashboard/AgentModel/AgentModel";
 
 const Card = ({ children, className = "" }) => (
   <div className={` rounded-[14px]  ${className}`}>{children}</div>

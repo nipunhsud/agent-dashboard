@@ -1,6 +1,6 @@
 import React from "react";
 
-function AgentModel({ closeModal, selectedAgent }) {
+const AgentModel = ({ closeModal, selectedAgent }) => {
   return (
     <div
       className="fixed inset-0 bg-black/50 flex justify-center items-center z-[99999]"

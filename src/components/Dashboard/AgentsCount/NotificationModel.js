@@ -2,7 +2,7 @@ import { Popover, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { Fragment } from "react";
 
-export default function NotificationModel() {
+const  NotificationModel = () => {
   return (
     <div className=" w-full max-w-sm px-4">
       <Popover className="relative">
@@ -56,3 +56,5 @@ export default function NotificationModel() {
     </div>
   );
 }
+
+export default NotificationModel;
