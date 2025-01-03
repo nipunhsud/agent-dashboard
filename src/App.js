@@ -6,7 +6,7 @@ import SignUp from "./pages/signup";
 import Forgetpassword from "./pages/forgetpassword";
 import { AuthProvider } from "./utils/AuthContext";
 import AgentUI from "./pages/AgentUI";
-import UserDashboard from "./pages/UserDashboard";
+import Userdashboard from "./pages/Userdashboard";
 
 function App() {
   return (
@@ -19,7 +19,7 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/forgetpassword" element={<Forgetpassword />} />
           <Route path="/agent" element={<AgentUI />} />
-          <Route path="/dashboard" element={<UserDashboard />} />
+          <Route path="/dashboard" element={<Userdashboard />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
