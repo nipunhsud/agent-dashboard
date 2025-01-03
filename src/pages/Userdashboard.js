@@ -2,7 +2,7 @@ import React from "react";
 import Dashboard from "../components/Dashboard/Dashboard";
 
 
-const UserDashboard = () => {
+const Userdashboard = () => {
   
   return (
     <>
@@ -11,4 +11,4 @@ const UserDashboard = () => {
   );
 };
 
-export default UserDashboard;
+export default Userdashboard;
