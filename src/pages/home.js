@@ -22,7 +22,6 @@ const Home = () => {
 
   return (
     <div>
-      {/* <Header /> */}
       <HeroSectionFast />
 
 
