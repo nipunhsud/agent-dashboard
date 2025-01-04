@@ -10,6 +10,7 @@ import ContactForm from "../components/ContactForm/ContactForm";
 import Section from "../components/Shared/Section/Section";
 import Testimonials from "../components/Testimonials/Testimonials";
 import UseCases from "../components/UseCases/UseCases";
+import HeroSectionFast from "../components/HeroSectionFast/HeroSectionFast";
 
 const Home = () => {
   const { user, token } = useContext(AuthContext);
@@ -21,8 +22,11 @@ const Home = () => {
 
   return (
     <div>
-      <Header />
-      <HeroSection />
+      {/* <Header /> */}
+      <HeroSectionFast />
+
+
+      {/* <HeroSection />
 
       <Section
         name="Applications"
@@ -54,7 +58,7 @@ const Home = () => {
         subtitle="You are more than welcome to our family, come share some love."
       >
         <Testimonials /> 
-      </Section>
+      </Section> */}
 
       <Section
         name="Contact Us"
