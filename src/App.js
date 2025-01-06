@@ -8,13 +8,13 @@ import { AuthProvider } from "./utils/AuthContext";
 import AgentUI from "./pages/AgentUI";
 import StockAnalysisAssistant from "./pages/StockAnalysisAssistant";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Header />
-
         <Routes>
           <Route index element={<Home />} />
           <Route path="/gift" element={<Gift />} />
@@ -24,6 +24,7 @@ function App() {
           <Route path="/agent" element={<AgentUI />} />
           <Route path="/stock-assistant" element={<StockAnalysisAssistant />} />
         </Routes>
+        <Footer />
       </BrowserRouter>
     </AuthProvider>
   );

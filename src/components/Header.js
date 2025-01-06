@@ -42,7 +42,8 @@ const Header = () => {
               : "w-screen shadow-none gap-4 mt-0 rounded-none border-none px-8"
           }   `}
         >
-          <h1 class="text-3xl font-black text-[#6366f1]">Purnam</h1>
+          <h1 class="text-3xl font-black text-blue-500">Purnam</h1>
+          
           {user?.email ? (
             <>
               <Menu as="div" className="relative inline-block text-left">

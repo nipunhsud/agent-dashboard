@@ -3,7 +3,6 @@ import Header from "../components/Header";
 import HeroSection from "../components/HeroSection";
 import Applications from "../components/Applications/Applications";
 import Benefits from "../components/Benefits/Benefits";
-import Footer from "../components/Footer";
 import {AuthContext} from '../utils/AuthContext'
 import { useNavigate } from 'react-router-dom';
 import ContactForm from "../components/ContactForm/ContactForm";
@@ -66,8 +65,6 @@ const Home = () => {
       >
         <ContactForm /> 
       </Section>
-
-      <Footer />
     </div>
   );
 };

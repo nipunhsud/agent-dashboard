@@ -7,7 +7,7 @@ import Integrations from "./Integrations";
 
 const HeroSectionFast = () => {
   return (
-    <div className="flex flex-col items-center mt-6 mx-auto container bg-[#6366f1] text-white pt-8 pb-8 rounded-lg px-4 sm:px-8">
+    <div className="flex flex-col items-center mt-6 mx-auto container bg-blue-500 text-white pt-8 pb-8 rounded-lg px-4 sm:px-8">
       <h4 className="text-white font-black text-center max-w-xl xl:max-w-2xl text-balance mx-2.5 text-4xl sm:text-5xl lg:text-6xl">
         World of Helper Agents
       </h4>
@@ -20,7 +20,7 @@ const HeroSectionFast = () => {
       <button
         className="mt-6 px-6 py-3.5 bg-black text-white font-semibold rounded-lg text-lg hover:!bg-gray-950 hover:!bg-opacity-90 transition-colors duration-300"
       >
-        <Link to={'/gift'} className="!text-white !no-underline block w-full h-full">
+        <Link to={'/stock-assistant'} className="!text-white !no-underline block w-full h-full">
           Try right now!
         </Link>
       </button>
