@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import brainLogo from '../assets/brain-logo.png';
 
 const StockAnalysisAssistant = () => {
   const [input, setInput] = useState("");
@@ -57,123 +58,308 @@ const StockAnalysisAssistant = () => {
     const stockData = data.stock_summary;
 
     return (
-      <div className="bg-black text-gray-300 shadow-md rounded-lg p-6 max-w-4xl mx-auto">
-        <h2 className="text-2xl font-medium mb-6 text-blue-400">
-          📊 {stockData.ticker} Analysis
-        </h2>
+      <div>
+        <div className="bg-black text-gray-300 shadow-md rounded-lg p-6 max-w-4xl mx-auto">
+          <h2 className="text-2xl font-medium mb-6 text-custom-purple">
+            📊 {stockData.ticker} Analysis
+          </h2>
+          <p className="text-gray-300 flex space-x-4">
+            <span
+              className="inline-block px-4 py-2 bg-custom-purple border border-custom-purple text-white rounded-full max-w-max"
+            >
+              ${stockData.current_price}
+            </span>
+            <span
+              className="inline-block px-4 py-2 bg-custom-purple border border-custom-purple text-white rounded-full max-w-max"
+            >
+              {stockData.conclusion.investment_outlook}
+            </span>
+          </p>
 
-        <div className="space-y-6">
-          {/* Price Section */}
-          <div className="border-b border-blue-500 pb-4">
-            <h3 className="text-lg font-normal">💵 Current Price:</h3>
-            <p className="text-gray-300 text-lg">${stockData.current_price}</p>
-          </div>
+          <div className="space-y-6">
+          
+            {/* Buy Point Section */}
+            <div className="border-t border-b border-custom-purple py-4 flex flex-col">
+              <h3 className="text-lg font-normal">🎯 Buy Point:</h3>
+              <p className="text-gray-300">{stockData.buy_point.consideration}</p>
+            </div>
 
-          {/* Buy Point Section */}
-          <div className="border-b border-blue-500 pb-4 flex flex-col">
-            <h3 className="text-lg font-normal">🎯 Buy Point:</h3>
-            <p className="text-gray-300">{stockData.buy_point.consideration}</p>
-          </div>
+            {/* Target Price Section */}
+            <div className="border-b border-custom-purple py-4 flex flex-col">
+              <h3 className="text-lg font-normal">📈 Target Price:</h3>
+              <p className="text-gray-300">{stockData.target_price}</p>
+            </div>
 
-          {/* Target Price Section */}
-          <div className="border-b border-blue-500 pb-4 flex flex-col">
-            <h3 className="text-lg font-normal">📈 Target Price:</h3>
-            <p className="text-gray-300">{stockData.target_price}</p>
-          </div>
-
-          {/* Supply & Demand Section */}
-          <div className="border-b border-blue-500 pb-4">
-            <h3 className="text-lg font-normal">📊 Supply & Demand</h3>
-            <p className="text-gray-300 mb-2">{stockData.supply_and_demand.volume_analysis}</p>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="p-3 bg-gray-800 rounded-lg flex flex-col">
-                <span className="font-normal">50d EMA:</span> 
-                <span>{stockData.supply_and_demand.moving_averages.day_ema_50}</span>
-              </div>
-              <div className="p-3 bg-gray-800 rounded-lg flex flex-col">
-                <span className="font-normal">150d EMA:</span> 
-                <span>{stockData.supply_and_demand.moving_averages.day_ema_150}</span>
-              </div>
-              <div className="p-3 bg-gray-800 rounded-lg flex flex-col">
-                <span className="font-normal">200d EMA:</span> 
-                <span>{stockData.supply_and_demand.moving_averages.day_ema_200}</span>
+            {/* Supply & Demand Section */}
+            <div className="border-b border-custom-purple pb-4">
+              <h3 className="text-lg font-normal">📊 Supply & Demand</h3>
+              <p className="text-gray-300 mb-2">{stockData.supply_and_demand.volume_analysis}</p>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="p-3 bg-custom-purple rounded-lg flex flex-col">
+                  <span className="font-normal">50d EMA:</span> 
+                  <span>{stockData.supply_and_demand.moving_averages.day_ema_50}</span>
+                </div>
+                <div className="p-3 bg-custom-purple rounded-lg flex flex-col">
+                  <span className="font-normal">150d EMA:</span> 
+                  <span>{stockData.supply_and_demand.moving_averages.day_ema_150}</span>
+                </div>
+                <div className="p-3 bg-custom-purple rounded-lg flex flex-col">
+                  <span className="font-normal">200d EMA:</span> 
+                  <span>{stockData.supply_and_demand.moving_averages.day_ema_200}</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Technical Section */}
-          <div className="border-b border-blue-500 pb-4">
-            <h3 className="text-lg font-normal">📈 Technical</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col">
-                <span className="block font-normal">🎯 Market:</span>
-                <span className="text-gray-300">{stockData.technical_analysis.market_direction}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="block font-normal">📈 EPS Growth:</span>
-                <span className="text-gray-300">{stockData.technical_analysis.eps_growth}</span>
+            {/* Technical Section */}
+            <div className="border-b border-custom-purple pb-4">
+              <h3 className="text-lg font-normal">📈 Technical</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col">
+                  <span className="block font-normal">🎯 Market:</span>
+                  <span className="text-gray-300">{stockData.technical_analysis.market_direction}</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="block font-normal">📈 EPS Growth:</span>
+                  <span className="text-gray-300">{stockData.technical_analysis.eps_growth}</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Financial Section */}
-          <div className="border-b border-blue-500 pb-4">
-            <h3 className="text-lg font-normal">💰 Financials</h3>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="flex flex-col">
-                <span className="font-normal">📈 Revenue:</span> 
-                <span>{stockData.quarterly_earnings_analysis.quarterly_revenue}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="font-normal">💵 Net Income:</span> 
-                <span>{stockData.quarterly_earnings_analysis.quarterly_net_income}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="font-normal">📊 EPS:</span> 
-                <span>{stockData.quarterly_earnings_analysis.quarterly_eps}</span>
+            {/* Financial Section */}
+            <div className="border-b border-custom-purple pb-4">
+              <h3 className="text-lg font-normal">💰 Financials</h3>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="p-3 flex flex-col bg-custom-purple rounded-lg">
+                  <span className="font-normal">📈 Revenue:</span> 
+                  <span>{stockData.quarterly_earnings_analysis.quarterly_revenue}</span>
+                </div>
+                <div className="p-3 flex flex-col bg-custom-purple rounded-lg">
+                  <span className="font-normal">💵 Net Income:</span> 
+                  <span>{stockData.quarterly_earnings_analysis.quarterly_net_income}</span>
+                </div>
+                <div className="p-3 flex flex-col bg-custom-purple rounded-lg">
+                  <span className="font-normal">📊 EPS:</span> 
+                  <span>{stockData.quarterly_earnings_analysis.quarterly_eps}</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Recommendations Section */}
-          <div className="border-b border-blue-500 pb-4">
-            <h3 className="text-lg font-normal">🎯 Actions</h3>
-            <div className="space-y-2">
-              <div className="flex flex-col">
-                <span className="block font-normal">💭 Consider:</span>
-                <span className="text-gray-300">{stockData.recommendations.considerations}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="block font-normal">⚡ Action:</span>
-                <span className="text-gray-300">{stockData.recommendations.recommendations_for_action}</span>
+            {/* Recommendations Section */}
+            <div className="border-b border-custom-purple pb-4">
+              <h3 className="text-lg font-normal">🎯 Actions</h3>
+              <div className="space-y-2">
+                <div className="flex flex-col">
+                  <span className="block font-normal">💭 Consider:</span>
+                  <span className="text-gray-300">{stockData.recommendations.considerations}</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="block font-normal">⚡ Action:</span>
+                  <span className="text-gray-300">{stockData.recommendations.recommendations_for_action}</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Conclusion Section */}
-          <div>
-            <h3 className="text-lg font-normal">📝 Summary</h3>
-            <p className="text-gray-300 mb-2">{stockData.conclusion.summary}</p>
-            <p className="text-gray-300">
-              <span className="font-normal">🔮 Outlook:</span>
-              <span>{stockData.conclusion.investment_outlook}</span> 
-            </p>
+            {/* Conclusion Section */}
+            <div>
+              <h3 className="text-lg font-normal">📝 Summary</h3>
+              <p className="text-gray-300 mb-2">{stockData.conclusion.summary}</p>
+            </div>
+          </div>
+        </div>
+        <div className="bg-black text-gray-300 shadow-md rounded-lg p-6 max-w-4xl mx-auto">
+          <div className="bg-custom-purple rounded-lg">
+            <h2 className="text-2xl font-medium mb-6 text-white p-3">
+              Below is the detailed trading strategy and stock summary for {stockData.ticker}
+            </h2>
+          </div>
+          <p className="text-gray-300 flex space-x-4">
+            <span
+              className="inline-block px-4 py-2 bg-custom-purple border border-custom-purple text-white rounded-full max-w-max"
+            >
+              ${stockData.current_price}
+            </span>
+            <span
+              className="inline-block px-4 py-2 bg-custom-purple border border-custom-purple text-white rounded-full max-w-max"
+            >
+              {stockData.conclusion.investment_outlook}
+            </span>
+          </p>
+
+          <div className="space-y-6">
+          
+            {/* Buy Point Section */}
+            <div className="border-t border-b border-custom-purple py-4 flex flex-col">
+              <h3 className="text-lg font-normal">🎯 Buy Point:</h3>
+              <div className="text-gray-300">
+                <p className="flex flex-col">
+                  <span>Buy Point:</span>
+                  <span>{stockData.buy_point.consideration}</span>
+                </p>
+                <p className="flex flex-col">
+                  <span>Current Stock Price:</span>
+                  <span>$194.94</span>
+                </p>
+                <p className="flex flex-col">
+                  <span>52 Week High/Low:</span>
+                  <span>$201.42 / $130.67</span>
+                </p>
+                <p className="flex flex-col">
+                  <span>Buy Point Consideration:</span>
+                  <span>
+                    The current price is within 3.21% of the 52-week high of $201.42, making it a potential buy point if other conditions align.
+                  </span>
+                </p>
+              </div>
+            </div>
+
+        
+            {/* Supply & Demand Section */}
+            <div className="border-b border-custom-purple pb-4">
+              <h3 className="text-lg font-normal">📊 Supply & Demand</h3>
+              <p className="text-gray-300 mb-2">{stockData.supply_and_demand.volume_analysis}</p>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="p-3 bg-custom-purple rounded-lg flex flex-col">
+                  <span className="font-normal">50d EMA:</span> 
+                  <span>{stockData.supply_and_demand.moving_averages.day_ema_50}</span>
+                </div>
+                <div className="p-3 bg-custom-purple rounded-lg flex flex-col">
+                  <span className="font-normal">150d EMA:</span> 
+                  <span>{stockData.supply_and_demand.moving_averages.day_ema_150}</span>
+                </div>
+                <div className="p-3 bg-custom-purple rounded-lg flex flex-col">
+                  <span className="font-normal">200d EMA:</span> 
+                  <span>{stockData.supply_and_demand.moving_averages.day_ema_200}</span>
+                </div>
+              </div>
+              <p className="text-gray-300 mb-2 mt-2">
+                The stock is currently trading above the 50-day, 150-day, and 200-day EMAs, suggesting strong support levels
+              </p>
+            </div>
+
+            {/* Tight Areas */}
+            <div className="border-b border-custom-purple pb-4">
+              <h3 className="text-lg font-normal">📊 Tight areas</h3>
+              <p className="text-gray-300 mb-2">The stock is trading near its highs with low volatility, indicating potential consolidation.</p>
+            </div>
+
+            {/* Technical Section */}
+            <div className="border-b border-custom-purple pb-4">
+              <h3 className="text-lg font-normal">📈 Technical Analysis</h3>
+              <div className="grid grid-cols-2 gap-4">
+                {/* Market Direction */}
+                <div className="flex flex-col">
+                  <span className="block font-normal">🎯 Market Direction:</span>
+                  <span className="text-gray-300">
+                    The stock is in a strong uptrend, trading above all significant EMAs.
+                  </span>
+                </div>
+                {/* EPS Growth */}
+                <div className="flex flex-col">
+                  <span className="block font-normal">📈 EPS Growth:</span>
+                  <span className="text-gray-300">
+                    Positive quarterly EPS growth with the following figures:
+                  </span>
+                  {/* <ul className="list-disc list-inside text-gray-300">
+                    {stockData.technical_analysis.eps_growth.map((eps, index) => (
+                      <li key={index}>
+                        {eps.quarter}: {eps.value}
+                      </li>
+                    ))}
+                  </ul> */}
+                  <ul className="list-disc list-inside text-gray-300 grid grid-cols-2 gap-2">
+                    <li>Q3 2024: $2.14</li>
+                    <li>Q2 2024: $1.91</li>
+                    <li>Q1 2024: $1.91</li>
+                    <li>Q4 2023: $1.66</li>
+                  </ul>
+
+
+                </div>
+              </div>
+            </div>
+
+            {/* Google trends */}
+            <div className="border-b border-custom-purple pb-4">
+              <h3 className="text-lg font-normal">📊 Google trends</h3>
+              <p className="text-gray-300 mb-2 flex flex-column">
+                <span>Market trends:</span>
+                <span>The stock is trending upwards with a significant increase in interest.</span>
+              </p>
+            </div>
+
+             {/* Earnings and financial goals */}
+             <div className="border-b border-custom-purple pb-4">
+              <h3 className="text-lg font-normal">📊Earnings and financial goals</h3>
+              <p className="text-gray-300 mb-2 flex flex-column">
+                <span>Annual Revenue Growth:</span>
+                <span>GOOGL's revenue grew to $307.39 billion in the fiscal year 2023.</span>
+              </p>
+              <p className="text-gray-300 mb-2 flex flex-column">
+                <span>Annual EPS Growth:</span>
+                <span>$5.84 in 2023, which is a significant increase from previous years.</span>
+              </p>
+              <p className="text-gray-300 mb-2 flex flex-column">
+                <span>Quarterly Revenue Growth:</span>
+                <span>8.68% in Q3 2024.</span>
+              </p>
+              <p className="text-gray-300 mb-2 flex flex-column">
+                <span>Quarterly EPS Growth:</span>
+                <span>Consistent growth over the past three quarters.</span>
+              </p>
+            </div>
+
+            {/* Industry Leadership */}
+            <div className="border-b border-custom-purple pb-4">
+              <h3 className="text-lg font-normal">📊 Industry Leadership</h3>
+              <p className="text-gray-300 mb-2">GOOGL is a leading stock in the technology industry, with a strong market position and a history of innovation.</p>
+            </div>
+
+            {/* Recommendations Section */}
+            <div className="border-b border-custom-purple pb-4">
+              <h3 className="text-lg font-normal">🎯 Recommendations</h3>
+              <div className="space-y-2">
+                <div className="flex flex-col">
+                  <span className="block font-normal">💭 Considerations:</span>
+                  <span className="text-gray-300">{stockData.recommendations.considerations}</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="block font-normal">⚡ Action:</span>
+                  <span className="text-gray-300">{stockData.recommendations.recommendations_for_action}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Conclusion Section */}
+            <div>
+              <h3 className="text-lg font-normal">📝 Summary</h3>
+              <p className="text-gray-300 mb-2">{stockData.conclusion.summary}</p>
+            </div>
+            <p className="text-gray-300 mb-2">By considering the above factors, you can make an informed decision on trading GOOGL. Always continue monitoring market conditions and updates related to this stock.</p>
+
           </div>
         </div>
       </div>
     );
   };
 
+  
   return (
-    <div className="bg-black text-gray-300 min-h-screen flex flex-col items-center justify-start py-4 px-4">
-      <div className="w-full max-w-3xl mt-4">
-        <h1 className="text-3xl font-extrabold text-blue-400 text-center mb-4">
-          Stock Analysis Assistant
-        </h1>
+    <div className="bg-black text-gray-300 min-h-screen flex flex-col items-center justify-start py-4 px-4 relative">
+      <div className="w-full max-w-3xl mt-4 mx-auto">
+        <div className="flex flex-col items-center">
+          <img
+            src={brainLogo}
+            alt="Logo"
+            className="w-60 h-60 rounded-full"
+          />
+          <h1 className="text-3xl font-extrabold text-custom-purple text-center mt-4 mb-4">
+            Stock Analysis Assistant
+          </h1>
+        </div>
   
         <form
           onSubmit={handleSubmit}
-          className="bg-gray-800 shadow-md rounded-lg p-4 mb-4"
+          className="bg-custom-purple shadow-md rounded-lg p-4 mb-4"
         >
           <label
             htmlFor="input"
@@ -186,12 +372,12 @@ const StockAnalysisAssistant = () => {
             rows="3"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-700 text-gray-300"
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-black text-gray-300"
             placeholder="e.g., AAPL, MSFT, GOOGL"
           ></textarea>
           <button
             type="submit"
-            className="mt-3 bg-blue-500 text-white py-2 px-4 rounded-lg w-full hover:bg-blue-600"
+            className="mt-3 bg-custom-purple border border-white text-white py-2 px-4 rounded-lg w-full hover:bg-black"
           >
             Analyze Stock
           </button>
@@ -200,8 +386,17 @@ const StockAnalysisAssistant = () => {
         {response && <div>{response}</div>}
         {error && <div className="text-red-400 text-center mt-3">{error}</div>}
       </div>
+  
+      {/* Print Button */}
+      <button
+        onClick={() => window.print()}
+        className="fixed bottom-4 right-4 bg-custom-purple text-white py-2 px-4 rounded-lg shadow-lg hover:bg-black hover:text-custom-purple"
+      >
+        Print Analysis
+      </button>
     </div>
   );
+  
   
 };
 

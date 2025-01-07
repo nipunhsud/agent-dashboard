@@ -6,6 +6,7 @@ import { getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import logo from '../assets/logo.png';
 
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -42,7 +43,9 @@ const Header = () => {
               : "w-screen shadow-none gap-4 mt-0 rounded-none border-none px-8"
           }   `}
         >
-          <h1 class="text-3xl font-black text-blue-500 no-underline">Purnam</h1>
+          <div>
+            <img src={logo} alt="Logo" className="w-60 h-20"/>
+          </div>
           
           {user?.email ? (
             <>

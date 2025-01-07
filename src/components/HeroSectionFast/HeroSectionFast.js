@@ -7,7 +7,7 @@ import Integrations from "./Integrations";
 
 const HeroSectionFast = () => {
   return (
-    <div className="flex flex-col items-center mt-6 mx-auto container bg-blue-500 text-white pt-8 pb-8 rounded-lg px-4 sm:px-8">
+    <div className="flex flex-col items-center mt-6 mx-auto container bg-custom-purple text-white pt-8 pb-8 rounded-lg px-4 sm:px-8">
       <h4 className="text-white font-black text-center max-w-xl xl:max-w-2xl text-balance mx-2.5 text-4xl sm:text-5xl lg:text-6xl">
         World of Helper Agents
       </h4>

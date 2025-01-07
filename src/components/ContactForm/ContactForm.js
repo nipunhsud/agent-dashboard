@@ -58,7 +58,7 @@ const ContactForm = () => {
           onChange={(e) => setEmail(e.target.value)}
           className="pl-10 min-w-[100px] block shadow rounded-md border border-gray-400 bg-black text-white outline-none px-3 py-2 mt-2 w-full focus:border-[#6366f1]"
         />
-        <button type="submit" className="bg-[#6366f1] text-white rounded-lg py-2 px-3.5 inline-block font-medium cursor-pointer mt-6 hover:bg-[#5355d8] transition-colors duration-300">
+        <button type="submit" className="bg-custom-purple text-white rounded-lg py-2 px-3.5 inline-block font-medium cursor-pointer mt-6 hover:bg-[#5355d8] transition-colors duration-300">
           Submit
         </button>
       </form>
