@@ -42,7 +42,7 @@ const Header = () => {
               : "w-screen shadow-none gap-4 mt-0 rounded-none border-none px-8"
           }   `}
         >
-          <h1 class="text-3xl font-black text-blue-500">Purnam</h1>
+          <h1 class="text-3xl font-black text-blue-500 no-underline">Purnam</h1>
           
           {user?.email ? (
             <>
@@ -94,18 +94,16 @@ const Header = () => {
         </div>
       </header>
       <div
-        class="block md:hidden border-b px-4 py-1.5"
+        class="block md:hidden px-4 py-1.5"
         data-controller="sidebar"
       >
-        <div class="flex items-center justify-between fixed top-0 w-full left-0 bg-white border-b px-4 py-2.5">
-          <a href="/">
-            <h2 class="font-black text-[#6366f1]">Purnam</h2>
-          </a>{" "}
+        <div class="flex items-center justify-between fixed top-0 w-full left-0  border-blue-500 px-4 py-2.5">
+            <h2 class="font-black text-blue-500">Purnam</h2>
           <span onClick={() => setIsCollapsed(true)}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 16 16"
-              class="stroke-[#6366f1] w-6 h-6"
+              class="stroke-blue-500 w-6 h-6"
             >
               <path
                 fill-rule="evenodd"
