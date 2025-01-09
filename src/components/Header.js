@@ -44,7 +44,7 @@ const Header = () => {
           }   `}
         >
           <div>
-            <img src={logo} alt="Logo" className="w-60 h-20"/>
+            <img src={logo} alt="Logo" className="w-60 h-25"/>
           </div>
           
           {user?.email ? (

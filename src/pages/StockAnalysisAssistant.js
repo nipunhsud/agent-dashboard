@@ -9,27 +9,42 @@ const StockAnalysisAssistant = () => {
   const dummyData = {
     stock_summary: {
       ticker: "GOOGL",
-      current_price: 189.3,
+      current_price: 194.97,
       buy_point: {
-        consideration: "The current price is within 6% of the 52-week high of $201.42, making it a potential buy point if other conditions align."
+        consideration: "The current price is within 3% of the 52-week high of $201.42, making it a potential buy point if other conditions align."
       },
-      target_price: "A reasonable target price could be set around 15-20% above the buy point, approximately $217.69 to $227.16.",
+      target_price: "",
+      industry_leader: "GOOGL is a leading stock in the technology industry, with a strong market position and a history of innovation.",
       supply_and_demand: {
-        volume_analysis: "Current volume is at 17,396,853, which is lower than the average volume of 27,419,177.",
+        volume_analysis: "Current volume is at 15,991,873, which is lower than the average volume of 27,647,703.",
         moving_averages: {
-          day_ema_50: 180.15,
-          day_ema_150: 170.56,
-          day_ema_200: 166.87
-        }
+          day_ema_50: 182.64,
+          day_ema_15: 172.06,
+          day_ema_200: 168.18
+        },
+        google_trends: {
+          market_trends: "No specific data available.",
+          top_related_queries: [],
+          rising_related_queries: []
+        },
+        support_levels: "The stock is currently trading above the 50-day, 150-day, and 200-day EMAs, suggesting strong support levels."
       },
+      tight_areas: "The stock is trading near its highs with low volatility, indicating potential consolidation.",
       technical_analysis: {
-        market_direction: "The overall market appears to be in a positive trend with the 150-day EMA above the 200-day EMA and the 50-day EMA above the 150-day EMA.",
-        eps_growth: "Positive quarterly EPS growth of 27.23% signals accelerating earnings."
+        market_direction: "Market Direction: Analyze the price action of QQQ and SPY to get the market direction. Series of higher highs and higher lows is preferred.",
+        eps_growth: "Positive quarterly EPS growth signals accelerating earnings."
       },
       quarterly_earnings_analysis: {
         quarterly_revenue: "88.27 billion USD",
         quarterly_net_income: "26.30 billion USD",
-        quarterly_eps: "2.14 in xyz quarter and growth of 27.23%"
+        quarterly_eps: "2.14 in Q3 2024"
+      },
+      annual_financial_growth: {
+        annual_eps_growth: "27.23% in 2023",
+        annual_revenue_growth: "8.68% in 2023"
+      },
+      new_product_or_service: {
+        new_product_or_service: "No specific data available."
       },
       recommendations: {
         considerations: "The stock is a potential buy given its strong earnings growth, favorable technical indicators, and trending interest, but be cautious of current volume, which is lower than average.",
@@ -40,7 +55,7 @@ const StockAnalysisAssistant = () => {
         investment_outlook: "Positive"
       }
     }
-  };
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -80,7 +95,7 @@ const StockAnalysisAssistant = () => {
         const data = await res.json();
 
         // Log or structure the response into JSON
-        console.log("Parsed JSON response:", data);
+        console.log("Parsed JSON response:", data.response);
 
         // If needed, reformat the response here
         const formattedData = {
@@ -107,7 +122,7 @@ const StockAnalysisAssistant = () => {
     return (
       <div>
         <div className="bg-black text-gray-300 shadow-md rounded-lg p-6 max-w-4xl mx-auto">
-          <h2 className="text-2xl font-medium mb-6 text-custom-purple">
+          <h2 className="text-2xl font-bold mb-6 text-custom-purple">
             📊 {stockData.ticker} Analysis
           </h2>
           <p className="text-gray-300 flex space-x-4">
@@ -127,108 +142,110 @@ const StockAnalysisAssistant = () => {
           
             {/* Buy Point Section */}
             <div className="border-t border-b border-custom-purple py-4 flex flex-col">
-              <h3 className="text-lg font-normal">🎯 Buy Point:</h3>
+              <h3 className="text-lg font-bold">🎯 Buy Point:</h3>
               <p className="text-gray-300">{stockData.buy_point.consideration}</p>
             </div>
 
             {/* Target Price Section */}
-            <div className="border-b border-custom-purple py-4 flex flex-col">
-              <h3 className="text-lg font-normal">📈 Target Price:</h3>
-              <p className="text-gray-300">{stockData.target_price}</p>
+            <div className="border-b border-custom-purple py-2 flex flex-col">
+              <h3 className="text-lg font-bold">📈 Target Price:</h3>
+              <p className="text-gray-300">{stockData.target_price  || "No available data"}</p>
             </div>
-
+            
             {/* Supply & Demand Section */}
             <div className="border-b border-custom-purple pb-4">
-              <h3 className="text-lg font-normal">📊 Supply & Demand</h3>
-              <p className="text-gray-300 mb-2">{stockData.supply_and_demand.volume_analysis}</p>
+              <h3 className="text-lg font-bold">📊 Supply & Demand</h3>
+              <p className="text-gray-300 mb-2">
+                {stockData.supply_and_demand.volume_analysis || "No available data"}
+              </p>
               <div className="grid grid-cols-3 gap-4">
                 <div className="p-3 bg-custom-purple rounded-lg flex flex-col">
-                  <span className="font-normal">50d EMA:</span> 
-                  <span>{stockData.supply_and_demand.moving_averages.day_ema_50}</span>
+                  <span className="font-semibold">50d EMA:</span>
+                  <span>{stockData.supply_and_demand.moving_averages.day_ema_50 || "No available data"}</span>
                 </div>
                 <div className="p-3 bg-custom-purple rounded-lg flex flex-col">
-                  <span className="font-normal">150d EMA:</span> 
-                  <span>{stockData.supply_and_demand.moving_averages.day_ema_150}</span>
+                  <span className="font-semibold">150d EMA:</span>
+                  <span>{stockData.supply_and_demand.moving_averages.day_ema_15 || "No available data"}</span>
                 </div>
                 <div className="p-3 bg-custom-purple rounded-lg flex flex-col">
-                  <span className="font-normal">200d EMA:</span> 
-                  <span>{stockData.supply_and_demand.moving_averages.day_ema_200}</span>
+                  <span className="font-semibold">200d EMA:</span>
+                  <span>{stockData.supply_and_demand.moving_averages.day_ema_200 || "No available data"}</span>
                 </div>
               </div>
             </div>
 
             {/* Technical Section */}
             <div className="border-b border-custom-purple pb-4">
-              <h3 className="text-lg font-normal">📈 Technical</h3>
+              <h3 className="text-lg font-bold">📈 Technical</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col">
-                  <span className="block font-normal">🎯 Market:</span>
-                  <span className="text-gray-300">{stockData.technical_analysis.market_direction}</span>
+                  <span className="block font-bold">🎯 Market:</span>
+                  <span className="text-gray-300">{stockData.technical_analysis.market_direction || "No available data"}</span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="block font-normal">📈 EPS Growth:</span>
-                  <span className="text-gray-300">{stockData.technical_analysis.eps_growth}</span>
+                  <span className="block font-bold">📈 EPS Growth:</span>
+                  <span className="text-gray-300">{stockData.technical_analysis.eps_growth || "No available data"}</span>
                 </div>
               </div>
             </div>
 
             {/* Financial Section */}
             <div className="border-b border-custom-purple pb-4">
-              <h3 className="text-lg font-normal">💰 Financials</h3>
+              <h3 className="text-lg font-bold">💰 Financials</h3>
               <div className="grid grid-cols-3 gap-4">
                 <div className="p-3 flex flex-col bg-custom-purple rounded-lg">
-                  <span className="font-normal">📈 Revenue:</span> 
-                  <span>{stockData.quarterly_earnings_analysis.quarterly_revenue}</span>
+                  <span className="font-semibold">📈 Revenue:</span> 
+                  <span>{stockData.quarterly_earnings_analysis.quarterly_revenue || "No available data"}</span>
                 </div>
                 <div className="p-3 flex flex-col bg-custom-purple rounded-lg">
-                  <span className="font-normal">💵 Net Income:</span> 
-                  <span>{stockData.quarterly_earnings_analysis.quarterly_net_income}</span>
+                  <span className="font-semibold">💵 Net Income:</span> 
+                  <span>{stockData.quarterly_earnings_analysis.quarterly_net_income || "No available data"}</span>
                 </div>
                 <div className="p-3 flex flex-col bg-custom-purple rounded-lg">
-                  <span className="font-normal">📊 EPS:</span> 
-                  <span>{stockData.quarterly_earnings_analysis.quarterly_eps}</span>
+                  <span className="font-semibold">📊 EPS:</span> 
+                  <span>{stockData.quarterly_earnings_analysis.quarterly_eps || "No available data"}</span>
                 </div>
               </div>
             </div>
 
             {/* Recommendations Section */}
             <div className="border-b border-custom-purple pb-4">
-              <h3 className="text-lg font-normal">🎯 Actions</h3>
+              <h3 className="text-lg font-bold">🎯 Actions</h3>
               <div className="space-y-2">
                 <div className="flex flex-col">
-                  <span className="block font-normal">💭 Consider:</span>
-                  <span className="text-gray-300">{stockData.recommendations.considerations}</span>
+                  <span className="block font-bold">💭 Consider:</span>
+                  <span className="text-gray-300">{stockData.recommendations.considerations || "No available data"}</span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="block font-normal">⚡ Action:</span>
-                  <span className="text-gray-300">{stockData.recommendations.recommendations_for_action}</span>
+                  <span className="block font-bold">⚡ Action:</span>
+                  <span className="text-gray-300">{stockData.recommendations.recommendations_for_action || "No available data"}</span>
                 </div>
               </div>
             </div>
 
             {/* Conclusion Section */}
             <div>
-              <h3 className="text-lg font-normal">📝 Summary</h3>
-              <p className="text-gray-300 mb-2">{stockData.conclusion.summary}</p>
+              <h3 className="text-lg font-bold">📝 Summary</h3>
+              <p className="text-gray-300 mb-2">{stockData.conclusion.summary || "No available data"}</p>
             </div>
           </div>
         </div>
         <div className="bg-black text-gray-300 shadow-md rounded-lg p-6 max-w-4xl mx-auto">
           <div className="bg-custom-purple rounded-lg">
             <h2 className="text-2xl font-medium mb-6 text-white p-3">
-              Below is the detailed trading strategy and stock summary for {stockData.ticker}
+              Below is the detailed trading strategy and stock summary for {stockData.ticker || "No available data"}
             </h2>
           </div>
           <p className="text-gray-300 flex space-x-4">
             <span
               className="inline-block px-4 py-2 bg-custom-purple border border-custom-purple text-white rounded-full max-w-max"
             >
-              {stockData.current_price}
+              {stockData.current_price || "No available data"}
             </span>
             <span
               className="inline-block px-4 py-2 bg-custom-purple border border-custom-purple text-white rounded-full max-w-max"
             >
-              {stockData.conclusion.investment_outlook}
+              {stockData.conclusion.investment_outlook || "No available data"}
             </span>
           </p>
 
@@ -240,7 +257,7 @@ const StockAnalysisAssistant = () => {
               <div className="text-gray-300">
                 <p className="flex flex-col">
                   <span className="font-bold">Buy Point:</span>
-                  <span>{stockData.buy_point.consideration}</span>
+                  <span>{stockData.buy_point.consideration || "No available data"}</span>
                 </p>
                 <p className="flex flex-col">
                   <span className="font-bold">52 Week High/Low:</span>
@@ -249,40 +266,38 @@ const StockAnalysisAssistant = () => {
                 <p className="flex flex-col">
                   <span className="font-bold">Buy Point Consideration:</span>
                   <span>
-                    <span>{stockData.buy_point.consideration}</span>
+                    <span>{stockData.buy_point.consideration || "No available data"}</span>
                   </span>
                 </p>
               </div>
             </div>
 
-        
             {/* Supply & Demand Section */}
             <div className="border-b border-custom-purple pb-4">
-              <h3 className="text-lg font-bold">📊 Supply & Demand</h3>
-              <p className="text-gray-300 mb-2">{stockData.supply_and_demand.volume_analysis}</p>
+              <h3 className="text-lg font-normal">📊 Supply & Demand</h3>
+              <p className="text-gray-300 mb-2">
+                {stockData.supply_and_demand.volume_analysis || "Volume data unavailable"}
+              </p>
               <div className="grid grid-cols-3 gap-4">
                 <div className="p-3 bg-custom-purple rounded-lg flex flex-col">
-                  <span className="font-normal">50d EMA:</span> 
-                  <span>{stockData.supply_and_demand.moving_averages.day_ema_50}</span>
+                  <span className="font-semibold">50d EMA:</span>
+                  <span>{stockData.supply_and_demand.moving_averages.day_ema_50 || "No available data"}</span>
                 </div>
                 <div className="p-3 bg-custom-purple rounded-lg flex flex-col">
-                  <span className="font-normal">150d EMA:</span> 
-                  <span>{stockData.supply_and_demand.moving_averages.day_ema_150}</span>
+                  <span className="font-semibold">150d EMA:</span>
+                  <span>{stockData.supply_and_demand.moving_averages.day_ema_15 || "No available data"}</span>
                 </div>
                 <div className="p-3 bg-custom-purple rounded-lg flex flex-col">
-                  <span className="font-normal">200d EMA:</span> 
-                  <span>{stockData.supply_and_demand.moving_averages.day_ema_200}</span>
+                  <span className="font-semibold">200d EMA:</span>
+                  <span>{stockData.supply_and_demand.moving_averages.day_ema_200 || "No available data"}</span>
                 </div>
               </div>
-              <p className="text-gray-300 mb-2 mt-2">
-                {stockData.supply_and_demand.volume_analysis}
-              </p>
             </div>
 
             {/* Tight Areas */}
             <div className="border-b border-custom-purple pb-4">
               <h3 className="text-lg font-bold">📊 Tight areas</h3>
-              <p className="text-gray-300 mb-2">{stockData.tight_areas}</p>
+              <p className="text-gray-300 mb-2">{stockData.tight_areas || "No available data"}</p>
             </div>
 
             {/* Technical Section */}
@@ -293,14 +308,14 @@ const StockAnalysisAssistant = () => {
                 <div className="flex flex-col">
                   <span className="block font-bold">🎯 Market Direction:</span>
                   <span className="text-gray-300">
-                    {stockData.technical_analysis.market_direction}
+                    {stockData.technical_analysis.market_direction || "No available data"}
                   </span>
                 </div>
                 {/* EPS Growth */}
                 <div className="flex flex-col">
                   <span className="block font-bold">📈 EPS Growth:</span>
                   <span className="text-gray-300">
-                    {stockData.technical_analysis.eps_growth}
+                    {stockData.technical_analysis.eps_growth || "No available data"}
                   </span>
                   {/* <ul className="list-disc list-inside text-gray-300">
                     {stockData.technical_analysis.eps_growth.map((eps, index) => (
@@ -332,7 +347,7 @@ const StockAnalysisAssistant = () => {
               <h3 className="text-lg font-bold">📊 Google trends</h3>
               <p className="text-gray-300 mb-2 flex flex-column">
                 <span className="font-bold">Market trends:</span>
-                <span>{stockData.google_trends.market_trends}</span>
+                <span>{stockData.supply_and_demand.google_trends.market_trends || "No available data"}</span>
               </p>
             </div>
 
@@ -360,7 +375,7 @@ const StockAnalysisAssistant = () => {
             {/* Industry Leadership */}
             <div className="border-b border-custom-purple pb-4">
               <h3 className="text-lg font-bold">📊 Industry Leadership</h3>
-              <p className="text-gray-300 mb-2">{stockData.industry_leader}</p>
+              <p className="text-gray-300 mb-2">{stockData.industry_leader || "No available data"}</p>
             </div>
 
             {/* Recommendations Section */}
@@ -369,11 +384,11 @@ const StockAnalysisAssistant = () => {
               <div className="space-y-2">
                 <div className="flex flex-col">
                   <span className="block font-bold">💭 Considerations:</span>
-                  <span className="text-gray-300">{stockData.recommendations.considerations}</span>
+                  <span className="text-gray-300">{stockData.recommendations.considerations || "No available data"}</span>
                 </div>
                 <div className="flex flex-col">
                   <span className="block font-bold">⚡ Action:</span>
-                  <span className="text-gray-300">{stockData.recommendations.recommendations_for_action}</span>
+                  <span className="text-gray-300">{stockData.recommendations.recommendations_for_action || "No available data"}</span>
                 </div>
               </div>
             </div>
@@ -381,7 +396,7 @@ const StockAnalysisAssistant = () => {
             {/* Conclusion Section */}
             <div>
               <h3 className="text-lg font-bold">📝 Summary</h3>
-              <p className="text-gray-300 mb-2">{stockData.conclusion.summary}</p>
+              <p className="text-gray-300 mb-2">{stockData.conclusion.summary || "No available data"}</p>
             </div>
             <p className="text-gray-300 mb-2">By considering the above factors, you can make an informed decision on trading GOOGL. Always continue monitoring market conditions and updates related to this stock.</p>
 
@@ -391,25 +406,7 @@ const StockAnalysisAssistant = () => {
     );
   };
   
-  const handlePrintAnalysis = () => {
-    const analysisContent = document.getElementById('analysis-content'); 
-    const originalContent = document.body.innerHTML; 
 
-    document.body.innerHTML = analysisContent.innerHTML;
-    window.print();
-    document.body.innerHTML = originalContent;
-
-    attachEventListeners();
-  };
-
-  const attachEventListeners = () => {
-    document.querySelector('form').onsubmit = handleSubmit;
-    document.querySelector('.print-button').onclick = handlePrintAnalysis;
-  };
-
-  const parsedData = () => {
-
-  }
   
   return (
     <div className="bg-black text-gray-300 min-h-screen flex flex-col items-center justify-start py-4 px-4 relative">
@@ -458,7 +455,7 @@ const StockAnalysisAssistant = () => {
       {/* Print Button */}
       <button
         onClick={() => window.print()}
-        className="fixed bottom-4 right-4 bg-custom-purple text-white py-2 px-4 rounded-lg shadow-lg hover:bg-black hover:text-custom-purple"
+        className="fixed bottom-4 right-4 bg-custom-purple text-white py-2 px-4 rounded-lg shadow-lg hover:bg-black hover:text-custom-purple hover:border hover:border-custom-purple"
       >
         Print Analysis
       </button>
@@ -471,55 +468,22 @@ const StockAnalysisAssistant = () => {
 export default StockAnalysisAssistant;
 
 
-// this is the son response from the backend 
+// const handlePrintAnalysis = () => {
+//   const analysisContent = document.getElementById('analysis-content'); 
+//   const originalContent = document.body.innerHTML; 
 
-// {
-//   "stock_summary": {
-//     "ticker": "GOOGL",
-//     "current_price": 194.97,
-//     "buy_point": {
-//       "consideration": "The current price is within 3% of the 52-week high of $201.42, making it a potential buy point if other conditions align."
-//     },
-//     "target_price": "",
-//     "industry_leader": "GOOGL is a leading stock in the technology industry, with a strong market position and a history of innovation.",
-//     "supply_and_demand": {
-//       "volume_analysis": "Current volume is at 15,991,873, which is lower than the average volume of 27,647,703.",
-//       "moving_averages": {
-//         "day_ema_50": 182.64,
-//         "day_ema_150": 172.06,
-//         "day_ema_200": 168.18
-//       },
-//       "google_trends": {
-//         "market_trends": "No specific data available.",
-//         "top_related_queries": [],
-//         "rising_related_queries": []
-//       },
-//       "support_levels": "The stock is currently trading above the 50-day, 150-day, and 200-day EMAs, suggesting strong support levels."
-//     },
-//     "tight_areas": "The stock is trading near its highs with low volatility, indicating potential consolidation.",
-//     "technical_analysis": {
-//       "market_direction": "Market Direction: Analyze the price action of QQQ and SPY to get the market direction. Series of higher highs and higher lows is preferred.",
-//       "eps_growth": "Positive quarterly EPS growth signals accelerating earnings."
-//     },
-//     "quarterly_earnings_analysis": {
-//       "quarterly_revenue": "88.27 billion USD",
-//       "quarterly_net_income": "26.30 billion USD",
-//       "quarterly_eps": "2.14 in Q3 2024"
-//     },
-//     "annual_financial_growth": {
-//       "annual_eps_growth": "27.23% in 2023",
-//       "annual_revenue_growth": "8.68% in 2023"
-//     },
-//     "new_product_or_service": {
-//       "new_product_or_service": "No specific data available."
-//     },
-//     "recommendations": {
-//       "considerations": "The stock is a potential buy given its strong earnings growth, favorable technical indicators, and trending interest, but be cautious of current volume, which is lower than average.",
-//       "recommendations_for_action": "Consider entering when volume increases or if there is a breakout above the current resistance levels."
-//     },
-//     "conclusion": {
-//       "summary": "GOOGL is showing strong financial growth and positive market interest, making it a potentially attractive investment.",
-//       "investment_outlook": "Positive"
-//     }
-//   }
+//   document.body.innerHTML = analysisContent.innerHTML;
+//   window.print();
+//   document.body.innerHTML = originalContent;
+
+//   attachEventListeners();
+// };
+
+// const attachEventListeners = () => {
+//   document.querySelector('form').onsubmit = handleSubmit;
+//   document.querySelector('.print-button').onclick = handlePrintAnalysis;
+// };
+
+// const parsedData = () => {
+
 // }
