@@ -223,7 +223,7 @@ const StockAnalysisAssistant = () => {
             <span
               className="inline-block px-4 py-2 bg-custom-purple border border-custom-purple text-white rounded-full max-w-max"
             >
-              ${stockData.current_price}
+              {stockData.current_price}
             </span>
             <span
               className="inline-block px-4 py-2 bg-custom-purple border border-custom-purple text-white rounded-full max-w-max"
@@ -249,7 +249,7 @@ const StockAnalysisAssistant = () => {
                 <p className="flex flex-col">
                   <span className="font-bold">Buy Point Consideration:</span>
                   <span>
-                    The current price is within 3.21% of the 52-week high of $201.42, making it a potential buy point if other conditions align.
+                    <span>{stockData.buy_point.consideration}</span>
                   </span>
                 </p>
               </div>
@@ -275,14 +275,14 @@ const StockAnalysisAssistant = () => {
                 </div>
               </div>
               <p className="text-gray-300 mb-2 mt-2">
-                The stock is currently trading above the 50-day, 150-day, and 200-day EMAs, suggesting strong support levels
+                {stockData.supply_and_demand.volume_analysis}
               </p>
             </div>
 
             {/* Tight Areas */}
             <div className="border-b border-custom-purple pb-4">
               <h3 className="text-lg font-bold">📊 Tight areas</h3>
-              <p className="text-gray-300 mb-2">The stock is trading near its highs with low volatility, indicating potential consolidation.</p>
+              <p className="text-gray-300 mb-2">{stockData.tight_areas}</p>
             </div>
 
             {/* Technical Section */}
@@ -293,14 +293,14 @@ const StockAnalysisAssistant = () => {
                 <div className="flex flex-col">
                   <span className="block font-bold">🎯 Market Direction:</span>
                   <span className="text-gray-300">
-                    The stock is in a strong uptrend, trading above all significant EMAs.
+                    {stockData.technical_analysis.market_direction}
                   </span>
                 </div>
                 {/* EPS Growth */}
                 <div className="flex flex-col">
                   <span className="block font-bold">📈 EPS Growth:</span>
                   <span className="text-gray-300">
-                    Positive quarterly EPS growth with the following figures:
+                    {stockData.technical_analysis.eps_growth}
                   </span>
                   {/* <ul className="list-disc list-inside text-gray-300">
                     {stockData.technical_analysis.eps_growth.map((eps, index) => (
@@ -332,7 +332,7 @@ const StockAnalysisAssistant = () => {
               <h3 className="text-lg font-bold">📊 Google trends</h3>
               <p className="text-gray-300 mb-2 flex flex-column">
                 <span className="font-bold">Market trends:</span>
-                <span>The stock is trending upwards with a significant increase in interest.</span>
+                <span>{stockData.google_trends.market_trends}</span>
               </p>
             </div>
 
@@ -360,7 +360,7 @@ const StockAnalysisAssistant = () => {
             {/* Industry Leadership */}
             <div className="border-b border-custom-purple pb-4">
               <h3 className="text-lg font-bold">📊 Industry Leadership</h3>
-              <p className="text-gray-300 mb-2">GOOGL is a leading stock in the technology industry, with a strong market position and a history of innovation.</p>
+              <p className="text-gray-300 mb-2">{stockData.industry_leader}</p>
             </div>
 
             {/* Recommendations Section */}
@@ -392,19 +392,13 @@ const StockAnalysisAssistant = () => {
   };
   
   const handlePrintAnalysis = () => {
-    const analysisContent = document.getElementById('analysis-content'); // Get the analysis content by ID
-    const originalContent = document.body.innerHTML; // Save the original page content
+    const analysisContent = document.getElementById('analysis-content'); 
+    const originalContent = document.body.innerHTML; 
 
-    // Replace the body content with the analysis content
     document.body.innerHTML = analysisContent.innerHTML;
-
-    // Print the content
     window.print();
-
-    // Restore the original page content
     document.body.innerHTML = originalContent;
 
-    // Reattach event listeners (since the original DOM is replaced)
     attachEventListeners();
   };
 
@@ -412,6 +406,10 @@ const StockAnalysisAssistant = () => {
     document.querySelector('form').onsubmit = handleSubmit;
     document.querySelector('.print-button').onclick = handlePrintAnalysis;
   };
+
+  const parsedData = () => {
+
+  }
   
   return (
     <div className="bg-black text-gray-300 min-h-screen flex flex-col items-center justify-start py-4 px-4 relative">
@@ -471,3 +469,57 @@ const StockAnalysisAssistant = () => {
 };
 
 export default StockAnalysisAssistant;
+
+
+// this is the son response from the backend 
+
+// {
+//   "stock_summary": {
+//     "ticker": "GOOGL",
+//     "current_price": 194.97,
+//     "buy_point": {
+//       "consideration": "The current price is within 3% of the 52-week high of $201.42, making it a potential buy point if other conditions align."
+//     },
+//     "target_price": "",
+//     "industry_leader": "GOOGL is a leading stock in the technology industry, with a strong market position and a history of innovation.",
+//     "supply_and_demand": {
+//       "volume_analysis": "Current volume is at 15,991,873, which is lower than the average volume of 27,647,703.",
+//       "moving_averages": {
+//         "day_ema_50": 182.64,
+//         "day_ema_150": 172.06,
+//         "day_ema_200": 168.18
+//       },
+//       "google_trends": {
+//         "market_trends": "No specific data available.",
+//         "top_related_queries": [],
+//         "rising_related_queries": []
+//       },
+//       "support_levels": "The stock is currently trading above the 50-day, 150-day, and 200-day EMAs, suggesting strong support levels."
+//     },
+//     "tight_areas": "The stock is trading near its highs with low volatility, indicating potential consolidation.",
+//     "technical_analysis": {
+//       "market_direction": "Market Direction: Analyze the price action of QQQ and SPY to get the market direction. Series of higher highs and higher lows is preferred.",
+//       "eps_growth": "Positive quarterly EPS growth signals accelerating earnings."
+//     },
+//     "quarterly_earnings_analysis": {
+//       "quarterly_revenue": "88.27 billion USD",
+//       "quarterly_net_income": "26.30 billion USD",
+//       "quarterly_eps": "2.14 in Q3 2024"
+//     },
+//     "annual_financial_growth": {
+//       "annual_eps_growth": "27.23% in 2023",
+//       "annual_revenue_growth": "8.68% in 2023"
+//     },
+//     "new_product_or_service": {
+//       "new_product_or_service": "No specific data available."
+//     },
+//     "recommendations": {
+//       "considerations": "The stock is a potential buy given its strong earnings growth, favorable technical indicators, and trending interest, but be cautious of current volume, which is lower than average.",
+//       "recommendations_for_action": "Consider entering when volume increases or if there is a breakout above the current resistance levels."
+//     },
+//     "conclusion": {
+//       "summary": "GOOGL is showing strong financial growth and positive market interest, making it a potentially attractive investment.",
+//       "investment_outlook": "Positive"
+//     }
+//   }
+// }
