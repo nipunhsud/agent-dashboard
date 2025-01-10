@@ -101,7 +101,9 @@ const Header = () => {
         data-controller="sidebar"
       >
         <div class="flex items-center justify-between fixed top-0 w-full left-0  border-blue-500 px-4 py-2.5">
-            <h2 class="font-black text-blue-500">Purnam</h2>
+            <div>
+              <img src={logo} alt="Logo" className="w-60 h-25"/>
+            </div>
           <span onClick={() => setIsCollapsed(true)}>
             <svg
               xmlns="http://www.w3.org/2000/svg"

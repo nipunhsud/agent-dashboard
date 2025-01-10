@@ -39,6 +39,21 @@ const StockAnalysisAssistant = () => {
       }
   };
 
+  const handlePrintAnalysis = () => {
+    const analysisContent = document.getElementById('analysis-content'); 
+    const originalContent = document.body.innerHTML; 
+
+    document.body.innerHTML = analysisContent.innerHTML;
+    window.print();
+    document.body.innerHTML = originalContent;
+
+    attachEventListeners();
+  };
+
+  const attachEventListeners = () => {
+    document.querySelector('.print-button').onclick = handlePrintAnalysis;
+  };
+
   
   const handleSubmitDjango = async (event) => {
     event.preventDefault();
@@ -92,12 +107,12 @@ const StockAnalysisAssistant = () => {
           </h2>
           <p className="text-gray-300 flex space-x-4">
             <span
-              className="inline-block px-4 py-2 bg-custom-purple border border-custom-purple text-white rounded-full max-w-max"
+              className="inline-block px-4 py-1.5 bg-custom-purple border border-custom-purple text-white rounded-full max-w-max"
             >
               ${stockData.current_price}
             </span>
             <span
-              className="inline-block px-4 py-2 bg-custom-purple border border-custom-purple text-white rounded-full max-w-max"
+              className="inline-block px-4 py-1.5 bg-custom-purple border border-custom-purple text-white rounded-full max-w-max"
             >
               {stockData.conclusion?.investment_outlook}
             </span>
@@ -130,7 +145,7 @@ const StockAnalysisAssistant = () => {
                 </div>
                 <div className="p-3 bg-custom-purple rounded-lg flex flex-col">
                   <span className="font-semibold">150d EMA:</span>
-                  <span>{stockData.supply_and_demand?.moving_averages.day_ema_15 || "No available data"}</span>
+                  <span>{stockData.supply_and_demand?.moving_averages.day_ema_150 || "No available data"}</span>
                 </div>
                 <div className="p-3 bg-custom-purple rounded-lg flex flex-col">
                   <span className="font-semibold">200d EMA:</span>
@@ -155,7 +170,6 @@ const StockAnalysisAssistant = () => {
             </div>
 
             {/* Financial Section */}
-        
             <div className="border-b border-custom-purple pb-4">
               <h3 className="text-lg font-bold">💰 Financials</h3>
               <div className="grid grid-cols-3 gap-4">
@@ -432,89 +446,201 @@ const StockAnalysisAssistant = () => {
 export default StockAnalysisAssistant;
 
 
-// const handlePrintAnalysis = () => {
-//   const analysisContent = document.getElementById('analysis-content'); 
-//   const originalContent = document.body.innerHTML; 
 
-//   document.body.innerHTML = analysisContent.innerHTML;
-//   window.print();
-//   document.body.innerHTML = originalContent;
 
-//   attachEventListeners();
+// import React, { useState } from "react";
+// import brainLogo from '../assets/brain-logo.png';
+
+// // Separate components for better readability and maintainability
+// const AnalysisResult = ({ response }) => {
+//     if (!response) return null;
+//     const stockData = response.stock_summary;
+
+//     return (
+//         <div className="bg-black text-gray-300 shadow-md rounded-lg p-6 max-w-4xl mx-auto">
+//             <h2 className="text-2xl font-bold mb-6 text-custom-purple">
+//                 📊 {stockData.ticker} Analysis
+//             </h2>
+//             <p className="text-gray-300 flex space-x-4">
+//                 <span className="inline-block px-4 py-2 bg-custom-purple border border-custom-purple text-white rounded-full max-w-max">
+//                     ${stockData.current_price}
+//                 </span>
+//                 <span className="inline-block px-4 py-2 bg-custom-purple border border-custom-purple text-white rounded-full max-w-max">
+//                     {stockData.conclusion?.investment_outlook}
+//                 </span>
+//             </p>
+
+//             <div className="space-y-6">
+//                 {/* Sections for detailed stock information */}
+//                 <DetailSection title="🎯 Buy Point:" content={stockData.buy_point?.consideration} />
+//                 <DetailSection title="📈 Target Price:" content={stockData.target_price || "No available data"} />
+//                 <SupplyDemandSection data={stockData.supply_and_demand} />
+//                 <TechnicalAnalysisSection data={stockData.technical_analysis} />
+//                 <FinancialsSection data={stockData.quarterly_earnings_analysis} />
+//                 <RecommendationsSection data={stockData.recommendations} />
+//                 <ConclusionSection summary={stockData.conclusion?.summary} />
+//             </div>
+//         </div>
+//     );
 // };
 
-// const attachEventListeners = () => {
-//   document.querySelector('form').onsubmit = handleSubmit;
-//   document.querySelector('.print-button').onclick = handlePrintAnalysis;
+// const DetailSection = ({ title, content }) => (
+//     <div className="border-t border-b border-custom-purple py-4 flex flex-col">
+//         <h3 className="text-lg font-bold">{title}</h3>
+//         <p className="text-gray-300">{content}</p>
+//     </div>
+// );
+
+// const SupplyDemandSection = ({ data }) => (
+//     <div className="border-b border-custom-purple pb-4">
+//         <h3 className="text-lg font-bold">📊 Supply & Demand</h3>
+//         <p className="text-gray-300 mb-2">{data?.volume_analysis || "No available data"}</p>
+//         <div className="grid grid-cols-3 gap-4">
+//             <EMABox label="50d EMA:" value={data?.moving_averages?.day_ema_50} />
+//             <EMABox label="150d EMA:" value={data?.moving_averages?.day_ema_150} />
+//             <EMABox label="200d EMA:" value={data?.moving_averages?.day_ema_200} />
+//         </div>
+//     </div>
+// );
+
+// const EMABox = ({ label, value }) => (
+//     <div className="p-3 bg-custom-purple rounded-lg flex flex-col">
+//         <span className="font-semibold">{label}</span>
+//         <span>{value || "No available data"}</span>
+//     </div>
+// );
+
+// const TechnicalAnalysisSection = ({ data }) => (
+//     <div className="border-b border-custom-purple pb-4">
+//         <h3 className="text-lg font-bold">📈 Technical Analysis</h3>
+//         <div className="grid grid-cols-2 gap-4">
+//             <DetailBox label="🎯 Market:" content={data?.market_direction} />
+//             <DetailBox label="📈 EPS Growth:" content={data?.eps_growth} />
+//         </div>
+//     </div>
+// );
+
+// const FinancialsSection = ({ data }) => (
+//     <div className="border-b border-custom-purple pb-4">
+//         <h3 className="text-lg font-bold">💰 Financials</h3>
+//         <div className="grid grid-cols-3 gap-4">
+//             <DetailBox label="📈 Revenue:" content={data?.quarterly_revenue} />
+//             <DetailBox label="💵 Net Income:" content={data?.quarterly_net_income} />
+//             <DetailBox label="📊 EPS:" content={data?.quarterly_eps} />
+//         </div>
+//     </div>
+// );
+
+// const RecommendationsSection = ({ data }) => (
+//     <div className="border-b border-custom-purple pb-4">
+//         <h3 className="text-lg font-bold">🎯 Recommendations</h3>
+//         <div className="space-y-2">
+//             <DetailBox label="💭 Considerations:" content={data?.considerations} />
+//             <DetailBox label="⚡ Action:" content={data?.recommendations_for_action} />
+//         </div>
+//     </div>
+// );
+
+// const ConclusionSection = ({ summary }) => (
+//     <div>
+//         <h3 className="text-lg font-bold">📝 Summary</h3>
+//         <p className="text-gray-300 mb-2">{summary || "No data"}</p>
+//     </div>
+// );
+
+// const DetailBox = ({ label, content }) => (
+//     <div className="flex flex-col">
+//         <span className="block font-bold">{label}</span>
+//         <span className="text-gray-300">{content || "No data"}</span>
+//     </div>
+// );
+
+// const StockAnalysisAssistant = () => {
+//     const [input, setInput] = useState("");
+//     const [response, setResponse] = useState(null);
+//     const [error, setError] = useState("");
+
+//     const handleSubmit = async (event) => {
+//         event.preventDefault();
+//         setError("");
+//         setResponse(null);
+
+//         try {
+//             const formData = new URLSearchParams();
+//             formData.append("input", input);
+
+//             const res = await fetch("http://127.0.0.1:8000/stock_assistant/", {
+//                 method: "POST",
+//                 headers: {
+//                     "Content-Type": "application/x-www-form-urlencoded",
+//                 },
+//                 body: formData.toString(),
+//             });
+
+//             if (!res.ok) {
+//                 const errorData = await res.json();
+//                 throw new Error(errorData.error || "Failed to fetch stock analysis");
+//             }
+
+//             const data = await res.json();
+//             setResponse(data.response);
+//         } catch (err) {
+//             setError(err.message);
+//         }
+//     };
+
+//     return (
+//         <div className="bg-black text-gray-300 min-h-screen flex flex-col items-center py-4 px-4">
+//             <Header />
+//             <form onSubmit={handleSubmit} className="bg-custom-purple shadow-md rounded-lg p-4 mb-4">
+//                 <label htmlFor="input" className="block text-lg font-normal text-gray-300 mb-2">
+//                     Enter Stock Ticker or Company Name:
+//                 </label>
+//                 <textarea
+//                     id="input"
+//                     rows="3"
+//                     value={input}
+//                     onChange={(e) => setInput(e.target.value)}
+//                     className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-black text-gray-300"
+//                     placeholder="e.g., AAPL, MSFT, GOOGL"
+//                 ></textarea>
+//                 <button
+//                     type="submit"
+//                     className="mt-3 bg-custom-purple border border-white text-white py-2 px-4 rounded-lg w-full hover:bg-black"
+//                 >
+//                     Analyze Stock
+//                 </button>
+//             </form>
+
+//             {response && <AnalysisResult response={response} />}
+//             {error && <div className="text-red-400 text-center mt-3">{error}</div>}
+
+//             <Footer />
+//         </div>
+//     );
 // };
 
-// const parsedData = () => {
+// const Header = () => (
+//     <div className="flex flex-col items-center">
+//         <img src={brainLogo} alt="Logo" className="w-60 h-60 rounded-full" />
+//         <h1 className="text-3xl font-extrabold text-custom-purple text-center mt-4 mb-4">
+//             Stock Analysis Assistant
+//         </h1>
+//     </div>
+// );
 
-// }
+// const Footer = () => (
+//     <button
+//         onClick={() => window.print()}
+//         className="fixed bottom-4 right-4 bg-custom-purple text-white py-2 px-4 rounded-lg shadow-lg hover:bg-black hover:text-custom-purple hover:border hover:border-custom-purple"
+//     >
+//         Print Analysis
+//     </button>
+// );
+
+// export default StockAnalysisAssistant;
 
 
-  // const dummyData = {
-  //   stock_summary: {
-  //     ticker: "GOOGL",
-  //     current_price: 194.97,
-  //     buy_point: {
-  //       consideration: "The current price is within 3% of the 52-week high of $201.42, making it a potential buy point if other conditions align."
-  //     },
-  //     target_price: "",
-  //     industry_leader: "GOOGL is a leading stock in the technology industry, with a strong market position and a history of innovation.",
-  //     supply_and_demand: {
-  //       volume_analysis: "Current volume is at 15,991,873, which is lower than the average volume of 27,647,703.",
-  //       moving_averages: {
-  //         day_ema_50: 182.64,
-  //         day_ema_15: 172.06,
-  //         day_ema_200: 168.18
-  //       },
-  //       google_trends: {
-  //         market_trends: "No specific data available.",
-  //         top_related_queries: [],
-  //         rising_related_queries: []
-  //       },
-  //       support_levels: "The stock is currently trading above the 50-day, 150-day, and 200-day EMAs, suggesting strong support levels."
-  //     },
-  //     tight_areas: "The stock is trading near its highs with low volatility, indicating potential consolidation.",
-  //     technical_analysis: {
-  //       market_direction: "Market Direction: Analyze the price action of QQQ and SPY to get the market direction. Series of higher highs and higher lows is preferred.",
-  //       eps_growth: "Positive quarterly EPS growth signals accelerating earnings."
-  //     },
-  //     quarterly_earnings_analysis: {
-  //       quarterly_revenue: "88.27 billion USD",
-  //       quarterly_net_income: "26.30 billion USD",
-  //       quarterly_eps: "2.14 in Q3 2024"
-  //     },
-  //     annual_financial_growth: {
-  //       annual_eps_growth: "27.23% in 2023",
-  //       annual_revenue_growth: "8.68% in 2023"
-  //     },
-  //     new_product_or_service: {
-  //       new_product_or_service: "No specific data available."
-  //     },
-  //     recommendations: {
-  //       considerations: "The stock is a potential buy given its strong earnings growth, favorable technical indicators, and trending interest, but be cautious of current volume, which is lower than average.",
-  //       recommendations_for_action: "Consider entering when volume increases or if there is a breakout above the current resistance levels."
-  //     },
-  //     conclusion: {
-  //       summary: "GOOGL is showing strong financial growth and positive market interest, making it a potentially attractive investment.",
-  //       investment_outlook: "Positive"
-  //     }
-  //   }
-  // }
-
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-  //   setError("");
-  //   setResponse(<div className="text-center text-gray-500">Analyzing stock data...</div>);
-
-  //   try {
-  //     setResponse(formatResponse(dummyData));
-  //   } catch (err) {
-  //     setError(err.message);
-  //   }
-  // };
 
 
 
