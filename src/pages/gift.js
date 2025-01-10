@@ -1,10 +1,9 @@
 import React from "react";
-// import Header from "../components/Header";
+
 
 const Gift = () => {
   return (
     <>
-      {/* <Header /> */}
       <div class="min-h-screen md:py-12 md:px-4 sm:px-6 lg:px-8">
         <div class="lg:max-w-4xl mx-auto form-container bg-[#fffffff2] backdrop-blur-md rounded-2xl shadow-2xl py-5 p-3 md:p-8 md:mb-12">
           <div class="text-center mt-12 md:mt-0 mb-12">
