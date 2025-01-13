@@ -2,19 +2,19 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer class="bg-gray-800 flex-center py-4 px-8">
+    <footer class="bg-black flex-center py-4 px-8">
       <div class=" container mx-auto text-white flex flex-col gap-8 lg:flex-row items-center justify-between">
         <h5 class="text-3xl font-black">Purnam</h5>
         <nav>
-          <ul class="font-semibold flex flex-row gap-4">
+          <ul className="font-semibold flex flex-row gap-4">
             <li>
-              <a href="#">Support</a>
+              <a href="#" className="text-white no-underline hover:opacity-80 transition-opacity">Support</a>
             </li>
             <li>
-              <a href="#">FAQ</a>
+              <a href="#" className="text-white no-underline hover:opacity-80 transition-opacity">FAQ</a>
             </li>
             <li>
-              <a href="#">Terms of Use</a>
+              <a href="#" className="text-white no-underline hover:opacity-80 transition-opacity">Terms of Use</a>
             </li>
           </ul>
         </nav>

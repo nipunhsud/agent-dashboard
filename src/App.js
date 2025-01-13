@@ -6,11 +6,15 @@ import SignUp from "./pages/signup";
 import Forgetpassword from "./pages/forgetpassword";
 import { AuthProvider } from "./utils/AuthContext";
 import AgentUI from "./pages/AgentUI";
+import StockAnalysisAssistant from "./pages/StockAnalysisAssistant";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 function App() {
   return (
-    <AuthProvider> 
+    <AuthProvider>
       <BrowserRouter>
+        <Header />
         <Routes>
           <Route index element={<Home />} />
           <Route path="/gift" element={<Gift />} />
@@ -18,7 +22,9 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/forgetpassword" element={<Forgetpassword />} />
           <Route path="/agent" element={<AgentUI />} />
+          <Route path="/stock-assistant" element={<StockAnalysisAssistant />} />
         </Routes>
+        <Footer />
       </BrowserRouter>
     </AuthProvider>
   );

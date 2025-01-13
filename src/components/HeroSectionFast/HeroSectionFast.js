@@ -1,10 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import landingPageBot from "../assets/landing-page-bot.png"; 
+import landingPageBot from "../../assets/landing-page-bot.png"; 
+import { applicationsData } from "../../helpers/applicationsData"
+import Integrations from "./Integrations";
 
-const HeroSection = () => {
+
+const HeroSectionFast = () => {
   return (
-    <div className="flex flex-col items-center mt-36 mx-auto container bg-[#6366f1] text-white pt-8 pb-8 rounded-lg px-4 sm:px-8">
+    <div className="flex flex-col items-center mt-6 mx-auto container bg-custom-purple text-white pt-8 pb-8 rounded-lg px-4 sm:px-8">
       <h4 className="text-white font-black text-center max-w-xl xl:max-w-2xl text-balance mx-2.5 text-4xl sm:text-5xl lg:text-6xl">
         World of Helper Agents
       </h4>
@@ -15,13 +18,15 @@ const HeroSection = () => {
         <i>try our Christmas Gifting Agent today!</i>
       </h3>
       <button
-        className="mt-6 px-6 py-3.5 bg-black text-white font-semibold rounded-lg text-lg hover:bg-gray-900"
+        className="mt-6 px-6 py-3.5 bg-black text-white font-semibold rounded-lg text-lg hover:!bg-gray-950 hover:!bg-opacity-90 transition-colors duration-300"
       >
-        <Link to={'/gift'}>
+        <Link to={'/stock-assistant'} className="!text-white !no-underline block w-full h-full">
           Try right now!
         </Link>
       </button>
-      
+
+      <Integrations />
+
       <div className="mt-8 max-w-[400px] sm:max-w-[450px] lg:max-w-[500px] mx-auto">
         <img 
           src={landingPageBot}
@@ -29,9 +34,10 @@ const HeroSection = () => {
           className="w-full h-auto rounded-lg"
         />
       </div>
+  
     </div>
   );
 };
 
-export default HeroSection;
+export default HeroSectionFast;
 
