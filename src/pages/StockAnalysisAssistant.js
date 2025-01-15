@@ -1,44 +1,14 @@
 import React, { useState } from "react";
 import brainLogo from '../assets/brain-logo.png';
+import useCSRFToken from "../hooks/useCSRFToken";
 
 const StockAnalysisAssistant = () => {
   const [input, setInput] = useState("");
   const [response, setResponse] = useState(null);
   const [error, setError] = useState("");
+  const csrfToken = useCSRFToken();
   
-  const fetchCSRFToken = async () => {
-      console.log("Fetching CSRF token...");
-      try {
-          const response = await fetch("http://127.0.0.1:8000/stock_assistant/", {
-              method: "GET",
-              credentials: "include", 
-          });
-
-          if (!response.ok) {
-              console.error("Failed to fetch CSRF token:", response.status, response.statusText);
-          } else {
-              console.log("CSRF token fetched successfully.");
-          }
-      } catch (error) {
-          console.error("Error during CSRF token fetch:", error);
-      }
-  };
-
-  const getCSRFToken = () => {
-      console.log("Retrieving CSRF token from cookies...");
-      const cookie = document.cookie
-          .split("; ")
-          .find((row) => row.startsWith("csrftoken="));
-      if (cookie) {
-          const csrfToken = cookie.split("=")[1];
-          console.log("CSRF token retrieved:", csrfToken);
-          return csrfToken;
-      } else {
-          console.warn("CSRF token not found in cookies.");
-          return null;
-      }
-  };
-
+  
   const handlePrintAnalysis = () => {
     const analysisContent = document.getElementById('analysis-content'); 
     const originalContent = document.body.innerHTML; 
@@ -53,12 +23,13 @@ const StockAnalysisAssistant = () => {
   const attachEventListeners = () => {
     document.querySelector('.print-button').onclick = handlePrintAnalysis;
   };
-
   
   const handleSubmitDjango = async (event) => {
     event.preventDefault();
     setError("");
     setResponse(<div className="text-center text-gray-500">Fetching data from server...</div>);
+
+    console.log('csrf handle submit', csrfToken)
 
     try {
         const formData = new URLSearchParams();
@@ -68,7 +39,9 @@ const StockAnalysisAssistant = () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
+                "X-CSRFToken": csrfToken, 
             },
+            credentials: "include", 
             body: formData.toString(),
         });
 
@@ -78,12 +51,6 @@ const StockAnalysisAssistant = () => {
         }
 
         const data = await res.json();
-        console.log("Datitaaa:", data);
-
-        console.log("Parsed JSON response:", data.response);
-
-        const stockData = data.response.stock_summary
-
         setResponse(formatResponse(data));
     } catch (err) {
         setError(err.message);
