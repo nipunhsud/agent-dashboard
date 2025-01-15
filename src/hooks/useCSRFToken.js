@@ -4,7 +4,7 @@ const useCSRFToken = () => {
     const [csrfToken, setCSRFToken] = useState(null);
 
     const fetchCSRFToken = async () => {
-        
+        // add process.env.backend_url
         try {
             const response = await fetch("http://127.0.0.1:8000/get-csrf-token/", {
                 method: "GET",
