@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import brainLogo from '../assets/brain-logo.png';
-import useCSRFToken from "../hooks/useCSRFToken";
+import CSRFToken from "../components/CSRFtoken/CSRFtoken";
 
 const StockAnalysisAssistant = () => {
   const [input, setInput] = useState("");
