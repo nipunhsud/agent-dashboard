@@ -366,7 +366,7 @@ const StockAnalysisAssistant = () => {
             Stock Analysis Assistant
           </h1>
         </div>
-  
+        // ADD THE CSRF TOKEN INPUT HERE
         <form
           onSubmit={handleSubmitDjango}
           className="bg-custom-purple shadow-md rounded-lg p-4 mb-4"
