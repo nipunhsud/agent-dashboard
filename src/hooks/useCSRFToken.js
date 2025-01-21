@@ -19,6 +19,7 @@ const useCSRFToken = () => {
     };
 
     useEffect(() => {
+      
         const fetchCSRFToken = async () => {
             try {
                 const response = await fetch(`${process.env.REACT_APP_API_URL}/csrf_cookie`, {
