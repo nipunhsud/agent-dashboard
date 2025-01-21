@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import brainLogo from '../../assets/brain-logo.png';
 import useCSRFToken from "../../hooks/useCSRFToken"
+import { useAuth } from "../../utils/AuthContext";
 
 const StockAnalysisView = () => {
   const [input, setInput] = useState("");
   const [response, setResponse] = useState(null);
   const [error, setError] = useState("");
   const csrfToken = useCSRFToken();
+  const { token } = useAuth(); 
 
   const handlePrintAnalysis = () => {
     const analysisContent = document.getElementById('analysis-content'); 
@@ -40,12 +42,14 @@ const StockAnalysisView = () => {
       formData.append("input", input);
   
       console.log("CSRF Token being sent:", csrfToken);
+      console.log('firebase token bein sent', token)
   
       const res = await fetch("http://127.0.0.1:8000/stock_assistant/", {
         method: "POST",
         credentials: "include",
         headers: {
           "X-CSRFToken": csrfToken, 
+          "Authorization": `Bearer ${token}`,
         },
         body: formData,
       });
@@ -73,6 +77,7 @@ const StockAnalysisView = () => {
 
     return (
       <div>
+        {/* Analysis Section */}
         <div className="bg-black text-gray-300 shadow-md rounded-lg p-6 max-w-4xl mx-auto">
           <h2 className="text-2xl font-bold mb-6 text-custom-purple">
             📊 {stockData.ticker} Analysis
