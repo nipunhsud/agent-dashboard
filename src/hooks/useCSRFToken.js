@@ -1,30 +1,14 @@
 import { useEffect, useState } from "react";
 
 const useCSRFToken = () => {
-    const [csrfToken, setCSRFToken] = useState('');
-
-    const getCookie = (name) => {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    };
+    const [csrfToken, setCSRFToken] = useState("");
 
     useEffect(() => {
-      
         const fetchCSRFToken = async () => {
             try {
-                const response = await fetch(`${process.env.REACT_APP_API_URL}/csrf_cookie`, {
+                const response = await fetch("http://127.0.0.1:8000/csrf_cookie", {
                     method: "GET",
-                    credentials: "include", 
+                    credentials: "include",
                 });
 
                 if (!response.ok) {
@@ -32,8 +16,12 @@ const useCSRFToken = () => {
                     return;
                 }
 
-                const token = getCookie('csrftoken');
-                setCSRFToken(token);
+                // Await the parsed JSON data
+                const data = await response.json();
+                console.log("CSRF Token from server:", data.csrfToken);
+
+            
+                setCSRFToken(data.csrfToken);
             } catch (error) {
                 console.error("Error fetching CSRF token:", error);
             }
@@ -42,8 +30,7 @@ const useCSRFToken = () => {
         fetchCSRFToken();
     }, []);
 
-    return csrfToken;
+    return csrfToken; 
 };
 
 export default useCSRFToken;
-
