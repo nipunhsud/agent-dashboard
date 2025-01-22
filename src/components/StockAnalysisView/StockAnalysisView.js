@@ -25,7 +25,7 @@ const StockAnalysisView = () => {
     document.querySelector('.print-button').onclick = handlePrintAnalysis;
   };
 
-  const handleSubmitDjango = async (event) => {
+  const handleSubmit= async (event) => {
     event.preventDefault();  
 
     if (!csrfToken) {
@@ -377,7 +377,7 @@ const StockAnalysisView = () => {
           </h1>
         </div>
         <form
-          onSubmit={handleSubmitDjango}
+          onSubmit={handleSubmit}
           className="bg-custom-purple shadow-md rounded-lg p-4 mb-4"
           method="post"
         >
