@@ -48,7 +48,7 @@ const StockAnalysisView = () => {
 
       console.log('this is the backend url', backendUrl)
 
-      const res = await fetch(`${backendUrl}/analyst/`, {
+      const res = await fetch(`${backendUrl}/research/stocks/`, {
         method: "POST",
         credentials: "include",
         headers: {
