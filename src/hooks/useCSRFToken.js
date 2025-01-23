@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import useBackendUrl from "./useBackendUrl";
+
+const backendUrl = useBackendUrl();
 
 const useCSRFToken = () => {
     const [csrfToken, setCSRFToken] = useState("");
@@ -6,7 +9,7 @@ const useCSRFToken = () => {
     useEffect(() => {
         const fetchCSRFToken = async () => {
             try {
-                const response = await fetch("http://127.0.0.1:8000/csrf_cookie", {
+                const response = await fetch(`${backendUrl}/csrf_cookie`, {
                     method: "GET",
                     credentials: "include",
                 });
