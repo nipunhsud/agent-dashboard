@@ -17,10 +17,6 @@ const HeroSectionFast = () => {
         <span className="text-black">AI-driven investment research </span>
         at your fingertips.
       </h3>
-      <p className="mt-6 text-gray-200 font-light text-center max-w-3xl text-lg sm:text-xl lg:text-2xl leading-relaxed">
-        Why let complex data and overwhelming market noise stand between you and confident investing? At 
-        <span className="text-white font-semibold px-1">Purnam</span>, we harness cutting-edge AI to simplify your research process—so you can focus on making smarter decisions. Our intuitive platform provides crystal-clear insights, transforming complicated market trends into actionable opportunities. No Wall Street credentials needed.
-      </p>
       <button
         className="mt-6 px-6 py-3.5 bg-black text-white font-semibold rounded-lg text-lg hover:!bg-gray-950 hover:!bg-opacity-90 transition-colors duration-300"
       >
