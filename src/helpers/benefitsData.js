@@ -2,30 +2,30 @@ const benefitsData = [
     {
       imageSrc: "/images/mind.svg",
       altText: "Mind Icon",
-      title: "Agents",
+      title: "AI-Powered Analysis",
       description:
-        "Maximize your productivity by converting everyday tasks into agentic flows.",
+        "Gain insight from technology that sifts through massive amounts of data, uncovering trends and signals faster than ever.",
     },
     {
       imageSrc: "/images/Integration.svg",
       altText: "Integration Icon",
-      title: "New ideas",
+      title: "Clear, Concise Reports",
       description:
-        "Seamlessly integrate with our agents to power your business. Customize and deploy them the way you need.",
+        "Get digestible summaries with crucial metrics so you spend less time sorting data and more time strategizing.",
     },
     {
       imageSrc: "/images/mind.svg",
       altText: "Mind Icon",
-      title: "Time",
+      title: "Customizable Alerts",
       description:
-        "Wish you were able to be in more places at the same time? Our bots got you covered.",
+        "Set personalized notifications to stay in the loop on the latest market shifts tailored to your portfolio.",
     },
     {
       imageSrc: "/images/Integration.svg",
       altText: "Integration Icon",
-      title: "Joy",
+      title: "Level Playing Field",
       description:
-        "Let's face it, many repetitive tasks are super boring. Enjoy your life more by delegating everything to us.",
+        "Access the same advanced tools and information that professional analysts use—without the steep learning curve.",
     },
   ];
   

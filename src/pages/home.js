@@ -23,6 +23,14 @@ const Home = () => {
     <div>
       <HeroSectionFast />
 
+      <Section 
+        name="Technology" 
+        title="Our Innovative Solutions"
+        subtitle="Discover how our technology is shaping the future."
+      >
+        <Benefits /> 
+      </Section>
+
 
       {/* <HeroSection />
 
