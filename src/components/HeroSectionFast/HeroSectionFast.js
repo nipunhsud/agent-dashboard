@@ -20,7 +20,7 @@ const HeroSectionFast = () => {
       <button
         className="mt-6 px-6 py-3.5 bg-black text-white font-semibold rounded-lg text-lg hover:!bg-gray-950 hover:!bg-opacity-90 transition-colors duration-300"
       >
-        <Link to={'/stock-assistant'} className="!text-white !no-underline block w-full h-full">
+        <Link to={'/stocks'} className="!text-white !no-underline block w-full h-full">
           Try right now!
         </Link>
       </button>

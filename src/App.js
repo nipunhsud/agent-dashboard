@@ -22,7 +22,7 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/forgetpassword" element={<Forgetpassword />} />
           <Route path="/agent" element={<AgentUI />} />
-          <Route path="/stock-assistant" element={<StockAnalysisAssistant />} />
+          <Route path="/stocks" element={<StockAnalysisAssistant />} />
         </Routes>
         <Footer />
       </BrowserRouter>
