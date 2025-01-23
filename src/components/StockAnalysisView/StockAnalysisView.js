@@ -29,7 +29,6 @@ const StockAnalysisView = () => {
     document.querySelector('.print-button').onclick = handlePrintAnalysis;
   };
 
-
   const handleSubmit = async (event) => {
     event.preventDefault();  
 
@@ -66,6 +65,7 @@ const StockAnalysisView = () => {
       }
   
       const data = await res.json();
+      console.log('this is the data from the backend', data)
       setResponse(formatResponse(data));
     } catch (err) {
       setError(err.message);
@@ -75,6 +75,8 @@ const StockAnalysisView = () => {
   const formatResponse = (data) => {
     const analysis = JSON.parse(data.response);   
     const stockData = analysis.stock_summary;
+    
+    console.log('this is the prices data', analysis)
   
     return (
       <div>
