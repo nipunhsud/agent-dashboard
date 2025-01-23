@@ -10,6 +10,7 @@ import Section from "../components/Shared/Section/Section";
 import Testimonials from "../components/Testimonials/Testimonials";
 import UseCases from "../components/UseCases/UseCases";
 import HeroSectionFast from "../components/HeroSectionFast/HeroSectionFast";
+import WhyUs from "../components/WhyUs/WhyUs";
 
 const Home = () => {
   const { user, token } = useContext(AuthContext);
@@ -23,6 +24,26 @@ const Home = () => {
     <div>
       <HeroSectionFast />
 
+      {/* <p className="mt-6 text-gray-200 font-light text-center max-w-3xl text-lg sm:text-xl lg:text-2xl leading-relaxed">
+        Investing shouldn't be complicated. At 
+        <span className="text-white font-semibold px-1">Purnam</span>, we use AI to turn complex market data into clear, actionable insights. No jargon, no noise—just the information you need to make smarter decisions. Simplify your research. Make confident moves.
+      </p> */}
+
+      <Section 
+        name="Why choose us?" 
+        title="Your reasearch on steroids"
+        subtitle="Improve capabilities with our AI-powered research tools."
+      >
+        <WhyUs /> 
+      </Section>
+
+      <Section 
+        name="Technology" 
+        title="Our Innovative Solutions"
+        subtitle="Discover how our technology is shaping the future."
+      >
+        <Benefits /> 
+      </Section>
 
       {/* <HeroSection />
 

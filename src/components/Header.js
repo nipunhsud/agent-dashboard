@@ -6,14 +6,15 @@ import { getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import logo from '../assets/logo.png';
+import logo from "../assets/logo.png";
 
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const { user, token } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const auth = getAuth();
   const navigate = useNavigate();
+
   const onLogout = () => {
     auth.signOut();
     navigate("/signin");
@@ -21,106 +22,101 @@ const Header = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const isScrolled = window.scrollY > 0;
-      if (isScrolled !== scrolled) {
-        setScrolled(isScrolled);
-      }
+      setScrolled(window.scrollY > 0);
     };
 
     window.addEventListener("scroll", handleScroll);
-
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [scrolled]);
+  }, []);
+
   return (
     <nav className="bg-black sticky top-0 z-50">
-      <header className="container mx-auto items-center justify-center pt-6 pb-6 hidden md:flex z-[99999]">
-        <div
-          className={`flex items-center justify-between  transition-all ease-linear duration-300 min-w-fit ${
-            scrolled
-              ? "w-96 border shadow-lg gap-12 mt-0 rounded-xl p-4 "
-              : "w-screen shadow-none gap-4 mt-0 rounded-none border-none px-8"
-          }   `}
-        >
-          <div>
-            <img src={logo} alt="Logo" className="w-60 h-25"/>
-          </div>
-          
-          {user?.email ? (
-            <>
-              <Menu as="div" className="relative inline-block text-left">
-                <div>
-                  <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                    {user?.email}
-                    <ChevronDownIcon
-                      aria-hidden="true"
-                      className="-mr-1 size-5 text-gray-400"
-                    />
-                  </MenuButton>
-                </div>
-
-                <MenuItems
-                  transition
-                  className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-                >
-                  <div className="py-1">
-                    <MenuItem>
-                      <button
-                        type="submit"
-                        onClick={onLogout}
-                        className="block w-full px-4 py-2 text-left text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
-                      >
-                        Sign out
-                      </button>
-                    </MenuItem>
-                  </div>
-                </MenuItems>
-              </Menu>
-            </>
-          ) : (
-            <nav class="flex gap-2.5">
-              <Link
-                className="bg-black border border-white text-white rounded-lg py-2 px-3.5 inline-block font-medium cursor-pointer hover:bg-[#6366f1] hover:text-white"
-                to={"/signin"}
-              >
-                Login
-              </Link>
-              <Link
-                className="bg-black border border-white text-white rounded-lg py-2 px-3.5 inline-block font-medium cursor-pointer hover:bg-[#6366f1] hover:text-white"
-                to={"/signup"}
-              >
-                Sign Up
-              </Link>
-            </nav>
-          )}
-        </div>
-      </header>
-      <div
-        class="block md:hidden px-4 py-1.5"
-        data-controller="sidebar"
-      >
-        <div class="flex items-center justify-between fixed top-0 w-full left-0  border-blue-500 px-4 py-2.5">
-            <div>
-              <img src={logo} alt="Logo" className="w-60 h-25"/>
-            </div>
-          <span onClick={() => setIsCollapsed(true)}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 16 16"
-              class="stroke-blue-500 w-6 h-6"
+      {/* Desktop Header */}
+      <header className="container mx-auto flex items-center justify-between py-4 px-6 hidden md:flex">
+        <img
+          src={logo}
+          alt="Logo"
+          className="w-48 h-auto md:w-60 lg:w-72" // Adjust the size for larger screens
+        />
+        {user?.email ? (
+          <Menu as="div" className="relative inline-block text-left">
+            <MenuButton className="flex items-center gap-x-1.5 bg-white px-3 py-2 text-sm font-semibold text-gray-900 rounded-md shadow-sm hover:bg-gray-100">
+              {user.email}
+              <ChevronDownIcon className="w-4 h-4 text-gray-400" />
+            </MenuButton>
+            <MenuItems className="absolute right-0 z-10 mt-2 w-40 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
+              <MenuItem>
+                {({ active }) => (
+                  <button
+                    onClick={onLogout}
+                    className={`w-full px-4 py-2 text-left text-sm ${
+                      active ? "bg-gray-100 text-gray-900" : "text-gray-700"
+                    }`}
+                  >
+                    Sign Out
+                  </button>
+                )}
+              </MenuItem>
+            </MenuItems>
+          </Menu>
+        ) : (
+          <div className="flex gap-4">
+            <Link
+              to="/signin"
+              className="text-white border border-white rounded-md px-4 py-2 hover:bg-purple-500"
             >
-              <path
-                fill-rule="evenodd"
-                d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"
-              ></path>
-            </svg>
-          </span>
-        </div>
+              Login
+            </Link>
+            <Link
+              to="/signup"
+              className="text-white border border-white rounded-md px-4 py-2 hover:bg-purple-500"
+            >
+              Sign Up
+            </Link>
+          </div>
+        )}
+      </header>
+
+      {/* Mobile Header */}
+      <div className="flex items-center justify-between md:hidden px-4 py-3">
+        <img
+          src={logo}
+          alt="Logo"
+          className="w-40 h-auto sm:w-44 md:w-48" // Adjust logo size for smaller screens
+        />
+        <button onClick={() => setIsCollapsed(!isCollapsed)} aria-label="Menu">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-6 h-6 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </button>
       </div>
-      <Drawer isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} authUser={user} onLogout={onLogout} />
+
+      {/* Drawer for Mobile Menu */}
+      {isCollapsed && (
+        <Drawer
+          isCollapsed={isCollapsed}
+          setIsCollapsed={setIsCollapsed}
+          authUser={user}
+          onLogout={onLogout}
+        />
+      )}
     </nav>
   );
 };
 
 export default Header;
+
+

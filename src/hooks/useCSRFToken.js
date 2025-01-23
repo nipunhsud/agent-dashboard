@@ -15,11 +15,7 @@ const useCSRFToken = () => {
                     console.error("Failed to fetch CSRF token:", response.status, response.statusText);
                     return;
                 }
-
-                // Await the parsed JSON data
                 const data = await response.json();
-                console.log("CSRF Token from server:", data.csrfToken);
-
             
                 setCSRFToken(data.csrfToken);
             } catch (error) {
