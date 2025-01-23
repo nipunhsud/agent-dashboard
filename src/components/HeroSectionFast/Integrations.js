@@ -2,7 +2,6 @@ import React, { useMemo } from "react";
 import { applicationsData } from "../../helpers/applicationsData"; 
 import IntegrationCard from "./IntegrationCard";
 
-
 const Integrations = () => {
   const randomizedApplications = useMemo(() => {
     return [...applicationsData]

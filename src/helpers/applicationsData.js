@@ -5,18 +5,14 @@ export const applicationsData = [
   },
   {
     img: "/images/gmail.svg",
-    name: "Gmail",
+    name: "Real State",
   },
   {
     img: "/images/outlook.svg",
-    name: "Outlook",
+    name: "Stocks",
   },
   {
     img: "/images/slack.svg",
     name: "Slack",
-  },
-  {
-    img: "/images/notion.svg",
-    name: "Notion",
   },
 ];
