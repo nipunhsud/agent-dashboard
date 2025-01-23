@@ -4,6 +4,7 @@ import useCSRFToken from "../../hooks/useCSRFToken"
 import { useAuth } from "../../utils/AuthContext";
 import LoadingState from "./LoadingState/LoadingState";
 import useBackendUrl from "../../hooks/useBackendUrl";
+import Chart from "./Chart/Chart";
 
 const StockAnalysisView = () => {
   const [input, setInput] = useState("");
@@ -45,6 +46,8 @@ const StockAnalysisView = () => {
     try {
       const formData = new FormData();
       formData.append("input", input);
+
+      console.log('this is the backend url', backendUrl)
 
       const res = await fetch(`${backendUrl}/research/stocks/`, {
         method: "POST",
@@ -94,7 +97,10 @@ const StockAnalysisView = () => {
           </p>
 
           <div className="space-y-6">
-          
+
+            {/* Chart Section */}
+            <Chart/>
+
             {/* Buy Point Section */}
             <div className="border-t border-b border-custom-purple py-4 flex flex-col">
               <h3 className="text-lg font-bold">🎯 Buy Point:</h3>
