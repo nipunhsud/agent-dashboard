@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import useBackendUrl from "./useBackendUrl";
 
-const backendUrl = useBackendUrl();
+
 
 const useCSRFToken = () => {
     const [csrfToken, setCSRFToken] = useState("");
-
+    const backendUrl = useBackendUrl();
     useEffect(() => {
         const fetchCSRFToken = async () => {
             try {
