@@ -3,6 +3,7 @@ import brainLogo from '../../assets/brain-logo.png';
 import useCSRFToken from "../../hooks/useCSRFToken"
 import { useAuth } from "../../utils/AuthContext";
 import LoadingState from "./LoadingState/LoadingState";
+import useBackendUrl from "../../hooks/useBackendUrl";
 
 const StockAnalysisView = () => {
   const [input, setInput] = useState("");
@@ -10,6 +11,7 @@ const StockAnalysisView = () => {
   const [error, setError] = useState("");
   const csrfToken = useCSRFToken();
   const { token } = useAuth(); 
+  const backendUrl = useBackendUrl();
 
   const handlePrintAnalysis = () => {
     const analysisContent = document.getElementById('analysis-content'); 
@@ -35,26 +37,25 @@ const StockAnalysisView = () => {
       setError("Unable to submit the form. CSRF token is missing.");
       return;
     }
-  
+ 
     setError("");
     setResponse(<LoadingState />);
+
   
     try {
       const formData = new FormData();
       formData.append("input", input);
-  
-      console.log("CSRF Token being sent:", csrfToken);
-      console.log('firebase token bein sent', token)
-  
-      const res = await fetch("http://127.0.0.1:8000/stock_assistant/", {
+
+      const res = await fetch(`${backendUrl}/research/stocks/`, {
         method: "POST",
         credentials: "include",
         headers: {
-          "X-CSRFToken": csrfToken, 
+          "X-CSRFToken": csrfToken,
           "Authorization": `Bearer ${token}`,
         },
         body: formData,
       });
+
   
       if (!res.ok) {
         const errorData = await res.json();
@@ -70,13 +71,8 @@ const StockAnalysisView = () => {
   
   const formatResponse = (data) => {
     const analysis = JSON.parse(data.response);   
-    console.log("Type of data.response:", typeof data.response);
-
-    console.log('this is analysis', analysis)
     const stockData = analysis.stock_summary;
   
-    console.log('stockData', stockData)
-
     return (
       <div>
         {/* Analysis Section */}
