@@ -65,7 +65,7 @@ const Header = () => {
           <div className="flex gap-4">
             <Link
               to="/signin"
-              className="text-white border border-white rounded-md px-4 py-2 hover:bg-purple-500"
+              className="text-white border border-white rounded-md px-4 py-2 hover:sbg-gradient-to-tr from-[#818cf8] "
             >
               Login
             </Link>

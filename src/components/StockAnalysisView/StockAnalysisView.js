@@ -34,41 +34,47 @@ const StockAnalysisView = () => {
 
     if (!csrfToken) {
       console.error("CSRF token is not set yet.");
-      setError("Unable to submit the form. CSRF token is missing.");
+      setResponse(null);
+      setError("We're having trouble connecting to our servers. Please try again in a moment! 🔄");
       return;
     }
  
     setError("");
     setResponse(<LoadingState />);
 
-  
     try {
       const formData = new FormData();
       formData.append("input", input);
-
-      console.log('this is the backend url', backendUrl)
 
       const res = await fetch(`${backendUrl}/research/stocks/`, {
         method: "POST",
         credentials: "include",
         headers: {
-          "X-CSRFToken": csrfToken,
           "Authorization": `Bearer ${token}`,
         },
         body: formData,
       });
 
-  
       if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || "Failed to fetch stock analysis");
+        setResponse(null);
+        throw new Error("Oops! We encountered a hiccup while analyzing this stock. Please try again! 🔍");
       }
   
       const data = await res.json();
-      console.log('this is the data from the backend', data)
-      setResponse(formatResponse(data));
+      if (!data || !data.response) {
+        throw new Error("Our AI needs a quick coffee break! Please try your request again in a moment. ☕️");
+      }
+      
+      try {
+        const analysis = JSON.parse(data.response);
+        setResponse(formatResponse(data));
+      } catch (parseError) {
+        console.error("Parse error:", parseError);
+        throw new Error("Our AI is taking a quick break! Please try your request again in a moment. 🤖✨");
+      }
     } catch (err) {
-      setError(err.message);
+      setResponse(null);
+      setError(err.message || "Our systems need a quick refresh. Please try again! 🔄");
     }
   };
   
@@ -76,7 +82,6 @@ const StockAnalysisView = () => {
     const analysis = JSON.parse(data.response);   
     const stockData = analysis.stock_summary;
     
-    console.log('this is the prices data', analysis)
   
     return (
       <div>
@@ -410,7 +415,16 @@ const StockAnalysisView = () => {
         </form>
 
         {response && <div>{response}</div>}
-        {error && <div className="text-red-400 text-center mt-3">{error}</div>}
+        {error && (
+          <div className="bg-black border border-white text-white px-6 py-4 rounded-lg mt-3 max-w-3xl w-full">
+            <div className="flex items-center justify-center">
+              <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="text-lg">{error}</span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Print Button */}

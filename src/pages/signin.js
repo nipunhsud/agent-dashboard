@@ -43,21 +43,16 @@ const SignIn = () => {
             </h1>
             <h4 class="text-gray-600 text-center">Book your AI Agent Today!</h4>
           </div>
-
+        
           <form class="contents" onSubmit={handleSubmit}>
             <input type="hidden" name="" value="" autocomplete="off" />
             <div class="my-5 relative">
-              <img
-                src="/images/email.svg"
-                alt=""
-                className="absolute left-2 top-1/2 -translate-y-1/2"
-              />
               <input
                 required="required"
                 autofocus="autofocus"
                 autocomplete="username"
                 placeholder="Email Address"
-                class="pl-10 block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full focus:border-[#6366f1]"
+                class="block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full focus:border-[#6366f1]"
                 type="email"
                 name="email_address"
                 id="email_address"
@@ -73,7 +68,7 @@ const SignIn = () => {
                   autoComplete="current-password"
                   placeholder="Password"
                   maxLength="72"
-                  className="pl-10 pr-12 block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full focus:border-[#6366f1]"
+                  className="pr-12 block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full focus:border-[#6366f1]"
                   size="72"
                   type={showPassword ? "text" : "password"}
                   name="password"
@@ -100,11 +95,6 @@ const SignIn = () => {
                     />
                   )}
                 </button>
-                <img
-                  src="/images/lock.svg"
-                  alt="Lock Icon"
-                  className="w-6 h-6 absolute left-2 top-1/2 -translate-y-1/2"
-                />
               </div>
               <Link
                 className="mt-1 text-gray-700 block underline text-right"
