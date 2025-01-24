@@ -50,6 +50,7 @@ const StockAnalysisView = () => {
         method: "POST",
         credentials: "include",
         headers: {
+          "X-CSRFToken": csrfToken,
           "Authorization": `Bearer ${token}`,
         },
         body: formData,
