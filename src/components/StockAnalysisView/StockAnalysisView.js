@@ -11,12 +11,12 @@ const StockAnalysisView = () => {
   const [response, setResponse] = useState(null);
   const [error, setError] = useState("");
   const csrfToken = useCSRFToken();
-  const { token } = useAuth(); 
+  const { token } = useAuth();
   const backendUrl = useBackendUrl();
 
   const handlePrintAnalysis = () => {
-    const analysisContent = document.getElementById('analysis-content'); 
-    const originalContent = document.body.innerHTML; 
+    const analysisContent = document.getElementById('analysis-content');
+    const originalContent = document.body.innerHTML;
 
     document.body.innerHTML = analysisContent.innerHTML;
     window.print();
@@ -30,18 +30,18 @@ const StockAnalysisView = () => {
   };
 
   const handleSubmit = async (event) => {
-    event.preventDefault();  
+    event.preventDefault();
 
     if (!csrfToken) {
       console.error("CSRF token is not set yet.");
       setError("Unable to submit the form. CSRF token is missing.");
       return;
     }
- 
+
     setError("");
     setResponse(<LoadingState />);
 
-  
+
     try {
       const formData = new FormData();
       formData.append("input", input);
@@ -58,12 +58,12 @@ const StockAnalysisView = () => {
         body: formData,
       });
 
-  
+
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.error || "Failed to fetch stock analysis");
       }
-  
+
       const data = await res.json();
       console.log('this is the data from the backend', data)
       setResponse(formatResponse(data));
@@ -71,11 +71,11 @@ const StockAnalysisView = () => {
       setError(err.message);
     }
   };
-  
+
   const formatResponse = (data) => {
-    const analysis = JSON.parse(data.response);   
+    const analysis = JSON.parse(data.response);
     const stockData = analysis.stock_summary;
-    
+
     return (
       <div>
         {/* Primary Analysis Section */}
@@ -83,40 +83,33 @@ const StockAnalysisView = () => {
           <h2 className="text-2xl font-bold mb-6 text-custom-purple">
             📊 {stockData.ticker} Analysis
           </h2>
-          
+
           {/* Current Metrics */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <div className="p-3 bg-custom-purple rounded-lg">
               <span className="block font-bold">Current Price</span>
-              <span>${stockData.current_metrics.price.toFixed(2)}</span>
+              <span>${stockData.current_metrics?.price?.toFixed(2) || 'N/A'}</span>
             </div>
             <div className="p-3 bg-custom-purple rounded-lg">
               <span className="block font-bold">Volume</span>
-              <span>{stockData.current_metrics.volume.toLocaleString()}</span>
+              <span>{stockData.current_metrics?.volume?.toLocaleString() || 'N/A'}</span>
             </div>
             <div className="p-3 bg-custom-purple rounded-lg">
               <span className="block font-bold">52W High</span>
-              <span>${stockData.current_metrics.fifty_two_week.high.toFixed(2)}</span>
+              <span>${stockData.current_metrics?.fifty_two_week?.high?.toFixed(2) || 'N/A'}</span>
             </div>
             <div className="p-3 bg-custom-purple rounded-lg">
               <span className="block font-bold">52W Low</span>
-              <span>${stockData.current_metrics.fifty_two_week.low.toFixed(2)}</span>
+              <span>${stockData.current_metrics?.fifty_two_week?.low?.toFixed(2) || 'N/A'}</span>
             </div>
           </div>
 
-           {/* Recommendation */}
-           <div className="border-t border-custom-purple py-4">
+          {/* Recommendation */}
+          <div className="border-t border-custom-purple py-4">
             <h3 className="text-lg font-bold mb-4">🎯 Recommendation</h3>
             <div className="p-4 bg-custom-purple rounded-lg">
-              <div className={`text-2xl font-bold mb-4 ${
-                stockData.recommendation.action.includes('BUY') ? 'text-green-500' :
-                stockData.recommendation.action.includes('WAIT') ? 'text-yellow-500' :
-                stockData.recommendation.action.includes('WATCH') ? 'text-blue-500' :
-                'text-gray-300'
-              }`}>
-                {stockData.recommendation.action}
-              </div>
-              
+              <div className="text-2xl font-bold mb-4">{stockData.recommendation.action}</div>
+
               <div className="mb-4">
                 <h4 className="font-bold mb-2">Key Triggers:</h4>
                 <ul className="list-disc list-inside">
@@ -134,33 +127,32 @@ const StockAnalysisView = () => {
                   ))}
                 </ul>
               </div>
-            
-                   {/* Trade Setup */}
-          <div className="border-t border-custom-purple py-4 space-y-4">
-            <h3 className="text-lg font-bold">🎯 Trade Setup</h3>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="p-3 bg-custom-purple rounded-lg">
-                <span className="block font-bold">Buy Point</span>
-                <span>${stockData.trade_setup.buy_point.toFixed(2)}</span>
+
+              {/* Trade Setup */}
+              <div className="border-t border-custom-purple py-4 space-y-4">
+                <h3 className="text-lg font-bold">🎯 Trade Setup</h3>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="p-3 bg-custom-purple rounded-lg">
+                    <span className="block font-bold">Buy Point</span>
+                    <span>${stockData.trade_setup?.buy_point?.toFixed(2) || 'N/A'}</span>
+                  </div>
+                  <div className="p-3 bg-custom-purple rounded-lg">
+                    <span className="block font-bold">Target</span>
+                    <span>${stockData.trade_setup?.target_price?.toFixed(2) || 'N/A'}</span>
+                  </div>
+                  <div className="p-3 bg-custom-purple rounded-lg">
+                    <span className="block font-bold">Stop Loss</span>
+                    <span>${stockData.trade_setup?.stop_loss?.toFixed(2) || 'N/A'}</span>
+                  </div>
+                </div>
+                <div className="p-3 bg-custom-purple rounded-lg">
+                  <span className="block font-bold">Setup Type</span>
+                  <span>{stockData.trade_setup?.setup_type || 'N/A'}</span>
+                </div>
               </div>
-              <div className="p-3 bg-custom-purple rounded-lg">
-                <span className="block font-bold">Target</span>
-                <span>${stockData.trade_setup.target_price.toFixed(2)}</span>
-              </div>
-              <div className="p-3 bg-custom-purple rounded-lg">
-                <span className="block font-bold">Stop Loss</span>
-                <span>${stockData.trade_setup.stop_loss.toFixed(2)}</span>
-              </div>
-            </div>
-            <div className="p-3 bg-custom-purple rounded-lg">
-              <span className="block font-bold">Setup Type</span>
-              <span>{stockData.trade_setup.setup_type}</span>
-            </div>
-          </div>
-          
               <div>
                 <h4 className="font-bold mb-2">Risk Management:</h4>
-                <p>{stockData.recommendation.risk_management}</p>
+                <p>{stockData.recommendation.risk_management || 'N/A'}</p>
               </div>
             </div>
           </div>
@@ -170,21 +162,21 @@ const StockAnalysisView = () => {
           {/* Technical Analysis */}
           <div className="border-t border-custom-purple py-4 space-y-4">
             <h3 className="text-lg font-bold">📈 Technical Analysis</h3>
-            
+
             {/* Moving Averages */}
             <div className="space-y-4">
               <div className="grid grid-cols-3 gap-4">
                 <div className="p-3 bg-custom-purple rounded-lg">
                   <span className="block font-bold">EMA 50</span>
-                  <span>${stockData.technical_analysis.moving_averages.ema_50.toFixed(2)}</span>
+                  <span>${stockData.technical_analysis?.moving_averages?.ema_50?.toFixed(2) || 'N/A'}</span>
                 </div>
                 <div className="p-3 bg-custom-purple rounded-lg">
                   <span className="block font-bold">EMA 150</span>
-                  <span>${stockData.technical_analysis.moving_averages.ema_150.toFixed(2)}</span>
+                  <span>${stockData.technical_analysis?.moving_averages?.ema_150?.toFixed(2) || 'N/A'}</span>
                 </div>
                 <div className="p-3 bg-custom-purple rounded-lg">
                   <span className="block font-bold">EMA 200</span>
-                  <span>${stockData.technical_analysis.moving_averages.ema_200.toFixed(2)}</span>
+                  <span>${stockData.technical_analysis?.moving_averages?.ema_200?.toFixed(2) || 'N/A'}</span>
                 </div>
               </div>
 
@@ -192,52 +184,96 @@ const StockAnalysisView = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="p-3 bg-custom-purple rounded-lg">
                   <span className="block font-bold">Overall Trend</span>
-                  <span>{stockData.technical_analysis.trend}</span>
+                  <span>{stockData.technical_analysis?.trend || 'N/A'}</span>
                 </div>
                 <div className="p-3 bg-custom-purple rounded-lg">
                   <span className="block font-bold">Distance from 52W High</span>
-                  <span>{stockData.technical_analysis.distance_from_52_week_high}</span>
+                  <span>{stockData.technical_analysis?.distance_from_52_week_high || 'N/A'}</span>
                 </div>
               </div>
 
               {/* Volume Analysis */}
               <div className="p-3 bg-custom-purple rounded-lg">
-                <span className="block font-bold mb-2">Volume Analysis</span>
-                <p className="text-sm">{stockData.technical_analysis.volume_analysis}</p>
-              </div>
-
-              {/* Pattern Analysis */}
-              <div className="p-3 bg-custom-purple rounded-lg">
-                <span className="block font-bold mb-2">Volatility Pattern</span>
-                <p className="text-sm">{stockData.technical_analysis.volatility_pattern}</p>
+                <span className="block font-bold mb-2">Volume and Volatility Pattern Analysis</span>
+                <p className="text-sm">{stockData.technical_analysis?.volume_analysis || 'N/A'}</p>
+                <p className="text-sm">{stockData.technical_analysis?.volatility_pattern || 'N/A'}</p>
               </div>
 
               {/* Technical Setup */}
               <div className="space-y-3">
                 <div className="p-3 bg-custom-purple rounded-lg">
                   <span className="block font-bold mb-2">Technical Setup</span>
-                  <p className="text-sm">{stockData.technical_analysis.technical_setup}</p>
-                </div>
-                
-                <div className="p-3 bg-custom-purple rounded-lg">
-                  <span className="block font-bold mb-2">Setup Trigger</span>
-                  <p className="text-sm">{stockData.technical_analysis.technical_setup_trigger}</p>
+                  <p className="text-sm">{stockData.technical_analysis?.technical_setup || 'N/A'}</p>
+                  <p className="text-sm">{stockData.technical_analysis?.technical_setup_trigger || 'N/A'}</p>
                 </div>
 
                 {/* Key Triggers */}
                 <div className="p-3 bg-custom-purple rounded-lg">
-                  <span className="block font-bold mb-2">Key Technical Triggers</span>
-                  <p className="text-sm">{stockData.technical_analysis.technical_setup_trigger_key_triggers}</p>
-                </div>
-
-                {/* Risk Factors */}
-                <div className="p-3 bg-custom-purple rounded-lg">
-                  <span className="block font-bold mb-2">Technical Risk Factors</span>
-                  <p className="text-sm">{stockData.technical_analysis.technical_setup_trigger_risk_factors}</p>
+                  <span className="block font-bold mb-2">Key Triggers and Risks</span>
+                  <p className="text-sm">{stockData.technical_analysis?.technical_setup_trigger_key_triggers || 'N/A'}</p>
+                  <p className="text-sm">{stockData.technical_analysis?.technical_setup_trigger_risk_factors || 'N/A'}</p>
                 </div>
               </div>
             </div>
           </div>
+        
+          {/* Fundamental Analysis */}
+          <div className="border-t border-custom-purple py-4 space-y-4">
+            <h3 className="text-lg font-bold">📊 Fundamental Analysis</h3>
+            
+            {/* EPS Growth */}
+            <div className="p-3 bg-custom-purple rounded-lg mb-4">
+              <h4 className="font-bold mb-2">Quarterly EPS Growth</h4>
+              <div className="grid grid-cols-3 gap-4 mb-3">
+                {stockData.fundamental_analysis?.quarterly_eps_growth?.map((growth, index) => (
+                  <div key={index} className="text-center">
+                    <span className="block font-bold">Q{3 - index}</span>
+                    <span className={`${growth > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                      {(growth * 100).toFixed(1)}%
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-sm mt-2">{stockData.fundamental_analysis?.quarterly_eps_growth_trend}</p>
+            </div>
+
+            {/* Growth Trends */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-3 bg-custom-purple rounded-lg">
+                <h4 className="font-bold mb-2">Annual Growth</h4>
+                <p className="text-sm">{stockData.fundamental_analysis?.annual_growth_trend}</p>
+              </div>
+              <div className="p-3 bg-custom-purple rounded-lg">
+                <h4 className="font-bold mb-2">Industry Position</h4>
+                <p className="text-sm">{stockData.fundamental_analysis?.industry_position}</p>
+              </div>
+            </div>
+
+            {/* Sector Performance */}
+            <div className="p-3 bg-custom-purple rounded-lg">
+              <h4 className="font-bold mb-2">Sector Performance</h4>
+              <p className="text-sm">{stockData.fundamental_analysis?.sector_performance}</p>
+            </div>
+            </div>
+
+            {/* Institutional Ownership */}
+            <div className="border-t border-custom-purple py-4 space-y-4">
+              <h3 className="text-lg font-bold">🏢 Institutional Ownership</h3>
+              <div className="space-y-3">
+                <div className="p-3 bg-custom-purple rounded-lg">
+                  <span className="block font-bold mb-2">Current Ownership</span>
+                  <p className="text-sm">
+                    {stockData.institutional_ownership?.institutional_ownership || 'No ownership data available'}
+                  </p>
+                </div>
+                <div className="p-3 bg-custom-purple rounded-lg">
+                  <span className="block font-bold mb-2">Ownership Trend</span>
+                  <p className="text-sm">
+                    {stockData.institutional_ownership?.institutional_ownership_trend || 'No trend data available'}
+                  </p>
+                </div>
+              </div>
+            </div>
 
           {/* Market Analysis */}
           <div className="border-t border-custom-purple py-4 space-y-4">
@@ -245,16 +281,16 @@ const StockAnalysisView = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-3 bg-custom-purple rounded-lg">
                 <span className="block font-bold">Market Sentiment</span>
-                <span>{stockData.market_analysis.market_sentiment}</span>
+                <span>{stockData.market_analysis?.market_sentiment || 'N/A'}</span>
               </div>
               <div className="p-3 bg-custom-purple rounded-lg">
                 <span className="block font-bold">Market Trend</span>
-                <span>{stockData.market_analysis.market_trend}</span>
+                <span>{stockData.market_analysis?.market_trend || 'N/A'}</span>
               </div>
             </div>
           </div>
 
-   
+
 
           {/* Risk Assessment */}
           <div className="border-t border-custom-purple py-4 space-y-4">
@@ -262,25 +298,25 @@ const StockAnalysisView = () => {
             <div className="space-y-2">
               <div className="p-3 bg-custom-purple rounded-lg">
                 <span className="block font-bold">Market Conditions</span>
-                <span>{stockData.risk_assessment.market_conditions}</span>
+                <span>{stockData.risk_assessment?.market_conditions || 'N/A'}</span>
               </div>
               <div className="p-3 bg-custom-purple rounded-lg">
                 <span className="block font-bold">Technical Risks</span>
-                <span>{stockData.risk_assessment.technical_risks}</span>
+                <span>{stockData.risk_assessment?.technical_risks || 'N/A'}</span>
               </div>
               <div className="p-3 bg-custom-purple rounded-lg">
                 <span className="block font-bold">Setup Risks</span>
-                <span>{stockData.risk_assessment.setup_risks}</span>
+                <span>{stockData.risk_assessment?.setup_risks || 'N/A'}</span>
               </div>
             </div>
           </div>
 
-         
+
         </div>
       </div>
     );
   };
-    
+
   return (
     <div className="bg-black text-gray-300 min-h-screen flex flex-col items-center justify-start py-4 px-4 relative">
       <div className="w-full max-w-3xl mt-4 mx-auto">
@@ -335,5 +371,5 @@ const StockAnalysisView = () => {
     </div>
   );
 };
-  
+
 export default StockAnalysisView;
