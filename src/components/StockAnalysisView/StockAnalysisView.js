@@ -108,7 +108,14 @@ const StockAnalysisView = () => {
            <div className="border-t border-custom-purple py-4">
             <h3 className="text-lg font-bold mb-4">🎯 Recommendation</h3>
             <div className="p-4 bg-custom-purple rounded-lg">
-              <div className="text-2xl font-bold mb-4">{stockData.recommendation.action}</div>
+              <div className={`text-2xl font-bold mb-4 ${
+                stockData.recommendation.action.includes('BUY') ? 'text-green-500' :
+                stockData.recommendation.action.includes('WAIT') ? 'text-yellow-500' :
+                stockData.recommendation.action.includes('WATCH') ? 'text-blue-500' :
+                'text-gray-300'
+              }`}>
+                {stockData.recommendation.action}
+              </div>
               
               <div className="mb-4">
                 <h4 className="font-bold mb-2">Key Triggers:</h4>
