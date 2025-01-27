@@ -13,16 +13,12 @@ import HeroSectionFast from "../components/HeroSectionFast/HeroSectionFast";
 import WhyUs from "../components/WhyUs/WhyUs";
 
 const Home = () => {
-  const { user, token } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
-  if (!user) {
-    navigate('/signin');
-  }
-
 
   return (
     <div>
-      <HeroSectionFast />
+      <HeroSectionFast/>
 
       {/* <p className="mt-6 text-gray-200 font-light text-center max-w-3xl text-lg sm:text-xl lg:text-2xl leading-relaxed">
         Investing shouldn't be complicated. At 
@@ -82,7 +78,7 @@ const Home = () => {
       <Section
         name="Contact Us"
         title="Get in Touch"
-        subtitle="We’d love to hear from you. Drop us a message!"
+        subtitle="We'd love to hear from you. Drop us a message!"
       >
         <ContactForm /> 
       </Section>

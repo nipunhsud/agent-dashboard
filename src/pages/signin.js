@@ -21,7 +21,7 @@ const SignIn = () => {
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      navigate('/');
+      navigate('/stocks');
     } catch (error) {
       setError(error.message);
     }

@@ -1,18 +1,25 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import brainLogo from '../../assets/brain-logo.png';
 import useCSRFToken from "../../hooks/useCSRFToken"
 import { useAuth } from "../../utils/AuthContext";
 import LoadingState from "./LoadingState/LoadingState";
 import useBackendUrl from "../../hooks/useBackendUrl";
-import Chart from "./Chart/Chart";
 
 const StockAnalysisView = () => {
   const [input, setInput] = useState("");
   const [response, setResponse] = useState(null);
   const [error, setError] = useState("");
   const csrfToken = useCSRFToken();
-  const { token } = useAuth(); 
+  const { token } = useAuth();
   const backendUrl = useBackendUrl();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!token) {
+      navigate('/signin');
+    }
+  }, [token, navigate]);
 
   const handlePrintAnalysis = () => {
     const analysisContent = document.getElementById('analysis-content'); 
@@ -31,6 +38,11 @@ const StockAnalysisView = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();  
+
+    if (!token) {
+      navigate('/signin');
+      return;
+    }
 
     if (!csrfToken) {
       console.error("CSRF token is not set yet.");
@@ -107,7 +119,7 @@ const StockAnalysisView = () => {
           <div className="space-y-6">
 
             {/* Chart Section */}
-            <Chart/>
+          
 
             {/* Buy Point Section */}
             <div className="border-t border-b border-custom-purple py-4 flex flex-col">
