@@ -194,7 +194,7 @@ const StockAnalysisView = () => {
 
               {/* Volume Analysis */}
               <div className="p-3 bg-custom-purple rounded-lg">
-                <span className="block font-bold mb-2">Volume and VolatilityPattern Analysis</span>
+                <span className="block font-bold mb-2">Volume and Volatility Pattern Analysis</span>
                 <p className="text-sm">{stockData.technical_analysis?.volume_analysis || 'N/A'}</p>
                 <p className="text-sm">{stockData.technical_analysis?.volatility_pattern || 'N/A'}</p>
               </div>
