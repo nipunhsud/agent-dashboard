@@ -81,16 +81,12 @@ const StockAnalysisView = () => {
       <div>
         {/* Primary Analysis Section */}
         <div className="bg-black text-gray-300 shadow-md rounded-lg p-6 max-w-4xl mx-auto mb-6">
-          <div className="flex flex-row items-center mb-4">  
-            <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-20 h-20 mr-6 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
-                <img
-                  src={imageSrc}
-                  alt={'hola'}
-                  className="w-12 h-12 transition-transform duration-300 group-hover:scale-110 object-contain"
-                />
+          {/* Stock Analysis Title */}
+          <div className="flex flex-col items-center justify-center p-4 mb-4">  
+            <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-16 h-16 sm:w-20 sm:h-20 sm:mb-2 sm:mb-0 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
+                <img src={imageSrc} alt={'hola'} className="w-8 h-8 sm:w-12 sm:h-12 transition-transform duration-300 group-hover:scale-110 object-contain"/>
             </div>
-
-            <h2 className="text-3xl font-bold mb-6 text-custom-purple">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center text-custom-purple">
               {stockData.ticker} Analysis
             </h2>
           </div>
@@ -126,15 +122,12 @@ const StockAnalysisView = () => {
 
           {/* Recommendation Section */}
           <div className="border-t border-custom-purple py-4">
-            <div className="flex flex-row items-center mb-4">
-              <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-20 h-20 mr-6 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
-                  <img
-                    src={imageSrc}
-                    alt={'hola'}
-                    className="w-12 h-12 transition-transform duration-300 group-hover:scale-110 object-contain"
-                  />
+            {/* Recommendation Title */}
+            <div className="flex flex-col items-center justify-center p-4 mb-4">
+              <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-16 h-16 sm:w-20 sm:h-20 mb-2 sm:mb-0 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
+                  <img src={imageSrc} alt={'hola'} className="w-8 h-8 sm:w-12 sm:h-12 transition-transform duration-300 group-hover:scale-110 object-contain"/>
               </div> 
-              <h3 className="text-3xl font-bold">Recommendation</h3>
+              <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center">Recommendation</h3>
             </div>
 
             {/* Action Recommendation */}
@@ -228,16 +221,12 @@ const StockAnalysisView = () => {
 
           {/* Technical Analysis */}
           <div className="border-t border-custom-purple py-4 space-y-4">
-
-            <div className="flex flex-row items-center mb-4">
-              <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-20 h-20 mr-6 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
-                  <img
-                    src={imageSrc}
-                    alt={'hola'}
-                    className="w-12 h-12 transition-transform duration-300 group-hover:scale-110 object-contain"
-                  />
+            {/* Technical Analysis Title */}
+            <div className="flex flex-col items-center justify-center p-4 mb-4">
+              <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-16 h-16 sm:w-20 sm:h-20 mb-2 sm:mb-0 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
+                  <img src={imageSrc} alt={'hola'} className="w-8 h-8 sm:w-12 sm:h-12 transition-transform duration-300 group-hover:scale-110 object-contain"/>
               </div> 
-              <h3 className="text-3xl font-bold">Technical Analysis</h3>
+              <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center">Technical Analysis</h3>
             </div>
 
             {/* Moving Averages Section */}
@@ -318,15 +307,12 @@ const StockAnalysisView = () => {
         
           {/* Fundamental Analysis */}
           <div className="border-t border-custom-purple py-4 space-y-4">
-            <div className="flex flex-row items-center mb-4">
-                <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-20 h-20 mr-6 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
-                  <img
-                    src={imageSrc}
-                    alt={'hola'}
-                    className="w-12 h-12 transition-transform duration-300 group-hover:scale-110 object-contain"
-                  />
+            {/* Fundamental Analysis Title */}
+            <div className="flex flex-col items-center justify-center p-4 mb-4">
+                <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-16 h-16 sm:w-20 sm:h-20 mb-2 sm:mb-0 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
+                  <img src={imageSrc} alt={'hola'} className="w-8 h-8 sm:w-12 sm:h-12 transition-transform duration-300 group-hover:scale-110 object-contain"/>
                 </div> 
-                <h3 className="text-3xl font-bold">Fundamental Analysis</h3>
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center">Fundamental Analysis</h3>
             </div>
             
             {/* EPS Growth */}
@@ -393,11 +379,11 @@ const StockAnalysisView = () => {
 
           {/* Institutional Ownership */}
           <div className="border-t border-custom-purple py-4">    
-              <div className="flex items-center mb-4">
-                <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-20 h-20 mr-6 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
-                    <img src={imageSrc} alt={'hola'} className="w-12 h-12 transition-transform duration-300 group-hover:scale-110 object-contain"/>
+              <div className="flex flex-col items-center justify-center p-4 mb-4">
+                <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-16 h-16 sm:w-20 sm:h-20 mb-2 sm:mb-0 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
+                    <img src={imageSrc} alt={'hola'} className="w-8 h-8 sm:w-12 sm:h-12 transition-transform duration-300 group-hover:scale-110 object-contain"/>
                 </div>  
-                <h3 className="text-3xl font-bold">Institutional Ownership</h3>
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center">Institutional Ownership</h3>
               </div>
               
               <div className="space-y-3">
@@ -428,11 +414,12 @@ const StockAnalysisView = () => {
 
           {/* Market Analysis */}
           <div className="border-t border-custom-purple py-4">
-            <div className="flex items-center mb-4">
-                <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-20 h-20 mr-6 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
-                  <img src={imageSrc} alt={'hola'} className="w-12 h-12 transition-transform duration-300 group-hover:scale-110 object-contain"/>
+            {/* Market Analysis Title */}
+            <div className="flex flex-col items-center justify-center p-4 mb-4">
+                <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-16 h-16 sm:w-20 sm:h-20 mb-2 sm:mb-0 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
+                  <img src={imageSrc} alt={'hola'} className="w-8 h-8 sm:w-12 sm:h-12 transition-transform duration-300 group-hover:scale-110 object-contain"/>
                 </div>
-                <h3 className="text-3xl font-bold">Market Analysis</h3>
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center">Market Analysis</h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
@@ -470,11 +457,12 @@ const StockAnalysisView = () => {
 
           {/* Risk Assessment */}
           <div className="border-t border-custom-purple py-4">
-            <div className="flex items-center mb-4">
-               <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-20 h-20 mr-6 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
-                  <img src={imageSrc} alt={'hola'} className="w-12 h-12 transition-transform duration-300 group-hover:scale-110 object-contain"/>
+            {/* Risk Assessment Title */}
+            <div className="flex flex-col items-center justify-center p-4 mb-4">
+               <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-16 h-16 sm:w-20 sm:h-20 mb-2 sm:mb-0 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
+                  <img src={imageSrc} alt={'hola'} className="w-8 h-8 sm:w-12 sm:h-12 transition-transform duration-300 group-hover:scale-110 object-contain"/>
                 </div>
-                <h3 className="text-3xl font-bold">Risk Assessment</h3>
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center">Risk Assessment</h3>
             </div>
             <div className="space-y-3">
               <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
