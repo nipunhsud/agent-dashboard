@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import brainLogo from '../../assets/brain-logo.png';
 import useCSRFToken from "../../hooks/useCSRFToken"
 import { useAuth } from "../../utils/AuthContext";
+import { useNavigate } from "react-router-dom";
 import LoadingState from "./LoadingState/LoadingState";
 import useBackendUrl from "../../hooks/useBackendUrl";
 import Chart from "./Chart/Chart";
@@ -13,6 +14,7 @@ const StockAnalysisView = () => {
   const csrfToken = useCSRFToken();
   const { token } = useAuth();
   const backendUrl = useBackendUrl();
+  const navigate = useNavigate();
 
   const handlePrintAnalysis = () => {
     const analysisContent = document.getElementById('analysis-content');
@@ -30,23 +32,26 @@ const StockAnalysisView = () => {
   };
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    event.preventDefault();  
 
-    if (!csrfToken) {
-      console.error("CSRF token is not set yet.");
-      setError("Unable to submit the form. CSRF token is missing.");
+    if (!token) {
+      navigate('/signin');
       return;
     }
 
+    if (!csrfToken) {
+      console.error("CSRF token is not set yet.");
+      setResponse(null);
+      setError("We're having trouble connecting to our servers. Please try again in a moment! 🔄");
+      return;
+    }
+ 
     setError("");
     setResponse(<LoadingState />);
-
 
     try {
       const formData = new FormData();
       formData.append("input", input);
-
-      console.log('this is the backend url', backendUrl)
 
       const res = await fetch(`${backendUrl}/research/stocks/`, {
         method: "POST",
@@ -58,17 +63,43 @@ const StockAnalysisView = () => {
         body: formData,
       });
 
+      const data = await res.json();
 
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || "Failed to fetch stock analysis");
+      if (res.status === 402) {
+        setResponse(null);
+        setError(
+          <div className="text-center">
+            <p className="text-red-400 mb-4">{data.message}</p>
+            <button 
+              onClick={() => navigate('/subscribe')} 
+              className="bg-custom-purple text-white px-6 py-2 rounded-lg hover:bg-opacity-80 transition-all duration-300"
+            >
+              Subscribe Now 🚀
+            </button>
+          </div>
+        );
+        return;
       }
 
-      const data = await res.json();
-      console.log('this is the data from the backend', data)
-      setResponse(formatResponse(data));
+      if (!res.ok) {
+        setResponse(null);
+        throw new Error("Oops! We encountered a hiccup while analyzing this stock. Please try again! 🔍");
+      }
+  
+      if (!data || !data.response) {
+        throw new Error("Our AI needs a quick coffee break! Please try your request again in a moment. ☕️");
+      }
+      
+      try {
+        const analysis = JSON.parse(data.response);
+        setResponse(formatResponse(data));
+      } catch (parseError) {
+        console.error("Parse error:", parseError);
+        throw new Error("Our AI is taking a quick break! Please try your request again in a moment. 🤖✨");
+      }
     } catch (err) {
-      setError(err.message);
+      setResponse(null);
+      setError(err.message || "Our systems need a quick refresh. Please try again! 🔄");
     }
   };
 

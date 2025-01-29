@@ -34,11 +34,11 @@ const Header = () => {
   return (
     <nav className="bg-black sticky top-0 z-50">
       {/* Desktop Header */}
-      <header className="container mx-auto flex items-center justify-between py-4 px-6 hidden md:flex">
+      <header className="mx-auto flex items-center justify-between py-4 px-4 hidden md:flex">
         <img
           src={logo}
           alt="Logo"
-          className="w-48 h-auto md:w-60 lg:w-72" // Adjust the size for larger screens
+          className="w-48 h-auto md:w-60 lg:w-72" 
         />
         {user?.email ? (
           <Menu as="div" className="relative inline-block text-left">
@@ -65,7 +65,7 @@ const Header = () => {
           <div className="flex gap-4">
             <Link
               to="/signin"
-              className="text-white border border-white rounded-md px-4 py-2 hover:bg-purple-500"
+              className="text-white border border-white rounded-md px-4 py-2 hover:sbg-gradient-to-tr from-[#818cf8] "
             >
               Login
             </Link>
@@ -84,7 +84,7 @@ const Header = () => {
         <img
           src={logo}
           alt="Logo"
-          className="w-40 h-auto sm:w-44 md:w-48" // Adjust logo size for smaller screens
+          className="w-40 h-auto sm:w-44 md:w-48" 
         />
         <button onClick={() => setIsCollapsed(!isCollapsed)} aria-label="Menu">
           <svg
@@ -118,5 +118,6 @@ const Header = () => {
 };
 
 export default Header;
+
 
 

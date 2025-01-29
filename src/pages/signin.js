@@ -21,7 +21,7 @@ const SignIn = () => {
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      navigate('/');
+      navigate('/stocks');
     } catch (error) {
       setError(error.message);
     }
@@ -29,7 +29,7 @@ const SignIn = () => {
 
   return (
     <>
-      <div class="bg-gradient-to-tr from-[#818cf8] to-[#312e81] flex justify-center items-center min-h-screen">
+      <div class="bg-black flex justify-center items-center min-h-screen">
         <div class="mx-auto bg-white rounded-2xl max-w-md p-8 shadow-lg">
           <Link class="flex items-center" to={"/"}>
             <img src="/images/back.svg" alt="" />
@@ -47,11 +47,6 @@ const SignIn = () => {
           <form class="contents" onSubmit={handleSubmit}>
             <input type="hidden" name="" value="" autocomplete="off" />
             <div class="my-5 relative">
-              <img
-                src="/images/email.svg"
-                alt=""
-                className="absolute left-2 top-1/2 -translate-y-1/2"
-              />
               <input
                 required="required"
                 autofocus="autofocus"
@@ -100,11 +95,6 @@ const SignIn = () => {
                     />
                   )}
                 </button>
-                <img
-                  src="/images/lock.svg"
-                  alt="Lock Icon"
-                  className="w-6 h-6 absolute left-2 top-1/2 -translate-y-1/2"
-                />
               </div>
               <Link
                 className="mt-1 text-gray-700 block underline text-right"
