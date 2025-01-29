@@ -615,11 +615,15 @@ const StockAnalysisView = () => {
                 id="input"
                 type="text"
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
-                className="w-full p-4 text-xl border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-black text-gray-300 placeholder-gray-500 uppercase"
+                onChange={(e) => setInput(e.target.value.toUpperCase())}
+                className="w-full p-4 text-xl border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-black text-gray-300 placeholder-gray-500"
                 placeholder="AAPL"
                 autoComplete="off"
                 spellCheck="false"
+                autoCapitalize="characters"
+                inputMode="text"
+                pattern="[A-Za-z]+"
+                maxLength="5"
               />
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
                 <span className="text-sm">Stock Symbol</span>
