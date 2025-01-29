@@ -5,7 +5,7 @@ import { useAuth } from "../../utils/AuthContext";
 import LoadingState from "./LoadingState/LoadingState";
 import useBackendUrl from "../../hooks/useBackendUrl";
 import Chart from "./Chart/Chart";
-
+import useRagUrl from "../../hooks/useChatUrl";
 const StockAnalysisView = () => {
   const [input, setInput] = useState("");
   const [response, setResponse] = useState(null);
@@ -13,7 +13,13 @@ const StockAnalysisView = () => {
   const csrfToken = useCSRFToken();
   const { token } = useAuth();
   const backendUrl = useBackendUrl();
-
+  const [aiQuestion, setAiQuestion] = useState("");
+  const [aiResponse, setAiResponse] = useState("");
+  const [isAiLoading, setIsAiLoading] = useState(false);
+  const [analysisData, setAnalysisData] = useState({
+    ticker: '',
+  });
+  const ragUrl = useRagUrl();
   const handlePrintAnalysis = () => {
     const analysisContent = document.getElementById('analysis-content');
     const originalContent = document.body.innerHTML;
@@ -21,6 +27,7 @@ const StockAnalysisView = () => {
     document.body.innerHTML = analysisContent.innerHTML;
     window.print();
     document.body.innerHTML = originalContent;
+    
 
     attachEventListeners();
   };
@@ -75,7 +82,43 @@ const StockAnalysisView = () => {
   const formatResponse = (data) => {
     const analysis = JSON.parse(data.response);
     const stockData = analysis.stock_summary;
-
+    
+    // Set the analysis data for the AI chat
+    setAnalysisData({
+      ticker: stockData.ticker,
+      trade_setup: {
+        buy_point: stockData.trade_setup.buy_point,
+        target_price: stockData.trade_setup.target_price,
+        stop_loss: stockData.trade_setup.stop_loss,
+        setup_type: stockData.trade_setup.setup_type
+      },
+      technical_analysis: {
+        trend: stockData.technical_analysis.trend,
+        distance_from_52_week_high: stockData.technical_analysis.distance_from_52_week_high,
+        volume_analysis: stockData.technical_analysis.volume_analysis,
+        technical_setup_trigger_key_triggers: stockData.technical_analysis.technical_setup_trigger_key_triggers,
+        technical_setup_trigger_risk_factors: stockData.technical_analysis.technical_setup_trigger_risk_factors
+      },
+      fundamental_analysis: {
+        quarterly_eps_growth: stockData.fundamental_analysis.quarterly_eps_growth,
+        annual_growth_trend: stockData.fundamental_analysis.annual_growth_trend,
+        industry_position: stockData.fundamental_analysis.industry_position,
+        sector_performance: stockData.fundamental_analysis.sector_performance
+      },
+      institutional_ownership: {
+        institutional_ownership_trend: stockData.institutional_ownership.institutional_ownership_trend
+      },
+      market_analysis: {
+        market_sentiment: stockData.market_analysis.market_sentiment,
+        market_trend: stockData.market_analysis.market_trend
+      },
+      risk_assessment: {
+        market_conditions: stockData.risk_assessment.market_conditions,
+        technical_risks: stockData.risk_assessment.technical_risks,
+        setup_risks: stockData.risk_assessment.setup_risks
+      }
+    });
+    
     return (
       <div>
         {/* Primary Analysis Section */}
@@ -317,6 +360,28 @@ const StockAnalysisView = () => {
     );
   };
 
+  const handleAskAi = () => {
+    try {
+      // Only add parameters if we have valid data
+      if (analysisData.ticker) {
+        // Encode the data as URL parameters
+        const params = new URLSearchParams({
+          data: JSON.stringify(analysisData)
+        }).toString();
+
+        // Open the URL with parameters
+        window.open(`${useRagUrl}/ask?${params}`, '_blank');
+      } else {
+        // Open URL without parameters if no data
+        window.open(`${useRagUrl}/ask`, '_blank');
+      }
+    } catch (err) {
+      console.error('Error processing data:', err);
+      // Open URL without parameters if there's an error
+      window.open(`${useRagUrl}/ask`, '_blank');
+    }
+  };
+
   return (
     <div className="bg-black text-gray-300 min-h-screen flex flex-col items-center justify-start py-4 px-4 relative">
       <div className="w-full max-w-3xl mt-4 mx-auto">
@@ -329,6 +394,12 @@ const StockAnalysisView = () => {
           <h1 className="text-3xl font-extrabold text-custom-purple text-center mt-4 mb-4">
             Stock Analysis Assistant
           </h1>
+          <button
+            onClick={handleAskAi}
+            className="mb-4 bg-custom-purple text-white py-2 px-4 rounded-lg hover:bg-black hover:text-custom-purple hover:border hover:border-custom-purple"
+          >
+            Ask AI
+          </button>
         </div>
         <form
           onSubmit={handleSubmit}
