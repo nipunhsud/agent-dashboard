@@ -21,6 +21,8 @@ const StockAnalysisView = () => {
   const csrfToken = useCSRFToken();
   const { token } = useAuth();
   const backendUrl = useBackendUrl();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showChatModal, setShowChatModal] = useState(false);
 
   const handlePrintAnalysis = () => {
     const analysisContent = document.getElementById('analysis-content');
@@ -64,7 +66,12 @@ const StockAnalysisView = () => {
         },
         body: formData,
       });
-
+      
+      if (res.status === 401) {
+        handleAuthPrompt();
+        return;
+      }
+      
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.error || "Failed to fetch stock analysis");
@@ -92,6 +99,7 @@ const StockAnalysisView = () => {
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center text-custom-purple">
               {stockData.ticker} Analysis
             </h2>
+          
           </div>
           
           {/* Current Metrics */}
@@ -507,6 +515,7 @@ const StockAnalysisView = () => {
     const analysis = JSON.parse(data.response);
     const stockData = analysis.stock_summary;
 
+    // Set the analysis data for the chat feature
     setAnalysisData({
       ticker: stockData.ticker,
       trade_setup: {
@@ -547,23 +556,29 @@ const StockAnalysisView = () => {
 
   const handleAskAi = () => {
     try {
+      // Check authentication first
+      if (!token) {
+        handleAuthPrompt();
+        return;
+      }
+
+      // If authenticated, check for analysis data
       if (analysisData.ticker) {
-        // Encode the data as URL parameters
         const params = new URLSearchParams({
           data: JSON.stringify(analysisData)
         }).toString();
-
-        // Open the URL with parameters
         window.open(`${ragUrl}/ask?${params}`, '_blank');
       } else {
-        // Open URL without parameters if no data
-        window.open(`${ragUrl}/ask`, '_blank');
+        setShowChatModal(true);
       }
     } catch (err) {
       console.error('Error processing data:', err);
-      // Open URL without parameters if there's an error
-      window.open(`${ragUrl}/ask`, '_blank');
+      setShowChatModal(true);
     }
+  };
+
+  const handleAuthPrompt = () => {
+    setShowAuthModal(true);
   };
 
   return (
@@ -576,42 +591,57 @@ const StockAnalysisView = () => {
             className="w-60 h-60 rounded-full"
           />
           <h1 className="text-3xl font-extrabold text-custom-purple text-center mt-4 mb-4">
-            Stock Analysis Assistant
+            Quanta AI
           </h1>
-          <button
-            onClick={handleAskAi}
-            className="mb-4 bg-custom-purple text-white py-2 px-4 rounded-lg hover:bg-black hover:text-custom-purple hover:border hover:border-custom-purple"
-          >
-            Ask AI
-          </button>
+         
         </div>
         <form
           onSubmit={handleSubmit}
-          className="bg-custom-purple shadow-md rounded-lg p-4 mb-4"
+          className="bg-custom-purple shadow-lg rounded-lg p-6 mb-6 max-w-2xl mx-auto"
           method="post"
         >
-          <label
-            htmlFor="input"
-            className="block text-lg font-normal text-gray-300 mb-2"
-          >
-            Enter Stock Ticker or Company Name:
-          </label>
-          <textarea
-            id="input"
-            rows="3"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-black text-gray-300"
-            placeholder="e.g., AAPL, MSFT, GOOGL"
-          ></textarea>
-          <button
-            type="submit"
-            className="mt-3 bg-custom-purple border border-white text-white py-2 px-4 rounded-lg w-full hover:bg-black"
-          >
-            Analyze Stock
-          </button>
+          <div className="space-y-4">
+            <label
+              htmlFor="input"
+              className="block text-xl font-semibold text-gray-300"
+            >
+              Enter Stock Ticker or Company Name
+            </label>
+            <p className="text-sm text-gray-400">
+              Enter a stock symbol (e.g., AAPL) or company name for instant AI analysis
+            </p>
+            <div className="relative">
+              <input
+                id="input"
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                className="w-full p-4 text-xl border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-black text-gray-300 placeholder-gray-500 uppercase"
+                placeholder="AAPL"
+                autoComplete="off"
+                spellCheck="false"
+              />
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                <span className="text-sm">Stock Symbol</span>
+              </div>
+            </div>
+            <button
+              type="submit"
+              className="w-full bg-black text-white py-4 px-6 rounded-lg text-lg font-semibold hover:bg-opacity-80 transform hover:scale-[1.02] transition-all duration-200 flex items-center justify-center space-x-2"
+            >
+              <span>Analyze Stock</span>
+              <span className="text-xl">📈</span>
+            </button>
+          </div>
         </form>
-
+        <button
+              onClick={handleAskAi}
+              className="mb-4 bg-custom-purple text-white py-4 px-6 rounded-lg hover:bg-black hover:text-custom-purple hover:border hover:border-custom-purple transform hover:scale-[1.02] transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg group max-w-2xl w-full mx-auto"
+            >
+              <span className="text-lg font-bold">💬</span>
+              <span className="text-lg font-semibold">Chat with Quanta</span>
+              <span className="transform group-hover:translate-x-1 transition-transform duration-300">→</span>
+            </button>
         {response && <div>{response}</div>}
         {error && <div className="text-red-400 text-center mt-3">{error}</div>}
       </div>
@@ -623,6 +653,76 @@ const StockAnalysisView = () => {
       >
         Print Analysis
       </button>
+
+      {/* Authentication Modal */}
+      {showAuthModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-custom-purple p-6 rounded-lg shadow-xl max-w-md w-full mx-4 relative">
+            {/* Close button */}
+            <button
+              onClick={() => setShowAuthModal(false)}
+              className="absolute top-2 right-2 text-gray-300 hover:text-white transition-colors"
+              aria-label="Close modal"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            
+            <h2 className="text-xl font-bold mb-4 text-center">Unlock Quanta AI</h2>
+            <p className="text-center mb-6">
+            Get instant access to powerful AI-driven stock analysis - create your free account now! 🚀
+            </p>
+            <div className="flex justify-center">
+              <button
+                onClick={() => window.location.href = '/signup'}
+                className="bg-black text-white px-6 py-2 rounded-lg hover:bg-opacity-80 transition-colors"
+              >
+                Start Free Analysis
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Chat Confirmation Modal */}
+      {showChatModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-custom-purple p-6 rounded-lg shadow-xl max-w-md w-full mx-4 relative">
+            <button
+              onClick={() => setShowChatModal(false)}
+              className="absolute top-2 right-2 text-gray-300 hover:text-white transition-colors"
+              aria-label="Close modal"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            
+            <h2 className="text-xl font-bold mb-4 text-center">Start a New Chat?</h2>
+            <p className="text-center mb-6">
+              Would you like to start a new chat? For the best experience, analyze a stock first - Quanta provides more detailed and accurate responses with stock analysis data. 🎯
+            </p>
+            <div className="flex justify-center space-x-4">
+              <button
+                onClick={() => {
+                  setShowChatModal(false);
+                  window.open(`${ragUrl}/ask`, '_blank');
+                }}
+                className="bg-black text-white px-6 py-2 rounded-lg hover:bg-opacity-80 transition-colors"
+              >
+                Start Chat
+              </button>
+              <button
+                onClick={() => setShowChatModal(false)}
+                className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-opacity-80 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
