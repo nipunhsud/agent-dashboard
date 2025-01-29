@@ -2,19 +2,25 @@ import React, { useState, useEffect } from "react";
 import brainLogo from '../../assets/brain-logo.png';
 import useCSRFToken from "../../hooks/useCSRFToken"
 import { useAuth } from "../../utils/AuthContext";
-import { useNavigate } from "react-router-dom";
 import LoadingState from "./LoadingState/LoadingState";
 import useBackendUrl from "../../hooks/useBackendUrl";
-import Chart from "./Chart/Chart";
+import useRagUrl from "../../hooks/useChatUrl";
+
 
 const StockAnalysisView = () => {
   const [input, setInput] = useState("");
   const [response, setResponse] = useState(null);
   const [error, setError] = useState("");
+  const [aiQuestion, setAiQuestion] = useState("");
+  const [aiResponse, setAiResponse] = useState("");
+  const [isAiLoading, setIsAiLoading] = useState(false);
+  const [analysisData, setAnalysisData] = useState({
+    ticker: '',
+  });
+  const ragUrl = useRagUrl();
   const csrfToken = useCSRFToken();
   const { token } = useAuth();
   const backendUrl = useBackendUrl();
-  const navigate = useNavigate();
 
   const handlePrintAnalysis = () => {
     const analysisContent = document.getElementById('analysis-content');
@@ -32,26 +38,22 @@ const StockAnalysisView = () => {
   };
 
   const handleSubmit = async (event) => {
-    event.preventDefault();  
-
-    if (!token) {
-      navigate('/signin');
-      return;
-    }
+    event.preventDefault();
 
     if (!csrfToken) {
       console.error("CSRF token is not set yet.");
-      setResponse(null);
-      setError("We're having trouble connecting to our servers. Please try again in a moment! 🔄");
+      setError("Unable to submit the form. CSRF token is missing.");
       return;
     }
- 
+
     setError("");
     setResponse(<LoadingState />);
 
     try {
       const formData = new FormData();
       formData.append("input", input);
+
+      console.log('this is the backend url', backendUrl)
 
       const res = await fetch(`${backendUrl}/research/stocks/`, {
         method: "POST",
@@ -63,51 +65,21 @@ const StockAnalysisView = () => {
         body: formData,
       });
 
-      const data = await res.json();
-
-      if (res.status === 402) {
-        setResponse(null);
-        setError(
-          <div className="text-center">
-            <p className="text-red-400 mb-4">{data.message}</p>
-            <button 
-              onClick={() => navigate('/subscribe')} 
-              className="bg-custom-purple text-white px-6 py-2 rounded-lg hover:bg-opacity-80 transition-all duration-300"
-            >
-              Subscribe Now 🚀
-            </button>
-          </div>
-        );
-        return;
-      }
-
       if (!res.ok) {
-        setResponse(null);
-        throw new Error("Oops! We encountered a hiccup while analyzing this stock. Please try again! 🔍");
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to fetch stock analysis");
       }
-  
-      if (!data || !data.response) {
-        throw new Error("Our AI needs a quick coffee break! Please try your request again in a moment. ☕️");
-      }
-      
-      try {
-        const analysis = JSON.parse(data.response);
-        setResponse(formatResponse(data));
-      } catch (parseError) {
-        console.error("Parse error:", parseError);
-        throw new Error("Our AI is taking a quick break! Please try your request again in a moment. 🤖✨");
-      }
+
+      const data = await res.json();
+      const stockData = parseAIData(data);
+      setResponse(formatResponse(stockData));
     } catch (err) {
-      setResponse(null);
-      setError(err.message || "Our systems need a quick refresh. Please try again! 🔄");
+      setError(err.message);
     }
   };
 
-  const formatResponse = (data) => {
-    const analysis = JSON.parse(data.response);
-    const stockData = analysis.stock_summary;
+  const formatResponse = (stockData) => {
     const imageSrc = "/images/mind.svg"
-
     return (
       <div>
         {/* Primary Analysis Section */}
@@ -131,7 +103,7 @@ const StockAnalysisView = () => {
               <h4 className="text-xl font-bold">Important Metrics</h4>
             </div>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
                 <span className="block font-bold">Current Price</span>
                 <span className="text-lg">${stockData.current_metrics?.price?.toFixed(2) || 'N/A'}</span>
@@ -212,7 +184,7 @@ const StockAnalysisView = () => {
               </div>
               
               <div className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-3">
                   <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
                     <span className="block font-bold">Buy Point</span>
                     <span className="text-lg">${stockData.trade_setup?.buy_point?.toFixed(2) || 'N/A'}</span>
@@ -268,7 +240,7 @@ const StockAnalysisView = () => {
                 </div>
                 <h4 className="text-xl font-bold">Moving Averages (EMA)</h4>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-3">
                 <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
                   <span className="block font-bold">EMA 50</span>
                   <span>${stockData.technical_analysis?.moving_averages?.ema_50?.toFixed(2) || 'N/A'}</span>
@@ -355,17 +327,19 @@ const StockAnalysisView = () => {
                 <h4 className="text-xl font-bold">Quarterly EPS Growth</h4>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-3">
-                {stockData.fundamental_analysis?.quarterly_eps_growth?.map((growth, index) => (
-                  <div key={index} className="text-center p-2 bg-black rounded-lg">
-                    <span className="block font-bold">Q{3 - index}</span>
-                    <span className={`text-lg font-semibold ${growth > 0 ? 'text-green-500' : 'text-red-500'}`}>
-                      {(growth * 100).toFixed(1)}%
-                    </span>
-                  </div>
-                ))}
+              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-3">
+                  {stockData.fundamental_analysis?.quarterly_eps_growth?.map((growth, index) => (
+                    <div key={index} className="text-center p-2 bg-black rounded-lg">
+                      <span className="block font-bold">Q{3 - index}</span>
+                      <span className={`text-lg font-semibold ${growth > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                        {(growth * 100).toFixed(1)}%
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-sm mt-2">{stockData.fundamental_analysis?.quarterly_eps_growth_trend}</p>
               </div>
-              <p className="text-sm mt-2">{stockData.fundamental_analysis?.quarterly_eps_growth_trend}</p>
             </div>
 
             {/* Growth Trends */}  
@@ -529,6 +503,69 @@ const StockAnalysisView = () => {
     );
   };
 
+  const parseAIData = (data) => {
+    const analysis = JSON.parse(data.response);
+    const stockData = analysis.stock_summary;
+
+    setAnalysisData({
+      ticker: stockData.ticker,
+      trade_setup: {
+        buy_point: stockData.trade_setup?.buy_point,
+        target_price: stockData.trade_setup?.target_price,
+        stop_loss: stockData.trade_setup?.stop_loss,
+        setup_type: stockData.trade_setup?.setup_type
+      },
+      technical_analysis: {
+        trend: stockData.technical_analysis?.trend,
+        distance_from_52_week_high: stockData.technical_analysis?.distance_from_52_week_high,
+        volume_analysis: stockData.technical_analysis?.volume_analysis,
+        technical_setup_trigger_key_triggers: stockData.technical_analysis?.technical_setup_trigger_key_triggers,
+        technical_setup_trigger_risk_factors: stockData.technical_analysis?.technical_setup_trigger_risk_factors
+      },
+      fundamental_analysis: {
+        quarterly_eps_growth: stockData.fundamental_analysis?.quarterly_eps_growth,
+        annual_growth_trend: stockData.fundamental_analysis?.annual_growth_trend,
+        industry_position: stockData.fundamental_analysis?.industry_position,
+        sector_performance: stockData.fundamental_analysis?.sector_performance
+      },
+      institutional_ownership: {
+        institutional_ownership_trend: stockData.institutional_ownership?.institutional_ownership_trend
+      },
+      market_analysis: {
+        market_sentiment: stockData.market_analysis?.market_sentiment,
+        market_trend: stockData.market_analysis?.market_trend
+      },
+      risk_assessment: {
+        market_conditions: stockData.risk_assessment?.market_conditions,
+        technical_risks: stockData.risk_assessment?.technical_risks,
+        setup_risks: stockData.risk_assessment?.setup_risks
+      }
+    });
+
+    return stockData;
+  };
+
+  const handleAskAi = () => {
+    try {
+      if (analysisData.ticker) {
+        // Encode the data as URL parameters
+        const params = new URLSearchParams({
+          data: JSON.stringify(analysisData)
+        }).toString();
+
+        // Open the URL with parameters
+        window.open(`${useRagUrl}/ask?${params}`, '_blank');
+      } else {
+        // Open URL without parameters if no data
+        window.open(`${useRagUrl}/ask`, '_blank');
+      }
+    } catch (err) {
+      console.error('Error processing data:', err);
+      // Open URL without parameters if there's an error
+      window.open(`${useRagUrl}/ask`, '_blank');
+    }
+  };
+
   return (
     <div className="bg-black text-gray-300 min-h-screen flex flex-col items-center justify-start py-4 px-4 relative">
       <div className="w-full max-w-3xl mt-4 mx-auto">
@@ -541,6 +578,12 @@ const StockAnalysisView = () => {
           <h1 className="text-3xl font-extrabold text-custom-purple text-center mt-4 mb-4">
             Stock Analysis Assistant
           </h1>
+          <button
+            onClick={handleAskAi}
+            className="mb-4 bg-custom-purple text-white py-2 px-4 rounded-lg hover:bg-black hover:text-custom-purple hover:border hover:border-custom-purple"
+          >
+            Ask AI
+          </button>
         </div>
         <form
           onSubmit={handleSubmit}
@@ -585,3 +628,6 @@ const StockAnalysisView = () => {
 };
 
 export default StockAnalysisView;
+
+
+
