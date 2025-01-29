@@ -1,10 +1,12 @@
+import { BiBuildingHouse } from "react-icons/bi";
+
 export const applicationsData = [
   {
     img: "/images/web-search.svg",
     name: "Web Search",
   },
   {
-    img: "/images/gmail.svg",
+    icon: BiBuildingHouse,
     name: "Real State",
   },
   {

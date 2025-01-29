@@ -33,7 +33,7 @@ const SignUp = () => {
 
   return (
     <div>
-      <div className="bg-gradient-to-tr from-[#818cf8] to-[#312e81] flex justify-center items-center min-h-screen">
+      <div className="bg-black flex justify-center items-center min-h-screen">
         <div className="mx-auto bg-white rounded-2xl max-w-md p-8 shadow-lg">
           <a className="flex items-center" href="/">
             <img src="/images/back.svg" alt="" />

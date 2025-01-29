@@ -4,12 +4,20 @@ import useCSRFToken from "../../hooks/useCSRFToken"
 import { useAuth } from "../../utils/AuthContext";
 import LoadingState from "./LoadingState/LoadingState";
 import useBackendUrl from "../../hooks/useBackendUrl";
-import Chart from "./Chart/Chart";
+import useRagUrl from "../../hooks/useChatUrl";
+
 
 const StockAnalysisView = () => {
   const [input, setInput] = useState("");
   const [response, setResponse] = useState(null);
   const [error, setError] = useState("");
+  const [aiQuestion, setAiQuestion] = useState("");
+  const [aiResponse, setAiResponse] = useState("");
+  const [isAiLoading, setIsAiLoading] = useState(false);
+  const [analysisData, setAnalysisData] = useState({
+    ticker: '',
+  });
+  const ragUrl = useRagUrl();
   const csrfToken = useCSRFToken();
   const { token } = useAuth();
   const backendUrl = useBackendUrl();
@@ -41,7 +49,6 @@ const StockAnalysisView = () => {
     setError("");
     setResponse(<LoadingState />);
 
-
     try {
       const formData = new FormData();
       formData.append("input", input);
@@ -58,101 +65,157 @@ const StockAnalysisView = () => {
         body: formData,
       });
 
-
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.error || "Failed to fetch stock analysis");
       }
 
       const data = await res.json();
-      console.log('this is the data from the backend', data)
-      setResponse(formatResponse(data));
+      const stockData = parseAIData(data);
+      setResponse(formatResponse(stockData));
     } catch (err) {
       setError(err.message);
     }
   };
 
-  const formatResponse = (data) => {
-    const analysis = JSON.parse(data.response);
-    const stockData = analysis.stock_summary;
-
+  const formatResponse = (stockData) => {
+    const imageSrc = "/images/mind.svg"
     return (
       <div>
         {/* Primary Analysis Section */}
         <div className="bg-black text-gray-300 shadow-md rounded-lg p-6 max-w-4xl mx-auto mb-6">
-          <h2 className="text-2xl font-bold mb-6 text-custom-purple">
-            📊 {stockData.ticker} Analysis
-          </h2>
-
+          {/* Stock Analysis Title */}
+          <div className="flex flex-col items-center justify-center p-4 mb-4">  
+            <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-16 h-16 sm:w-20 sm:h-20 sm:mb-2 sm:mb-0 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
+                <img src={imageSrc} alt={'hola'} className="w-8 h-8 sm:w-12 sm:h-12 transition-transform duration-300 group-hover:scale-110 object-contain"/>
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center text-custom-purple">
+              {stockData.ticker} Analysis
+            </h2>
+          </div>
+          
           {/* Current Metrics */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <div className="p-3 bg-custom-purple rounded-lg">
-              <span className="block font-bold">Current Price</span>
-              <span>${stockData.current_metrics?.price?.toFixed(2) || 'N/A'}</span>
+          <div className="mb-6">
+            <div className="flex items-center mb-3">
+              <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                <span className="text-lg">📊</span>
+              </div>
+              <h4 className="text-xl font-bold">Important Metrics</h4>
             </div>
-            <div className="p-3 bg-custom-purple rounded-lg">
-              <span className="block font-bold">Volume</span>
-              <span>{stockData.current_metrics?.volume?.toLocaleString() || 'N/A'}</span>
-            </div>
-            <div className="p-3 bg-custom-purple rounded-lg">
-              <span className="block font-bold">52W High</span>
-              <span>${stockData.current_metrics?.fifty_two_week?.high?.toFixed(2) || 'N/A'}</span>
-            </div>
-            <div className="p-3 bg-custom-purple rounded-lg">
-              <span className="block font-bold">52W Low</span>
-              <span>${stockData.current_metrics?.fifty_two_week?.low?.toFixed(2) || 'N/A'}</span>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <span className="block font-bold">Current Price</span>
+                <span className="text-lg">${stockData.current_metrics?.price?.toFixed(2) || 'N/A'}</span>
+              </div>
+              <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <span className="block font-bold">Volume</span>
+                <span className="text-lg">{stockData.current_metrics?.volume?.toLocaleString() || 'N/A'}</span>
+              </div>
+              <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <span className="block font-bold">52W High</span>
+                <span className="text-lg">${stockData.current_metrics?.fifty_two_week?.high?.toFixed(2) || 'N/A'}</span>
+              </div>
+              <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <span className="block font-bold">52W Low</span>
+                <span className="text-lg">${stockData.current_metrics?.fifty_two_week?.low?.toFixed(2) || 'N/A'}</span>
+              </div>
             </div>
           </div>
 
-          {/* Recommendation */}
+          {/* Recommendation Section */}
           <div className="border-t border-custom-purple py-4">
-            <h3 className="text-lg font-bold mb-4">🎯 Recommendation</h3>
-            <div className="p-4 bg-custom-purple rounded-lg">
-              <div className="text-2xl font-bold mb-4">{stockData.recommendation.action}</div>
+            {/* Recommendation Title */}
+            <div className="flex flex-col items-center justify-center p-4 mb-4">
+              <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-16 h-16 sm:w-20 sm:h-20 mb-2 sm:mb-0 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
+                  <img src={imageSrc} alt={'hola'} className="w-8 h-8 sm:w-12 sm:h-12 transition-transform duration-300 group-hover:scale-110 object-contain"/>
+              </div> 
+              <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center">Recommendation</h3>
+            </div>
 
-              <div className="mb-4">
-                <h4 className="font-bold mb-2">Key Triggers:</h4>
-                <ul className="list-disc list-inside">
+            {/* Action Recommendation */}
+            <div className="p-6 bg-custom-purple rounded-lg mb-4 hover:bg-opacity-80 transition-all duration-300">
+              <div className={`text-3xl font-bold text-center py-3 px-6 rounded-lg ${
+                stockData.recommendation.action.toLowerCase().includes('buy') ? 'bg-green-500/20 text-green-400' :
+                stockData.recommendation.action.toLowerCase().includes('sell') ? 'bg-red-500/20 text-red-400' :
+                'bg-yellow-500/20 text-yellow-400'
+              }`}>
+                {stockData.recommendation.action}
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <div className="flex items-center mb-3">
+                  <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                    <span className="text-lg">🎯</span>
+                  </div>
+                  <h4 className="text-xl font-bold">Key Triggers</h4>
+                </div>
+                <ul className="list-disc list-inside ml-11">
                   {stockData.recommendation.triggers.map((trigger, index) => (
                     <li key={index}>{trigger}</li>
                   ))}
                 </ul>
               </div>
 
-              <div className="mb-4">
-                <h4 className="font-bold mb-2">Risk Factors:</h4>
-                <ul className="list-disc list-inside">
+              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <div className="flex items-center mb-3">
+                  <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                    <span className="text-lg">⚠️</span>
+                  </div>
+                  <h4 className="text-xl font-bold">Risk Factors</h4>
+                </div>
+                <ul className="list-disc list-inside ml-11">
                   {stockData.recommendation.risk_factors.map((risk, index) => (
                     <li key={index}>{risk}</li>
                   ))}
                 </ul>
               </div>
+            </div>
 
-              {/* Trade Setup */}
-              <div className="border-t border-custom-purple py-4 space-y-4">
-                <h3 className="text-lg font-bold">🎯 Trade Setup</h3>
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="p-3 bg-custom-purple rounded-lg">
+            {/* Trade Setup Section */}
+            <div className="mt-6">
+              <div className="flex items-center mb-3">
+                <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                  <span className="text-lg">📈</span>
+                </div>
+                <h4 className="text-xl font-bold">Trade Setup</h4>
+              </div>
+              
+              <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-3">
+                  <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
                     <span className="block font-bold">Buy Point</span>
-                    <span>${stockData.trade_setup?.buy_point?.toFixed(2) || 'N/A'}</span>
+                    <span className="text-lg">${stockData.trade_setup?.buy_point?.toFixed(2) || 'N/A'}</span>
                   </div>
-                  <div className="p-3 bg-custom-purple rounded-lg">
+                  <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
                     <span className="block font-bold">Target</span>
-                    <span>${stockData.trade_setup?.target_price?.toFixed(2) || 'N/A'}</span>
+                    <span className="text-lg">${stockData.trade_setup?.target_price?.toFixed(2) || 'N/A'}</span>
                   </div>
-                  <div className="p-3 bg-custom-purple rounded-lg">
+                  <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
                     <span className="block font-bold">Stop Loss</span>
-                    <span>${stockData.trade_setup?.stop_loss?.toFixed(2) || 'N/A'}</span>
+                    <span className="text-lg">${stockData.trade_setup?.stop_loss?.toFixed(2) || 'N/A'}</span>
                   </div>
                 </div>
-                <div className="p-3 bg-custom-purple rounded-lg">
+                <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
                   <span className="block font-bold">Setup Type</span>
-                  <span>{stockData.trade_setup?.setup_type || 'N/A'}</span>
+                  <span className="text-lg">{stockData.trade_setup?.setup_type || 'N/A'}</span>
                 </div>
               </div>
-              <div>
-                <h4 className="font-bold mb-2">Risk Management:</h4>
-                <p>{stockData.recommendation.risk_management || 'N/A'}</p>
+            </div>
+
+            {/* Risk Management Section */}
+            <div className="mt-6">
+              <div className="flex items-center mb-3">
+                <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                  <span className="text-lg">🛡️</span>
+                </div>
+                <h4 className="text-xl font-bold">Risk Management</h4>
+              </div>
+              
+              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <p className="text-lg">{stockData.recommendation.risk_management || 'N/A'}</p>
               </div>
             </div>
           </div>
@@ -161,160 +224,346 @@ const StockAnalysisView = () => {
 
           {/* Technical Analysis */}
           <div className="border-t border-custom-purple py-4 space-y-4">
-            <h3 className="text-lg font-bold">📈 Technical Analysis</h3>
+            {/* Technical Analysis Title */}
+            <div className="flex flex-col items-center justify-center p-4 mb-4">
+              <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-16 h-16 sm:w-20 sm:h-20 mb-2 sm:mb-0 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
+                  <img src={imageSrc} alt={'hola'} className="w-8 h-8 sm:w-12 sm:h-12 transition-transform duration-300 group-hover:scale-110 object-contain"/>
+              </div> 
+              <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center">Technical Analysis</h3>
+            </div>
 
-            {/* Moving Averages */}
-            <div className="space-y-4">
-              <div className="grid grid-cols-3 gap-4">
-                <div className="p-3 bg-custom-purple rounded-lg">
+            {/* Moving Averages Section */}
+            <div className="mb-6">
+              <div className="flex items-center mb-3">
+                <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                  <span className="text-lg">📈</span>
+                </div>
+                <h4 className="text-xl font-bold">Moving Averages (EMA)</h4>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-3">
+                <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
                   <span className="block font-bold">EMA 50</span>
                   <span>${stockData.technical_analysis?.moving_averages?.ema_50?.toFixed(2) || 'N/A'}</span>
                 </div>
-                <div className="p-3 bg-custom-purple rounded-lg">
+                <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
                   <span className="block font-bold">EMA 150</span>
                   <span>${stockData.technical_analysis?.moving_averages?.ema_150?.toFixed(2) || 'N/A'}</span>
                 </div>
-                <div className="p-3 bg-custom-purple rounded-lg">
+                <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
                   <span className="block font-bold">EMA 200</span>
                   <span>${stockData.technical_analysis?.moving_averages?.ema_200?.toFixed(2) || 'N/A'}</span>
                 </div>
               </div>
+            </div>
 
-              {/* Trend Analysis */}
+            {/* Trend Analysis Section */}
+            <div className="mb-6">
+              <div className="flex items-center mb-3">
+                <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                  <span className="text-lg">🎯</span>
+                </div>
+                <h4 className="text-xl font-bold">Trend Analysis</h4>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-3 bg-custom-purple rounded-lg">
-                  <span className="block font-bold">Overall Trend</span>
-                  <span>{stockData.technical_analysis?.trend || 'N/A'}</span>
+                <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                  <span className="block font-bold mb-2">Overall Trend</span>
+                  <div className={`text-lg font-semibold ${
+                    stockData.technical_analysis?.trend?.includes('Bullish') ? 'text-green-500' :
+                    stockData.technical_analysis?.trend?.includes('Bearish') ? 'text-red-500' :
+                    'text-yellow-500'
+                  }`}>
+                    {stockData.technical_analysis?.trend || 'N/A'}
+                  </div>
                 </div>
-                <div className="p-3 bg-custom-purple rounded-lg">
-                  <span className="block font-bold">Distance from 52W High</span>
-                  <span>{stockData.technical_analysis?.distance_from_52_week_high || 'N/A'}</span>
+                <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                  <span className="block font-bold mb-2">Distance from 52W High</span>
+                  <span className="text-lg">
+                    {stockData.technical_analysis?.distance_from_52_week_high || 'N/A'}
+                  </span>
                 </div>
               </div>
+            </div>
 
-              {/* Volume Analysis */}
-              <div className="p-3 bg-custom-purple rounded-lg">
-                <span className="block font-bold mb-2">Volume and Volatility Pattern Analysis</span>
-                <p className="text-sm">{stockData.technical_analysis?.volume_analysis || 'N/A'}</p>
-                <p className="text-sm">{stockData.technical_analysis?.volatility_pattern || 'N/A'}</p>
+            {/* Volume Analysis */}
+            <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+              <span className="block font-bold mb-2">Volume and Volatility Pattern Analysis</span>
+              <p className="text-sm">{stockData.technical_analysis?.volume_analysis || 'N/A'}</p>
+              <p className="text-sm">{stockData.technical_analysis?.volatility_pattern || 'N/A'}</p>
+            </div>
+
+            {/* Technical Setup */}
+            <div className="space-y-3">
+              <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <span className="block font-bold mb-2">Technical Setup</span>
+                <p className="text-sm">{stockData.technical_analysis?.technical_setup || 'N/A'}</p>
+                <p className="text-sm">{stockData.technical_analysis?.technical_setup_trigger || 'N/A'}</p>
               </div>
 
-              {/* Technical Setup */}
-              <div className="space-y-3">
-                <div className="p-3 bg-custom-purple rounded-lg">
-                  <span className="block font-bold mb-2">Technical Setup</span>
-                  <p className="text-sm">{stockData.technical_analysis?.technical_setup || 'N/A'}</p>
-                  <p className="text-sm">{stockData.technical_analysis?.technical_setup_trigger || 'N/A'}</p>
-                </div>
-
-                {/* Key Triggers */}
-                <div className="p-3 bg-custom-purple rounded-lg">
-                  <span className="block font-bold mb-2">Key Triggers and Risks</span>
-                  <p className="text-sm">{stockData.technical_analysis?.technical_setup_trigger_key_triggers || 'N/A'}</p>
-                  <p className="text-sm">{stockData.technical_analysis?.technical_setup_trigger_risk_factors || 'N/A'}</p>
-                </div>
+              {/* Key Triggers */}
+              <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <span className="block font-bold mb-2">Key Triggers and Risks</span>
+                <p className="text-sm">{stockData.technical_analysis?.technical_setup_trigger_key_triggers || 'N/A'}</p>
+                <p className="text-sm">{stockData.technical_analysis?.technical_setup_trigger_risk_factors || 'N/A'}</p>
               </div>
             </div>
           </div>
         
           {/* Fundamental Analysis */}
           <div className="border-t border-custom-purple py-4 space-y-4">
-            <h3 className="text-lg font-bold">📊 Fundamental Analysis</h3>
+            {/* Fundamental Analysis Title */}
+            <div className="flex flex-col items-center justify-center p-4 mb-4">
+                <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-16 h-16 sm:w-20 sm:h-20 mb-2 sm:mb-0 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
+                  <img src={imageSrc} alt={'hola'} className="w-8 h-8 sm:w-12 sm:h-12 transition-transform duration-300 group-hover:scale-110 object-contain"/>
+                </div> 
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center">Fundamental Analysis</h3>
+            </div>
             
             {/* EPS Growth */}
-            <div className="p-3 bg-custom-purple rounded-lg mb-4">
-              <h4 className="font-bold mb-2">Quarterly EPS Growth</h4>
-              <div className="grid grid-cols-3 gap-4 mb-3">
-                {stockData.fundamental_analysis?.quarterly_eps_growth?.map((growth, index) => (
-                  <div key={index} className="text-center">
-                    <span className="block font-bold">Q{3 - index}</span>
-                    <span className={`${growth > 0 ? 'text-green-500' : 'text-red-500'}`}>
-                      {(growth * 100).toFixed(1)}%
-                    </span>
-                  </div>
-                ))}
+            <div className="mb-6">
+              <div className="flex items-center mb-3">
+                <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                  <span className="text-lg">📈</span>
+                </div>
+                <h4 className="text-xl font-bold">Quarterly EPS Growth</h4>
               </div>
-              <p className="text-sm mt-2">{stockData.fundamental_analysis?.quarterly_eps_growth_trend}</p>
+              
+              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-3">
+                  {stockData.fundamental_analysis?.quarterly_eps_growth?.map((growth, index) => (
+                    <div key={index} className="text-center p-2 bg-black rounded-lg">
+                      <span className="block font-bold">Q{3 - index}</span>
+                      <span className={`text-lg font-semibold ${growth > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                        {(growth * 100).toFixed(1)}%
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-sm mt-2">{stockData.fundamental_analysis?.quarterly_eps_growth_trend}</p>
+              </div>
             </div>
 
-            {/* Growth Trends */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-3 bg-custom-purple rounded-lg">
-                <h4 className="font-bold mb-2">Annual Growth</h4>
-                <p className="text-sm">{stockData.fundamental_analysis?.annual_growth_trend}</p>
+            {/* Growth Trends */}  
+            <div className="mb-6">
+              <div className="flex items-center mb-3">
+                <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                  <span className="text-lg">📊</span>
+                </div>
+                <h4 className="text-xl font-bold">Growth Analysis</h4>
               </div>
-              <div className="p-3 bg-custom-purple rounded-lg">
-                <h4 className="font-bold mb-2">Industry Position</h4>
-                <p className="text-sm">{stockData.fundamental_analysis?.industry_position}</p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                  <div className="flex items-center mb-2">
+                    <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-2">
+                      <span className="text-sm">📅</span>
+                    </div>
+                    <h4 className="font-bold">Annual Growth</h4>
+                  </div>
+                  <p className="text-sm">{stockData.fundamental_analysis?.annual_growth_trend}</p>
+                </div>
+                <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                  <div className="flex items-center mb-2">
+                    <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-2">
+                      <span className="text-sm">🏢</span>
+                    </div>
+                    <h4 className="font-bold">Industry Position</h4>
+                  </div>
+                  <p className="text-sm">{stockData.fundamental_analysis?.industry_position}</p>
+                </div>
               </div>
             </div>
 
             {/* Sector Performance */}
-            <div className="p-3 bg-custom-purple rounded-lg">
+            <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
               <h4 className="font-bold mb-2">Sector Performance</h4>
               <p className="text-sm">{stockData.fundamental_analysis?.sector_performance}</p>
             </div>
-            </div>
+          </div>
 
-            {/* Institutional Ownership */}
-            <div className="border-t border-custom-purple py-4 space-y-4">
-              <h3 className="text-lg font-bold">🏢 Institutional Ownership</h3>
+          {/* Institutional Ownership */}
+          <div className="border-t border-custom-purple py-4">    
+              <div className="flex flex-col items-center justify-center p-4 mb-4">
+                <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-16 h-16 sm:w-20 sm:h-20 mb-2 sm:mb-0 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
+                    <img src={imageSrc} alt={'hola'} className="w-8 h-8 sm:w-12 sm:h-12 transition-transform duration-300 group-hover:scale-110 object-contain"/>
+                </div>  
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center">Institutional Ownership</h3>
+              </div>
+              
               <div className="space-y-3">
-                <div className="p-3 bg-custom-purple rounded-lg">
-                  <span className="block font-bold mb-2">Current Ownership</span>
-                  <p className="text-sm">
+                <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                  <div className="flex items-center mb-2">
+                    <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                      <span className="text-lg">🏦</span>
+                    </div>
+                    <span className="text-xl font-bold">Current Ownership</span>
+                  </div>
+                  <p className="text-sm ml-11">
                     {stockData.institutional_ownership?.institutional_ownership || 'No ownership data available'}
                   </p>
                 </div>
-                <div className="p-3 bg-custom-purple rounded-lg">
-                  <span className="block font-bold mb-2">Ownership Trend</span>
-                  <p className="text-sm">
+                <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                  <div className="flex items-center mb-2">
+                    <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                      <span className="text-lg">📈</span>
+                    </div>
+                    <span className="text-xl font-bold">Ownership Trend</span>
+                  </div>
+                  <p className="text-sm ml-11">
                     {stockData.institutional_ownership?.institutional_ownership_trend || 'No trend data available'}
                   </p>
                 </div>
               </div>
-            </div>
+          </div>
 
           {/* Market Analysis */}
-          <div className="border-t border-custom-purple py-4 space-y-4">
-            <h3 className="text-lg font-bold">🌍 Market Analysis</h3>
+          <div className="border-t border-custom-purple py-4">
+            {/* Market Analysis Title */}
+            <div className="flex flex-col items-center justify-center p-4 mb-4">
+                <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-16 h-16 sm:w-20 sm:h-20 mb-2 sm:mb-0 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
+                  <img src={imageSrc} alt={'hola'} className="w-8 h-8 sm:w-12 sm:h-12 transition-transform duration-300 group-hover:scale-110 object-contain"/>
+                </div>
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center">Market Analysis</h3>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-3 bg-custom-purple rounded-lg">
-                <span className="block font-bold">Market Sentiment</span>
-                <span>{stockData.market_analysis?.market_sentiment || 'N/A'}</span>
+              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <div className="flex items-center mb-2">
+                  <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                    <span className="text-lg">🎯</span>
+                  </div>
+                  <span className="text-xl font-bold">Market Sentiment</span>
+                </div>
+                <div className={`ml-11 text-lg font-semibold ${
+                  stockData.market_analysis?.market_sentiment?.toLowerCase().includes('bullish') ? 'text-green-400' :
+                  stockData.market_analysis?.market_sentiment?.toLowerCase().includes('bearish') ? 'text-red-400' :
+                  'text-yellow-400'
+                }`}>
+                  {stockData.market_analysis?.market_sentiment || 'N/A'}
+                </div>
               </div>
-              <div className="p-3 bg-custom-purple rounded-lg">
-                <span className="block font-bold">Market Trend</span>
-                <span>{stockData.market_analysis?.market_trend || 'N/A'}</span>
+              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <div className="flex items-center mb-2">
+                  <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                    <span className="text-lg">📊</span>
+                  </div>
+                  <span className="text-xl font-bold">Market Trend</span>
+                </div>
+                <div className={`ml-11 text-lg font-semibold ${
+                  stockData.market_analysis?.market_trend?.toLowerCase().includes('up') ? 'text-green-400' :
+                  stockData.market_analysis?.market_trend?.toLowerCase().includes('down') ? 'text-red-400' :
+                  'text-yellow-400'
+                }`}>
+                  {stockData.market_analysis?.market_trend || 'N/A'}
+                </div>
               </div>
             </div>
           </div>
-
-
 
           {/* Risk Assessment */}
-          <div className="border-t border-custom-purple py-4 space-y-4">
-            <h3 className="text-lg font-bold">⚠️ Risk Assessment</h3>
-            <div className="space-y-2">
-              <div className="p-3 bg-custom-purple rounded-lg">
-                <span className="block font-bold">Market Conditions</span>
-                <span>{stockData.risk_assessment?.market_conditions || 'N/A'}</span>
+          <div className="border-t border-custom-purple py-4">
+            {/* Risk Assessment Title */}
+            <div className="flex flex-col items-center justify-center p-4 mb-4">
+               <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-16 h-16 sm:w-20 sm:h-20 mb-2 sm:mb-0 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
+                  <img src={imageSrc} alt={'hola'} className="w-8 h-8 sm:w-12 sm:h-12 transition-transform duration-300 group-hover:scale-110 object-contain"/>
+                </div>
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center">Risk Assessment</h3>
+            </div>
+            <div className="space-y-3">
+              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <div className="flex items-center mb-2">
+                  <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                    <span className="text-lg">🌍</span>
+                  </div>
+                  <span className="text-xl font-bold">Market Conditions</span>
+                </div>
+                <p className="text-sm ml-11">{stockData.risk_assessment?.market_conditions || 'N/A'}</p>
               </div>
-              <div className="p-3 bg-custom-purple rounded-lg">
-                <span className="block font-bold">Technical Risks</span>
-                <span>{stockData.risk_assessment?.technical_risks || 'N/A'}</span>
+              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <div className="flex items-center mb-2">
+                  <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                    <span className="text-lg">⚠️</span>
+                  </div>
+                  <span className="text-xl font-bold">Technical Risks</span>
+                </div>
+                <p className="text-sm ml-11">{stockData.risk_assessment?.technical_risks || 'N/A'}</p>
               </div>
-              <div className="p-3 bg-custom-purple rounded-lg">
-                <span className="block font-bold">Setup Risks</span>
-                <span>{stockData.risk_assessment?.setup_risks || 'N/A'}</span>
+              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <div className="flex items-center mb-2">
+                  <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                    <span className="text-lg">🎯</span>
+                  </div>
+                  <span className="text-xl font-bold">Setup Risks</span>
+                </div>
+                <p className="text-sm ml-11">{stockData.risk_assessment?.setup_risks || 'N/A'}</p>
               </div>
             </div>
           </div>
-
 
         </div>
       </div>
     );
+  };
+
+  const parseAIData = (data) => {
+    const analysis = JSON.parse(data.response);
+    const stockData = analysis.stock_summary;
+
+    setAnalysisData({
+      ticker: stockData.ticker,
+      trade_setup: {
+        buy_point: stockData.trade_setup?.buy_point,
+        target_price: stockData.trade_setup?.target_price,
+        stop_loss: stockData.trade_setup?.stop_loss,
+        setup_type: stockData.trade_setup?.setup_type
+      },
+      technical_analysis: {
+        trend: stockData.technical_analysis?.trend,
+        distance_from_52_week_high: stockData.technical_analysis?.distance_from_52_week_high,
+        volume_analysis: stockData.technical_analysis?.volume_analysis,
+        technical_setup_trigger_key_triggers: stockData.technical_analysis?.technical_setup_trigger_key_triggers,
+        technical_setup_trigger_risk_factors: stockData.technical_analysis?.technical_setup_trigger_risk_factors
+      },
+      fundamental_analysis: {
+        quarterly_eps_growth: stockData.fundamental_analysis?.quarterly_eps_growth,
+        annual_growth_trend: stockData.fundamental_analysis?.annual_growth_trend,
+        industry_position: stockData.fundamental_analysis?.industry_position,
+        sector_performance: stockData.fundamental_analysis?.sector_performance
+      },
+      institutional_ownership: {
+        institutional_ownership_trend: stockData.institutional_ownership?.institutional_ownership_trend
+      },
+      market_analysis: {
+        market_sentiment: stockData.market_analysis?.market_sentiment,
+        market_trend: stockData.market_analysis?.market_trend
+      },
+      risk_assessment: {
+        market_conditions: stockData.risk_assessment?.market_conditions,
+        technical_risks: stockData.risk_assessment?.technical_risks,
+        setup_risks: stockData.risk_assessment?.setup_risks
+      }
+    });
+
+    return stockData;
+  };
+
+  const handleAskAi = () => {
+    try {
+      if (analysisData.ticker) {
+        // Encode the data as URL parameters
+        const params = new URLSearchParams({
+          data: JSON.stringify(analysisData)
+        }).toString();
+
+        // Open the URL with parameters
+        window.open(`${useRagUrl}/ask?${params}`, '_blank');
+      } else {
+        // Open URL without parameters if no data
+        window.open(`${useRagUrl}/ask`, '_blank');
+      }
+    } catch (err) {
+      console.error('Error processing data:', err);
+      // Open URL without parameters if there's an error
+      window.open(`${useRagUrl}/ask`, '_blank');
+    }
   };
 
   return (
@@ -329,6 +578,12 @@ const StockAnalysisView = () => {
           <h1 className="text-3xl font-extrabold text-custom-purple text-center mt-4 mb-4">
             Stock Analysis Assistant
           </h1>
+          <button
+            onClick={handleAskAi}
+            className="mb-4 bg-custom-purple text-white py-2 px-4 rounded-lg hover:bg-black hover:text-custom-purple hover:border hover:border-custom-purple"
+          >
+            Ask AI
+          </button>
         </div>
         <form
           onSubmit={handleSubmit}
@@ -373,3 +628,6 @@ const StockAnalysisView = () => {
 };
 
 export default StockAnalysisView;
+
+
+
