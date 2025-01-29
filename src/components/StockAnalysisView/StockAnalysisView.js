@@ -554,15 +554,15 @@ const StockAnalysisView = () => {
         }).toString();
 
         // Open the URL with parameters
-        window.open(`${useRagUrl}/ask?${params}`, '_blank');
+        window.open(`${ragUrl}/ask?${params}`, '_blank');
       } else {
         // Open URL without parameters if no data
-        window.open(`${useRagUrl}/ask`, '_blank');
+        window.open(`${ragUrl}/ask`, '_blank');
       }
     } catch (err) {
       console.error('Error processing data:', err);
       // Open URL without parameters if there's an error
-      window.open(`${useRagUrl}/ask`, '_blank');
+      window.open(`${ragUrl}/ask`, '_blank');
     }
   };
 
