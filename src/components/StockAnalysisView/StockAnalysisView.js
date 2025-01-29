@@ -100,7 +100,7 @@ const StockAnalysisView = () => {
               <h4 className="text-xl font-bold">Important Metrics</h4>
             </div>
             
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
               <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
                 <span className="block font-bold">Current Price</span>
                 <span className="text-lg">${stockData.current_metrics?.price?.toFixed(2) || 'N/A'}</span>
@@ -181,7 +181,7 @@ const StockAnalysisView = () => {
               </div>
               
               <div className="space-y-4">
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                   <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
                     <span className="block font-bold">Buy Point</span>
                     <span className="text-lg">${stockData.trade_setup?.buy_point?.toFixed(2) || 'N/A'}</span>
@@ -237,7 +237,7 @@ const StockAnalysisView = () => {
                 </div>
                 <h4 className="text-xl font-bold">Moving Averages (EMA)</h4>
               </div>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
                   <span className="block font-bold">EMA 50</span>
                   <span>${stockData.technical_analysis?.moving_averages?.ema_50?.toFixed(2) || 'N/A'}</span>
@@ -324,19 +324,17 @@ const StockAnalysisView = () => {
                 <h4 className="text-xl font-bold">Quarterly EPS Growth</h4>
               </div>
               
-              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
-                <div className="grid grid-cols-3 gap-4 mb-3">
-                  {stockData.fundamental_analysis?.quarterly_eps_growth?.map((growth, index) => (
-                    <div key={index} className="text-center p-2 bg-black rounded-lg">
-                      <span className="block font-bold">Q{3 - index}</span>
-                      <span className={`text-lg font-semibold ${growth > 0 ? 'text-green-500' : 'text-red-500'}`}>
-                        {(growth * 100).toFixed(1)}%
-                      </span>
-                    </div>
-                  ))}
-                </div>
-                <p className="text-sm mt-2">{stockData.fundamental_analysis?.quarterly_eps_growth_trend}</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-3">
+                {stockData.fundamental_analysis?.quarterly_eps_growth?.map((growth, index) => (
+                  <div key={index} className="text-center p-2 bg-black rounded-lg">
+                    <span className="block font-bold">Q{3 - index}</span>
+                    <span className={`text-lg font-semibold ${growth > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                      {(growth * 100).toFixed(1)}%
+                    </span>
+                  </div>
+                ))}
               </div>
+              <p className="text-sm mt-2">{stockData.fundamental_analysis?.quarterly_eps_growth_trend}</p>
             </div>
 
             {/* Growth Trends */}  
