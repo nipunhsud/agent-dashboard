@@ -630,7 +630,10 @@ const StockAnalysisView = () => {
               </div>
             </div>
             <button
-              type="submit"
+              onClick={(e) => {
+                e.preventDefault();
+                handleSubmit(e);
+              }}
               className="w-full bg-black text-white py-4 px-6 rounded-lg text-lg font-semibold hover:bg-opacity-80 transform hover:scale-[1.02] transition-all duration-200 flex items-center justify-center space-x-2"
             >
               <span>Analyze Stock</span>
