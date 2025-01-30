@@ -5,6 +5,8 @@ import { useAuth } from "../../utils/AuthContext";
 import LoadingState from "./LoadingState/LoadingState";
 import useBackendUrl from "../../hooks/useBackendUrl";
 import useRagUrl from "../../hooks/useChatUrl";
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { db, auth } from '../../config/firebase';
 
 
 const StockAnalysisView = () => {
@@ -23,6 +25,15 @@ const StockAnalysisView = () => {
   const backendUrl = useBackendUrl();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showChatModal, setShowChatModal] = useState(false);
+  const [showSubscribeModal, setShowSubscribeModal] = useState(false);
+
+  useEffect(() => {
+    // Load Stripe script
+    const script = document.createElement('script');
+    script.src = 'https://js.stripe.com/v3/buy-button.js';
+    script.async = true;
+    document.body.appendChild(script);
+  }, []);
 
   const handlePrintAnalysis = () => {
     const analysisContent = document.getElementById('analysis-content');
@@ -72,8 +83,17 @@ const StockAnalysisView = () => {
         return;
       }
       
+      if (res.status === 429) {
+        handleLimitReached();
+        return;
+      }
+      
       if (!res.ok) {
         const errorData = await res.json();
+        if (errorData.error?.toLowerCase().includes('daily limit')) {
+          handleLimitReached();
+          return;
+        }
         throw new Error(errorData.error || "Failed to fetch stock analysis");
       }
 
@@ -82,6 +102,9 @@ const StockAnalysisView = () => {
       setResponse(formatResponse(stockData));
     } catch (err) {
       setError(err.message);
+      if (err.message?.toLowerCase().includes('daily limit')) {
+        handleLimitReached();
+      }
     }
   };
 
@@ -581,6 +604,68 @@ const StockAnalysisView = () => {
     setShowAuthModal(true);
   };
 
+  const checkSubscription = async () => {
+    try {
+      // Get current user's email from auth context
+      const userEmail = auth.currentUser?.email;
+      
+      if (!userEmail) {
+        console.error("No user email found");
+        return false;
+      }
+
+      // Query Firestore for stripe_customers collection
+      const stripeCustomersRef = collection(db, 'stripe_customers');
+      const q = query(stripeCustomersRef, where('email', '==', userEmail));
+      const querySnapshot = await getDocs(q);
+
+      // If document exists, user has subscription
+      const hasSubscription = !querySnapshot.empty;
+      
+      if (!hasSubscription) {
+        setShowSubscribeModal(true);
+      }
+      
+      return hasSubscription;
+
+    } catch (err) {
+      console.error("Error checking subscription:", err);
+      setShowSubscribeModal(true); // Show modal by default if check fails
+      return false;
+    }
+  };
+
+  // Update handleLimitReached to use this check
+  const handleLimitReached = async () => {
+    const hasSubscription = await checkSubscription();
+    if (!hasSubscription) {
+      setShowSubscribeModal(true);
+    } else {
+      setError("Unexpected error: Limit reached with active subscription. Please contact support.");
+    }
+  };
+
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        // Mobile share API
+        await navigator.share({
+          title: `${analysisData.ticker} Stock Analysis by Quanta AI`,
+          text: `Check out this AI-powered analysis of ${analysisData.ticker} stock`,
+          url: window.location.href
+        });
+      } else {
+        // Fallback to copy link
+        const url = window.location.href;
+        await navigator.clipboard.writeText(url);
+        // You might want to add a toast notification here
+        alert("Link copied to clipboard!");
+      }
+    } catch (err) {
+      console.error("Error sharing:", err);
+    }
+  };
+
   return (
     <div className="bg-black text-gray-300 min-h-screen flex flex-col items-center justify-start py-4 px-4 relative">
       <div className="w-full max-w-3xl mt-4 mx-auto">
@@ -653,13 +738,23 @@ const StockAnalysisView = () => {
         {error && <div className="text-red-400 text-center mt-3">{error}</div>}
       </div>
 
-      {/* Print Button */}
-      <button
-        onClick={() => window.print()}
-        className="fixed bottom-4 right-4 bg-custom-purple text-white py-2 px-4 rounded-lg shadow-lg hover:bg-black hover:text-custom-purple hover:border hover:border-custom-purple"
-      >
-        Print Analysis
-      </button>
+      {/* Share and Print Buttons */}
+      <div className="fixed bottom-4 right-4 flex space-x-2">
+        <button
+          onClick={handleShare}
+          className="bg-custom-purple text-white py-2 px-4 rounded-lg shadow-lg hover:bg-black hover:text-custom-purple hover:border hover:border-custom-purple flex items-center space-x-2"
+        >
+          <span>Share</span>
+          <span className="text-xl">📤</span>
+        </button>
+        <button
+          onClick={() => window.print()}
+          className="bg-custom-purple text-white py-2 px-4 rounded-lg shadow-lg hover:bg-black hover:text-custom-purple hover:border hover:border-custom-purple flex items-center space-x-2"
+        >
+          <span>Print</span>
+          <span className="text-xl">🖨️</span>
+        </button>
+      </div>
 
       {/* Authentication Modal */}
       {showAuthModal && (
@@ -726,6 +821,36 @@ const StockAnalysisView = () => {
               >
                 Cancel
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Subscription Modal */}
+      {showSubscribeModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-custom-purple p-6 rounded-lg shadow-xl max-w-md w-full mx-4 relative">
+            <button
+              onClick={() => setShowSubscribeModal(false)}
+              className="absolute top-2 right-2 text-gray-300 hover:text-white transition-colors"
+              aria-label="Close modal"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            
+            <h2 className="text-xl font-bold mb-4 text-center">Upgrade to Premium</h2>
+            <p className="text-center mb-6">
+              You've reached your free analysis limit. Upgrade to Premium for unlimited AI-powered stock analysis! 🚀
+            </p>
+            
+            <div className="flex justify-center">
+              <stripe-buy-button
+                buy-button-id="buy_btn_1QmFZGP0joiUG98hoXRbIhpp"
+                publishable-key="pk_test_51QlJZJP0joiUG98hPgEP93spbGIC35pWJHThVy3wlxkNba2URZr1krOL62jgVEuw9wEgObmcWsagvhndaBTaoBIk00m9aHsLPP"
+              >
+              </stripe-buy-button>
             </div>
           </div>
         </div>
