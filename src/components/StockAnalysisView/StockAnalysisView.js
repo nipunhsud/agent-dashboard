@@ -651,7 +651,8 @@ const StockAnalysisView = () => {
         // Mobile share API
         await navigator.share({
           title: `${analysisData.ticker} Stock Analysis by Quanta AI`,
-          text: `Check out this AI-powered analysis of ${analysisData.ticker} stock`,
+          text: ` Buy point: ${analysisData.trade_setup?.buy_point} Target Price: ${analysisData.trade_setup?.target_price} Stop Loss: ${analysisData.trade_setup?.stop_loss}`,
+          triggers: analysisData.technical_analysis?.technical_setup_trigger_key_triggers,
           url: window.location.href
         });
       } else {
