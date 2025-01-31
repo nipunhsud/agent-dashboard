@@ -35,11 +35,13 @@ const Header = () => {
     <nav className="bg-black sticky top-0 z-50">
       {/* Desktop Header */}
       <header className="mx-auto flex items-center justify-between py-4 px-4 hidden md:flex">
-        <img
-          src={logo}
-          alt="Logo"
-          className="w-48 h-auto md:w-60 lg:w-72" 
-        />
+        <Link to="/">
+          <img
+            src={logo}
+            alt="Logo"
+            className="w-48 h-auto md:w-60 lg:w-72" 
+          />
+        </Link>
         {user?.email ? (
           <Menu as="div" className="relative inline-block text-left">
             <MenuButton className="flex items-center gap-x-1.5 bg-white px-3 py-2 text-sm font-semibold text-gray-900 rounded-md shadow-sm hover:bg-gray-100">
@@ -81,11 +83,13 @@ const Header = () => {
 
       {/* Mobile Header */}
       <div className="flex items-center justify-between md:hidden px-4 py-3">
-        <img
-          src={logo}
-          alt="Logo"
-          className="w-40 h-auto sm:w-44 md:w-48" 
-        />
+        <Link to="/">
+          <img
+            src={logo}
+            alt="Logo"
+            className="w-40 h-auto sm:w-44 md:w-48" 
+          />
+        </Link>
         <button onClick={() => setIsCollapsed(!isCollapsed)} aria-label="Menu">
           <svg
             xmlns="http://www.w3.org/2000/svg"
