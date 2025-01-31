@@ -8,6 +8,7 @@ const SignIn = () => {
   const [email, setEmail] = useState(""); 
   const [password, setPassword] = useState(""); 
   const [error, setError] = useState(""); 
+  const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
 
 
@@ -18,10 +19,14 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(""); 
+    setSuccessMessage("");
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      navigate('/stocks');
+      setSuccessMessage("Sign in successful!");
+      setTimeout(() => {
+        navigate('/stocks');
+      }, 1500);
     } catch (error) {
       setError(error.message);
     }
@@ -45,6 +50,11 @@ const SignIn = () => {
           </div>
 
           <form class="contents" onSubmit={handleSubmit}>
+            {successMessage && (
+                <div className="bg-[#6366f1]/10 border border-[#6366f1] text-[#6366f1] px-4 py-4 rounded-lg flex items-center justify-center">
+                  <p className="text-sm font-medium mb-0">Your sign in was succesful!.</p>
+                </div>
+            )}
             <input type="hidden" name="" value="" autocomplete="off" />
             <div class="my-5 relative">
               <input

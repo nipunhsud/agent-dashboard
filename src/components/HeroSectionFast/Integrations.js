@@ -13,7 +13,8 @@ const Integrations = () => {
       {randomizedApplications.map((application) => (
         <IntegrationCard
           key={application.name}
-          img={application.img}
+          img={application.img ?? undefined}
+          icon={application.icon?.()}
           name={application.name}
         />
       ))}
