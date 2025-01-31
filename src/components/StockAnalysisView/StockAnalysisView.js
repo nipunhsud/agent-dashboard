@@ -53,6 +53,15 @@ const StockAnalysisView = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    // Input validation
+    if (!input || input.trim() === '') {
+      setError("Please enter a stock symbol");
+      return;
+    }
+
+    // Clean the input - remove spaces and special characters
+    const cleanInput = input.trim().replace(/[^a-zA-Z]/g, '').toUpperCase();
+
     if (!csrfToken) {
       console.error("CSRF token is not set yet.");
       setError("Unable to submit the form. CSRF token is missing.");
@@ -64,7 +73,7 @@ const StockAnalysisView = () => {
 
     try {
       const formData = new FormData();
-      formData.append("input", input);
+      formData.append("input", cleanInput);
 
       console.log('this is the backend url', backendUrl)
 
