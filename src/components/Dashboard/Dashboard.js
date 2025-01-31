@@ -8,57 +8,32 @@ const Dashboard = () => {
   const [stockAnalyses, setStockAnalyses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const auth = useAuth();
+  const { token } = useAuth();
   const csrfToken = useCSRFToken();
   const backendUrl = useBackendUrl();
   const [analysisData, setAnalysisData] = useState({
     ticker: '',
   });
-  const parseAIData = (data) => {
-    const analysis = JSON.parse(data);
-    const stockData = analysis.stock_summary;
 
-    // Set the analysis data for the chat feature
-    setAnalysisData({
-      ticker: stockData.ticker,
-      trade_setup: {
-        buy_point: stockData.trade_setup?.buy_point,
-        target_price: stockData.trade_setup?.target_price,
-        stop_loss: stockData.trade_setup?.stop_loss,
-        setup_type: stockData.trade_setup?.setup_type
-      },
-      technical_analysis: {
-        trend: stockData.technical_analysis?.trend,
-        distance_from_52_week_high: stockData.technical_analysis?.distance_from_52_week_high,
-        volume_analysis: stockData.technical_analysis?.volume_analysis,
-        technical_setup_trigger_key_triggers: stockData.technical_analysis?.technical_setup_trigger_key_triggers,
-        technical_setup_trigger_risk_factors: stockData.technical_analysis?.technical_setup_trigger_risk_factors
-      },
-      fundamental_analysis: {
-        quarterly_eps_growth: stockData.fundamental_analysis?.quarterly_eps_growth,
-        annual_growth_trend: stockData.fundamental_analysis?.annual_growth_trend,
-        industry_position: stockData.fundamental_analysis?.industry_position,
-        sector_performance: stockData.fundamental_analysis?.sector_performance
-      },
-      institutional_ownership: {
-        institutional_ownership_trend: stockData.institutional_ownership?.institutional_ownership_trend
-      },
-      market_analysis: {
-        market_sentiment: stockData.market_analysis?.market_sentiment,
-        market_trend: stockData.market_analysis?.market_trend
-      },
-      risk_assessment: {
-        market_conditions: stockData.risk_assessment?.market_conditions,
-        technical_risks: stockData.risk_assessment?.technical_risks,
-        setup_risks: stockData.risk_assessment?.setup_risks
-      }
-    });
-
-    return stockData;
+  const parseAnalysisData = (analysisString) => {
+    try {
+      // Remove any control characters and escape sequences
+      const sanitizedString = analysisString
+        .replace(/[\u0000-\u001F\u007F-\u009F]/g, '')
+        .replace(/\n/g, '\\n')
+        .replace(/\r/g, '\\r')
+        .replace(/\t/g, '\\t');
+      
+      return JSON.parse(sanitizedString);
+    } catch (err) {
+      console.error('Error parsing analysis data:', err);
+      console.log('Problematic string:', analysisString);
+      return null;
+    }
   };
 
   const fetchStockAnalyses = useCallback(async () => {
-    if (!auth.token) {
+    if (!token || !csrfToken) {
       setLoading(false);
       return;
     }
@@ -67,7 +42,7 @@ const Dashboard = () => {
       const response = await fetch(`${backendUrl}/user/stock-analyses/`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${auth.token}`,
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
           'X-CSRFToken': csrfToken,
         },
@@ -79,7 +54,12 @@ const Dashboard = () => {
 
       const data = await response.json();
       if (data.success) {
-        setStockAnalyses(data.analyses);
+        // Map through the analyses and safely parse each one
+        const parsedAnalyses = data.analyses.map(analysis => ({
+          ...analysis,
+          analysis: parseAnalysisData(analysis.analysis) || {} // Provide fallback empty object
+        }));
+        setStockAnalyses(parsedAnalyses);
       }
     } catch (err) {
       console.error('Error fetching stock analyses:', err);
@@ -87,7 +67,7 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
-  }, [auth.token, backendUrl, csrfToken]);
+  }, [token, csrfToken, backendUrl]);
 
   useEffect(() => {
     fetchStockAnalyses();
@@ -127,7 +107,7 @@ const Dashboard = () => {
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {stockAnalyses.map((stockAnalysis) => {
-              const analysis = JSON.parse(stockAnalysis.analysis);
+              const analysis = stockAnalysis.analysis;
               const stockSummary = analysis.stock_summary;
               console.log(stockAnalysis)
               return (
