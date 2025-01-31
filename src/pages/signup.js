@@ -10,6 +10,7 @@ const SignUp = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
 
 
@@ -20,11 +21,13 @@ const SignUp = () => {
   const handleSignUp = async (e) => {
     e.preventDefault();
     setError(""); 
+    setSuccessMessage("");
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      console.log("User registered:", userCredential.user);
-      alert("Sign Up Successful!");
-      navigate('/signin');
+      setSuccessMessage("Sign up successful!");
+      setTimeout(() => {
+        navigate('/stocks');
+      }, 1500);
     } catch (err) {
       console.error("Error during sign up:", err.message);
       setError(err.message); 
@@ -50,9 +53,15 @@ const SignUp = () => {
             </h4>
           </div>
           <form className="contents" onSubmit={handleSignUp}>
-            {error && (
-              <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
+            {successMessage && (
+                <div className="bg-[#6366f1]/10 border border-[#6366f1] text-[#6366f1] px-4 py-4 rounded-lg flex items-center justify-center">
+                  <p className="text-sm font-medium mb-0">Your sign up was succesful!.</p>
+                </div>
             )}
+            {error && (
+              <p className="text-red-500 text-sm text-center">{error}</p>
+            )}
+
             <div className="my-5 relative">
               <input
                 required
