@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import brainLogo from '../../assets/brain-logo.png';
 import useCSRFToken from "../../hooks/useCSRFToken"
 import { useAuth } from "../../utils/AuthContext";
@@ -7,10 +7,11 @@ import useBackendUrl from "../../hooks/useBackendUrl";
 import useRagUrl from "../../hooks/useChatUrl";
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db, auth } from '../../config/firebase';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 
 const StockAnalysisView = () => {
-  const [input, setInput] = useState("");
+  const [ticker, setTicker] = useState("");
   const [response, setResponse] = useState(null);
   const [error, setError] = useState("");
   const [aiQuestion, setAiQuestion] = useState("");
@@ -26,6 +27,11 @@ const StockAnalysisView = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showChatModal, setShowChatModal] = useState(false);
   const [showSubscribeModal, setShowSubscribeModal] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const requestPendingRef = useRef(false);
+  const MAX_RETRIES = 5;
+  const RETRY_DELAY = 1000;
 
   useEffect(() => {
     // Load Stripe script
@@ -34,6 +40,27 @@ const StockAnalysisView = () => {
     script.async = true;
     document.body.appendChild(script);
   }, []);
+
+  // Sync URL ticker to input
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tickerParam = params.get('ticker');
+    if (tickerParam && tickerParam !== ticker) {
+      setTicker(tickerParam.toUpperCase());
+    }
+  }, [location.search]);
+
+  // Sync input ticker to URL
+  useEffect(() => {
+    if (ticker) {
+      const params = new URLSearchParams(location.search);
+      const currentTicker = params.get('ticker');
+      if (currentTicker !== ticker) {
+        params.set('ticker', ticker);
+        navigate(`?${params.toString()}`, { replace: true });
+      }
+    }
+  }, [ticker, navigate, location.search]);
 
   const handlePrintAnalysis = () => {
     const analysisContent = document.getElementById('analysis-content');
@@ -64,7 +91,7 @@ const StockAnalysisView = () => {
 
     try {
       const formData = new FormData();
-      formData.append("input", input);
+      formData.append("input", ticker);
 
       console.log('this is the backend url', backendUrl)
 
@@ -667,6 +694,11 @@ const StockAnalysisView = () => {
     }
   };
 
+  const handleTickerChange = (e) => {
+    const newTicker = e.target.value.toUpperCase();
+    setTicker(newTicker);
+  };
+
   return (
     <div className="bg-black text-gray-300 min-h-screen flex flex-col items-center justify-start py-4 px-4 relative">
       <div className="w-full max-w-3xl mt-4 mx-auto">
@@ -700,8 +732,8 @@ const StockAnalysisView = () => {
               <input
                 id="input"
                 type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value.toUpperCase())}
+                value={ticker}
+                onChange={handleTickerChange}
                 className="w-full p-4 text-xl border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-black text-gray-300 placeholder-gray-500"
                 placeholder="AAPL"
                 autoComplete="off"
