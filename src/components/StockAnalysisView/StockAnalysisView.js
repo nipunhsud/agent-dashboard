@@ -32,6 +32,7 @@ const StockAnalysisView = () => {
   const requestPendingRef = useRef(false);
   const MAX_RETRIES = 5;
   const RETRY_DELAY = 1000;
+  const [showTradingRules, setShowTradingRules] = useState(false);
 
   useEffect(() => {
     // Load Stripe script
@@ -719,12 +720,45 @@ const StockAnalysisView = () => {
           method="post"
         >
           <div className="space-y-4">
-            <label
-              htmlFor="input"
-              className="block text-xl font-semibold text-gray-300"
-            >
-              Enter Stock Ticker or Company Name
-            </label>
+            <div className="flex justify-between items-center">
+              <label
+                htmlFor="input"
+                className="block text-xl font-semibold text-gray-300"
+              >
+                Enter Stock Ticker or Company Name
+              </label>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowTradingRules(!showTradingRules)}
+                  className="bg-black text-white py-2 px-4 rounded-lg hover:bg-opacity-80 flex items-center space-x-2"
+                >
+                  <span>Trading Rules</span>
+                  <span>📋</span>
+                </button>
+                
+                {showTradingRules && (
+                  <div className="absolute z-50 w-96 p-4 bg-black border border-custom-purple rounded-lg shadow-xl mt-2 right-0">
+                    <h3 className="font-bold mb-3 text-custom-purple">Buy Rules</h3>
+                    <ul className="list-decimal pl-4 mb-4 space-y-2 text-sm">
+                      <li>Concentrate on listed stocks that sell for more than $20 a share with institutional acceptance.</li>
+                      <li>Insist on increasing earnings per share in past 3-4 quarters and current quarterly earnings up at least 20%.</li>
+                      <li>Buy at new highs after sound correction and consolidation, with 50%+ above average volume.</li>
+                      <li>For confirmation, the stock has a strong technical setup, such as a breakout from a consolidation pattern.</li>
+                      <li>Base decisions on price points, not attachment</li>
+                    </ul>
+                    
+                    <h3 className="font-bold mb-3 text-custom-purple">Sell Rules</h3>
+                    <ul className="list-disc pl-4 space-y-2 text-sm">
+                      <li>Sell if price drops 8% below purchase price</li>
+                      <li>Set specific profit potential expectations</li>
+                      <li>Consider selling when P/E ratio doubles</li>
+                      <li>Don't hold losing positions based on emotions</li>
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
             <p className="text-sm text-gray-400">
               Enter a stock symbol (e.g., AAPL) or company name for instant AI analysis
             </p>
