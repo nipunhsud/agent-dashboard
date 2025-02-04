@@ -15,6 +15,7 @@ const Dashboard = () => {
     ticker: '',
   });
   const navigate = useNavigate();
+  const [expandedAnalysis, setExpandedAnalysis] = useState(null);
 
   const parseAnalysisData = (analysisString) => {
     try {
@@ -81,6 +82,10 @@ const Dashboard = () => {
   useEffect(() => {
     fetchStockAnalyses();
   }, [fetchStockAnalyses]);
+
+  const closeExpandedView = () => {
+    setExpandedAnalysis(null);
+  };
 
   if (loading) {
     return (
@@ -229,7 +234,7 @@ const Dashboard = () => {
                       </div>
                     </div>
                   </div>
-
+                  
                   <div className="mt-4 flex space-x-3">
                     <Link 
                       to={`/stocks?ticker=${stockSummary.ticker}&autoSearch=true`}
@@ -237,6 +242,12 @@ const Dashboard = () => {
                     >
                       Analyze Again
                     </Link>
+                    <button
+                      onClick={() => setExpandedAnalysis(stockSummary)}
+                      className="flex-1 text-center px-4 py-2 bg-gray-700 rounded hover:bg-opacity-80 transition-all duration-200"
+                    >
+                      More Details
+                    </button>
                   </div>
                 </div>
               );
@@ -244,6 +255,425 @@ const Dashboard = () => {
           </div>
         )}
       </div>
+      
+      {expandedAnalysis && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-900 rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-start mb-4">
+              <h2 className="text-2xl font-bold text-custom-purple">
+                {expandedAnalysis.ticker} - Detailed Analysis
+              </h2>
+              <button
+                onClick={closeExpandedView}
+                className="text-gray-400 hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div>
+        {/* Primary Analysis Section */}
+        <div className="bg-black text-gray-300 shadow-md rounded-lg p-6 max-w-4xl mx-auto mb-6">
+          {/* Stock Analysis Title */}
+          <div className="flex flex-col items-center justify-center p-4 mb-4">  
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center text-custom-purple">
+              {expandedAnalysis.ticker} Analysis
+            </h2>
+          
+          </div>
+          
+          {/* Current Metrics */}
+          <div className="mb-6">
+            <div className="flex items-center mb-3">
+              <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                <span className="text-lg">📊</span>
+              </div>
+              <h4 className="text-xl font-bold">Important Metrics</h4>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <span className="block font-bold">Current Price</span>
+                <span className="text-lg">${expandedAnalysis.current_metrics?.price?.toFixed(2) || 'N/A'}</span>
+              </div>
+              <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <span className="block font-bold">Volume</span>
+                <span className="text-lg">{expandedAnalysis.current_metrics?.volume?.toLocaleString() || 'N/A'}</span>
+              </div>
+              <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <span className="block font-bold">52W High</span>
+                <span className="text-lg">${expandedAnalysis.current_metrics?.fifty_two_week?.high?.toFixed(2) || 'N/A'}</span>
+              </div>
+              <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <span className="block font-bold">52W Low</span>
+                <span className="text-lg">${expandedAnalysis.current_metrics?.fifty_two_week?.low?.toFixed(2) || 'N/A'}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Recommendation Section */}
+          <div className="border-t border-custom-purple py-4">
+            {/* Recommendation Title */}
+            <div className="flex flex-col items-center justify-center p-4 mb-4">
+              <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center">Recommendation</h3>
+            </div>
+
+            {/* Action Recommendation */}
+            <div className="p-6 bg-custom-purple rounded-lg mb-4 hover:bg-opacity-80 transition-all duration-300">
+              <div className={`text-3xl font-bold text-center py-3 px-6 rounded-lg ${
+                expandedAnalysis.recommendation.action.toLowerCase().includes('buy') ? 'bg-green-500/20 text-green-400' :
+                expandedAnalysis.recommendation.action.toLowerCase().includes('sell') ? 'bg-red-500/20 text-red-400' :
+                'bg-yellow-500/20 text-yellow-400'
+              }`}>
+                {expandedAnalysis.recommendation.action}
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <div className="flex items-center mb-3">
+                  <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                    <span className="text-lg">🎯</span>
+                  </div>
+                  <h4 className="text-xl font-bold">Key Triggers</h4>
+                </div>
+                <ul className="list-disc list-inside ml-11">
+                  {expandedAnalysis.recommendation.triggers.map((trigger, index) => (
+                    <li key={index}>{trigger}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <div className="flex items-center mb-3">
+                  <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                    <span className="text-lg">⚠️</span>
+                  </div>
+                  <h4 className="text-xl font-bold">Risk Factors</h4>
+                </div>
+                <ul className="list-disc list-inside ml-11">
+                  {expandedAnalysis.recommendation.risk_factors.map((risk, index) => (
+                    <li key={index}>{risk}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Trade Setup Section */}
+            <div className="mt-6">
+              <div className="flex items-center mb-3">
+                <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                  <span className="text-lg">📈</span>
+                </div>
+                <h4 className="text-xl font-bold">Trade Setup</h4>
+              </div>
+              
+              <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-3">
+                  <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                    <span className="block font-bold">Buy Point</span>
+                    <span className="text-lg">${expandedAnalysis.trade_setup?.buy_point?.toFixed(2) || 'N/A'}</span>
+                  </div>
+                  <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                    <span className="block font-bold">Target</span>
+                    <span className="text-lg">${expandedAnalysis.trade_setup?.target_price?.toFixed(2) || 'N/A'}</span>
+                  </div>
+                  <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                    <span className="block font-bold">Stop Loss</span>
+                    <span className="text-lg">${expandedAnalysis.trade_setup?.stop_loss?.toFixed(2) || 'N/A'}</span>
+                  </div>
+                </div>
+                <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                  <span className="block font-bold">Setup Type</span>
+                  <span className="text-lg">{expandedAnalysis.trade_setup?.setup_type || 'N/A'}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Risk Management Section */}
+            <div className="mt-6">
+              <div className="flex items-center mb-3">
+                <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                  <span className="text-lg">🛡️</span>
+                </div>
+                <h4 className="text-xl font-bold">Risk Management</h4>
+              </div>
+              
+              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <p className="text-lg">{expandedAnalysis.recommendation.risk_management || 'N/A'}</p>
+              </div>
+            </div>
+          </div>
+          {/* Chart Section */}
+          {/* <Chart/> */}
+
+          {/* Technical Analysis */}
+          <div className="border-t border-custom-purple py-4 space-y-4">
+            {/* Technical Analysis Title */}
+            <div className="flex flex-col items-center justify-center p-4 mb-4">
+              <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center">Technical Analysis</h3>
+            </div>
+
+            {/* Moving Averages Section */}
+            <div className="mb-6">
+              <div className="flex items-center mb-3">
+                <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                  <span className="text-lg">📈</span>
+                </div>
+                <h4 className="text-xl font-bold">Moving Averages (EMA)</h4>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-3">
+                <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                  <span className="block font-bold">EMA 50</span>
+                  <span>${expandedAnalysis.technical_analysis?.moving_averages?.ema_50?.toFixed(2) || 'N/A'}</span>
+                </div>
+                <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                  <span className="block font-bold">EMA 150</span>
+                  <span>${expandedAnalysis.technical_analysis?.moving_averages?.ema_150?.toFixed(2) || 'N/A'}</span>
+                </div>
+                <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                  <span className="block font-bold">EMA 200</span>
+                  <span>${expandedAnalysis.technical_analysis?.moving_averages?.ema_200?.toFixed(2) || 'N/A'}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Trend Analysis Section */}
+            <div className="mb-6">
+              <div className="flex items-center mb-3">
+                <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                  <span className="text-lg">🎯</span>
+                </div>
+                <h4 className="text-xl font-bold">Trend Analysis</h4>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                  <span className="block font-bold mb-2">Overall Trend</span>
+                  <div className={`text-lg font-semibold ${
+                    expandedAnalysis.technical_analysis?.trend?.includes('Bullish') ? 'text-green-500' :
+                    expandedAnalysis.technical_analysis?.trend?.includes('Bearish') ? 'text-red-500' :
+                    'text-yellow-500'
+                  }`}>
+                    {expandedAnalysis.technical_analysis?.trend || 'N/A'}
+                  </div>
+                </div>
+                <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                  <span className="block font-bold mb-2">Distance from 52W High</span>
+                  <span className="text-lg">
+                    {expandedAnalysis.technical_analysis?.distance_from_52_week_high || 'N/A'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Volume Analysis */}
+            <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+              <span className="block font-bold mb-2">Volume and Volatility Pattern Analysis</span>
+              <p className="text-sm">{expandedAnalysis.technical_analysis?.volume_analysis || 'N/A'}</p>
+              <p className="text-sm">{expandedAnalysis.technical_analysis?.volatility_pattern || 'N/A'}</p>
+            </div>
+
+            {/* Technical Setup */}
+            <div className="space-y-3">
+              <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <span className="block font-bold mb-2">Technical Setup</span>
+                <p className="text-sm">{expandedAnalysis.technical_analysis?.technical_setup || 'N/A'}</p>
+                <p className="text-sm">{expandedAnalysis.technical_analysis?.technical_setup_trigger || 'N/A'}</p>
+              </div>
+
+              {/* Key Triggers */}
+              <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <span className="block font-bold mb-2">Key Triggers and Risks</span>
+                <p className="text-sm">{expandedAnalysis.technical_analysis?.technical_setup_trigger_key_triggers || 'N/A'}</p>
+                <p className="text-sm">{expandedAnalysis.technical_analysis?.technical_setup_trigger_risk_factors || 'N/A'}</p>
+              </div>
+            </div>
+          </div>
+        
+          {/* Fundamental Analysis */}
+          <div className="border-t border-custom-purple py-4 space-y-4">
+            {/* Fundamental Analysis Title */}
+            <div className="flex flex-col items-center justify-center p-4 mb-4">
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center">Fundamental Analysis</h3>
+            </div>
+            
+            {/* EPS Growth */}
+            <div className="mb-6">
+              <div className="flex items-center mb-3">
+                <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                  <span className="text-lg">📈</span>
+                </div>
+                <h4 className="text-xl font-bold">Quarterly EPS Growth</h4>
+              </div>
+              
+              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-3">
+                  {expandedAnalysis.fundamental_analysis?.quarterly_eps_growth?.map((growth, index) => (
+                    <div key={index} className="text-center p-2 bg-black rounded-lg">
+                      <span className="block font-bold">Q{3 - index}</span>
+                      <span className={`text-lg font-semibold ${growth > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                        {(growth * 100).toFixed(1)}%
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-sm mt-2">{expandedAnalysis.fundamental_analysis?.quarterly_eps_growth_trend}</p>
+              </div>
+            </div>
+
+            {/* Growth Trends */}  
+            <div className="mb-6">
+              <div className="flex items-center mb-3">
+                <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                  <span className="text-lg">📊</span>
+                </div>
+                <h4 className="text-xl font-bold">Growth Analysis</h4>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                  <div className="flex items-center mb-2">
+                    <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-2">
+                      <span className="text-sm">📅</span>
+                    </div>
+                    <h4 className="font-bold">Annual Growth</h4>
+                  </div>
+                  <p className="text-sm">{expandedAnalysis.fundamental_analysis?.annual_growth_trend}</p>
+                </div>
+                <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                  <div className="flex items-center mb-2">
+                    <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-2">
+                      <span className="text-sm">🏢</span>
+                    </div>
+                    <h4 className="font-bold">Industry Position</h4>
+                  </div>
+                  <p className="text-sm">{expandedAnalysis.fundamental_analysis?.industry_position}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Sector Performance */}
+            <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+              <h4 className="font-bold mb-2">Sector Performance</h4>
+              <p className="text-sm">{expandedAnalysis.fundamental_analysis?.sector_performance}</p>
+            </div>
+          </div>
+
+          {/* Institutional Ownership */}
+          <div className="border-t border-custom-purple py-4">    
+              <div className="flex flex-col items-center justify-center p-4 mb-4">
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center">Institutional Ownership</h3>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                  <div className="flex items-center mb-2">
+                    <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                      <span className="text-lg">🏦</span>
+                    </div>
+                    <span className="text-xl font-bold">Current Ownership</span>
+                  </div>
+                  <p className="text-sm ml-11">
+                    {expandedAnalysis.institutional_ownership?.institutional_ownership || 'No ownership data available'}
+                  </p>
+                </div>
+                <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                  <div className="flex items-center mb-2">
+                    <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                      <span className="text-lg">📈</span>
+                    </div>
+                    <span className="text-xl font-bold">Ownership Trend</span>
+                  </div>
+                  <p className="text-sm ml-11">
+                    {expandedAnalysis.institutional_ownership?.institutional_ownership_trend || 'No trend data available'}
+                  </p>
+                </div>
+              </div>
+          </div>
+
+          {/* Market Analysis */}
+          <div className="border-t border-custom-purple py-4">
+            {/* Market Analysis Title */}
+            <div className="flex flex-col items-center justify-center p-4 mb-4">
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center">Market Analysis</h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <div className="flex items-center mb-2">
+                  <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                    <span className="text-lg">🎯</span>
+                  </div>
+                  <span className="text-xl font-bold">Market Sentiment</span>
+                </div>
+                <div className={`ml-11 text-lg font-semibold ${
+                  expandedAnalysis.market_analysis?.market_sentiment?.toLowerCase().includes('bullish') ? 'text-green-400' :
+                  expandedAnalysis.market_analysis?.market_sentiment?.toLowerCase().includes('bearish') ? 'text-red-400' :
+                  'text-yellow-400'
+                }`}>
+                  {expandedAnalysis.market_analysis?.market_sentiment || 'N/A'}
+                </div>
+              </div>
+              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <div className="flex items-center mb-2">
+                  <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                    <span className="text-lg">📊</span>
+                  </div>
+                  <span className="text-xl font-bold">Market Trend</span>
+                </div>
+                <div className={`ml-11 text-lg font-semibold ${
+                  expandedAnalysis.market_analysis?.market_trend?.toLowerCase().includes('up') ? 'text-green-400' :
+                  expandedAnalysis.market_analysis?.market_trend?.toLowerCase().includes('down') ? 'text-red-400' :
+                  'text-yellow-400'
+                }`}>
+                  {expandedAnalysis.market_analysis?.market_trend || 'N/A'}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Risk Assessment */}
+          <div className="border-t border-custom-purple py-4">
+            {/* Risk Assessment Title */}
+            <div className="flex flex-col items-center justify-center p-4 mb-4">
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center">Risk Assessment</h3>
+            </div>
+            <div className="space-y-3">
+              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <div className="flex items-center mb-2">
+                  <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                    <span className="text-lg">🌍</span>
+                  </div>
+                  <span className="text-xl font-bold">Market Conditions</span>
+                </div>
+                <p className="text-sm ml-11">{expandedAnalysis.risk_assessment?.market_conditions || 'N/A'}</p>
+              </div>
+              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <div className="flex items-center mb-2">
+                  <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                    <span className="text-lg">⚠️</span>
+                  </div>
+                  <span className="text-xl font-bold">Technical Risks</span>
+                </div>
+                <p className="text-sm ml-11">{expandedAnalysis.risk_assessment?.technical_risks || 'N/A'}</p>
+              </div>
+              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <div className="flex items-center mb-2">
+                  <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                    <span className="text-lg">🎯</span>
+                  </div>
+                  <span className="text-xl font-bold">Setup Risks</span>
+                </div>
+                <p className="text-sm ml-11">{expandedAnalysis.risk_assessment?.setup_risks || 'N/A'}</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+          
+          </div>
+        </div>
+      )}
     </div>
   );
 };
