@@ -39,7 +39,16 @@ const Dashboard = () => {
     }
 
     try {
-      const response = await fetch(`${backendUrl}/user/stock-analyses/`, {
+      // Get ticker from URL params
+      const params = new URLSearchParams(window.location.search);
+      const urlTicker = params.get('ticker');
+      
+      // Build the URL with optional ticker parameter
+      const url = urlTicker 
+        ? `${backendUrl}/user/stock-analyses?ticker=${urlTicker}`
+        : `${backendUrl}/user/stock-analyses/`;
+
+      const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -54,10 +63,9 @@ const Dashboard = () => {
 
       const data = await response.json();
       if (data.success) {
-        // Map through the analyses and safely parse each one
         const parsedAnalyses = data.analyses.map(analysis => ({
           ...analysis,
-          analysis: parseAnalysisData(analysis.analysis) || {} // Provide fallback empty object
+          analysis: parseAnalysisData(analysis.analysis) || {}
         }));
         setStockAnalyses(parsedAnalyses);
       }
