@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../utils/AuthContext';
 import useCSRFToken from "../../hooks/useCSRFToken"
 import useBackendUrl from '../../hooks/useBackendUrl';
@@ -14,6 +14,7 @@ const Dashboard = () => {
   const [analysisData, setAnalysisData] = useState({
     ticker: '',
   });
+  const navigate = useNavigate();
 
   const parseAnalysisData = (analysisString) => {
     try {
@@ -124,10 +125,51 @@ const Dashboard = () => {
                   className="bg-gray-900 rounded-lg p-6 hover:shadow-lg transition-all duration-200"
                 >
                   <div className="flex justify-between items-start mb-4">
-                    <h2 className="text-2xl font-bold text-custom-purple">{stockSummary.ticker}</h2>
-                    <span className="text-sm text-gray-400">
-                      {new Date(stockAnalysis.timestamp).toLocaleDateString()}
-                    </span>
+                    <div className="flex flex-col">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-2xl font-bold text-custom-purple">
+                          {stockSummary.ticker}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            console.log('Filtering by ticker:', stockSummary.ticker);
+                            navigate(`/dashboard?ticker=${stockSummary.ticker}`);
+                            window.location.reload(); // Force reload to trigger the API call
+                          }}
+                          className="px-2 py-1 text-sm bg-gray-800 hover:bg-gray-700 rounded-lg flex items-center space-x-1"
+                          title="Filter by this ticker"
+                        >
+                          <span>Filter</span>
+                          <span>🔍</span>
+                        </button>
+                      </div>
+                      <span className="text-sm text-gray-400 mt-1">
+                        {new Date(stockAnalysis.timestamp).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        // Implement the logic to toggle shortlist
+                        console.log('Toggle shortlist for:', stockSummary.ticker);
+                      }}
+                      className={`px-3 py-1 rounded-lg text-sm transition-all duration-200 ${
+                        // Implement the logic to determine if the stock is shortlisted
+                        false 
+                          ? 'bg-red-500 hover:bg-red-600' 
+                          : 'bg-custom-purple hover:bg-opacity-80'
+                      }`}
+                    >
+                      {/* Implement the logic to display the appropriate button text */}
+                      Remove
+                    </button>
                   </div>
                   
                   <div className="space-y-4">
