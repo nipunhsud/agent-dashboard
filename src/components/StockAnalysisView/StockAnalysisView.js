@@ -61,21 +61,15 @@ const StockAnalysisView = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    // Check if user is logged in first
+    if (!auth.currentUser) {
+      setShowAuthModal(true);
+      return;
+    }
+
     // Check if user's email is verified
     if (auth.currentUser && !auth.currentUser.emailVerified) {
       setError("Please verify your email first! Check your inbox for the verification link.");
-      
-      // Optional: Add a resend verification email button
-      const resendVerification = async () => {
-        try {
-          await sendEmailVerification(auth.currentUser);
-          setSuccessMessage("Verification email sent! Please check your inbox.");
-        } catch (error) {
-          setError("Error sending verification email. Please try again later.");
-        }
-      };
-
-      // Show verification modal
       setEmailVerified(false);
       return;
     }
@@ -98,20 +92,22 @@ const StockAnalysisView = () => {
       return;
     }
 
+    // Only set loading state after all checks pass
     setError("");
     setResponse(<LoadingState />);
 
     try {
+      const formData = new FormData();
+      formData.append('input', cleanInput);
+
       const res = await fetch(`${backendUrl}/research/stocks/`, {
         method: "POST",
         credentials: "include",
         headers: {
           "X-CSRFToken": csrfToken,
           "Authorization": `Bearer ${token}`,
-          "Accept": "application/json",
-          "Content-Type": "application/json", 
         },
-        body: JSON.stringify({ input: cleanInput }),
+        body: formData,
       });
       
       if (res.status === 401) {
@@ -614,26 +610,18 @@ const StockAnalysisView = () => {
   };
 
   const handleAskAi = () => {
-    try {
-      // Check authentication first
-      if (!token) {
-        handleAuthPrompt();
-        return;
-      }
-
-      // If authenticated, check for analysis data
-      if (analysisData.ticker) {
-        const params = new URLSearchParams({
-          data: JSON.stringify(analysisData)
-        }).toString();
-        window.open(`${ragUrl}/ask?${params}`, '_blank');
-      } else {
-        setShowChatModal(true);
-      }
-    } catch (err) {
-      console.error('Error processing data:', err);
-      setShowChatModal(true);
+    // Check if user is logged in first
+    if (!auth.currentUser) {
+      setShowAuthModal(true);
+      return;
     }
+
+    if (auth.currentUser && !auth.currentUser.emailVerified) {
+      setEmailVerified(false);
+      return;
+    }
+
+    setShowChatModal(true);
   };
 
   const handleAuthPrompt = () => {
