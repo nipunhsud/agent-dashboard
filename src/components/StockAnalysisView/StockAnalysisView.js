@@ -7,6 +7,7 @@ import useBackendUrl from "../../hooks/useBackendUrl";
 import useRagUrl from "../../hooks/useChatUrl";
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db, auth } from '../../config/firebase';
+import { sendEmailVerification } from "firebase/auth";
 
 
 const StockAnalysisView = () => {
@@ -26,6 +27,8 @@ const StockAnalysisView = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showChatModal, setShowChatModal] = useState(false);
   const [showSubscribeModal, setShowSubscribeModal] = useState(false);
+  const [emailVerified, setEmailVerified] = useState(true);
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     // Load Stripe script
@@ -57,6 +60,25 @@ const StockAnalysisView = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    // Check if user's email is verified
+    if (auth.currentUser && !auth.currentUser.emailVerified) {
+      setError("Please verify your email first! Check your inbox for the verification link.");
+      
+      // Optional: Add a resend verification email button
+      const resendVerification = async () => {
+        try {
+          await sendEmailVerification(auth.currentUser);
+          setSuccessMessage("Verification email sent! Please check your inbox.");
+        } catch (error) {
+          setError("Error sending verification email. Please try again later.");
+        }
+      };
+
+      // Show verification modal
+      setEmailVerified(false);
+      return;
+    }
 
     const cleanInput = input.trim().toUpperCase();
 
@@ -681,8 +703,57 @@ const StockAnalysisView = () => {
     }
   };
 
+  // Add this modal component
+  const EmailVerificationModal = () => (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-custom-purple p-6 rounded-lg shadow-xl max-w-md w-full mx-4 relative">
+        <button
+          onClick={() => setEmailVerified(true)}
+          className="absolute top-2 right-2 text-gray-300 hover:text-white transition-colors"
+          aria-label="Close modal"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        
+        <h2 className="text-xl font-bold mb-4 text-center">Email Verification Required</h2>
+        <p className="text-center mb-6">
+          Please verify your email address to continue using Quanta AI. Check your inbox for the verification link.
+        </p>
+        <div className="flex justify-center space-x-4">
+          <button
+            onClick={async () => {
+              try {
+                await sendEmailVerification(auth.currentUser);
+                setSuccessMessage("Verification email sent! Please check your inbox.");
+                setEmailVerified(true);
+              } catch (error) {
+                setError("Error sending verification email. Please try again later.");
+              }
+            }}
+            className="bg-black text-white px-6 py-2 rounded-lg hover:bg-opacity-80 transition-colors"
+          >
+            Resend Verification Email
+          </button>
+          <button
+            onClick={() => setEmailVerified(true)}
+            className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-opacity-80 transition-colors"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="bg-black text-gray-300 min-h-screen flex flex-col items-center justify-start py-4 px-4 relative">
+      {successMessage && (
+        <div className="text-green-400 text-center mt-3 mb-3">
+          {successMessage}
+        </div>
+      )}
       <div className="w-full max-w-3xl mt-4 mx-auto">
         <div className="flex flex-col items-center">
           <img
@@ -871,6 +942,9 @@ const StockAnalysisView = () => {
           </div>
         </div>
       )}
+
+      {/* Add the verification modal */}
+      {!emailVerified && <EmailVerificationModal />}
     </div>
   );
 };

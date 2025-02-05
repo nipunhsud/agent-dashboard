@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link,useNavigate } from "react-router-dom";
-import { auth, createUserWithEmailAndPassword } from "../config/firebase";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { auth } from "../config/firebase";
 
 
 const SignUp = () => {
@@ -24,10 +25,12 @@ const SignUp = () => {
     setSuccessMessage("");
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      setSuccessMessage("Sign up successful!");
+      await sendEmailVerification(userCredential.user);
+      setSuccessMessage("Please check your email to verify your account!");
+      
       setTimeout(() => {
-        navigate('/stocks');
-      }, 1500);
+        navigate("/signin");
+      }, 3000);
     } catch (err) {
       console.error("Error during sign up:", err.message);
       setError(err.message); 
