@@ -50,17 +50,25 @@ const StockAnalysisView = () => {
     document.querySelector('.print-button').onclick = handlePrintAnalysis;
   };
 
+  // Add this validation function
+  const isValidTickerSymbol = (ticker) => {
+    return /^[A-Z]{1,5}$/.test(ticker);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Input validation
-    if (!input || input.trim() === '') {
+    const cleanInput = input.trim().toUpperCase();
+
+    if (!cleanInput) {
       setError("Please enter a stock symbol");
       return;
     }
 
-    // Clean the input - remove spaces and special characters
-    const cleanInput = input.trim().replace(/[^a-zA-Z]/g, '').toUpperCase();
+    if (!isValidTickerSymbol(cleanInput)) {
+      setError("Please enter a valid stock symbol (1-5 letters only)");
+      return;
+    }
 
     if (!csrfToken) {
       console.error("CSRF token is not set yet.");
@@ -72,19 +80,16 @@ const StockAnalysisView = () => {
     setResponse(<LoadingState />);
 
     try {
-      const formData = new FormData();
-      formData.append("input", cleanInput);
-
-      console.log('this is the backend url', backendUrl)
-
       const res = await fetch(`${backendUrl}/research/stocks/`, {
         method: "POST",
         credentials: "include",
         headers: {
           "X-CSRFToken": csrfToken,
           "Authorization": `Bearer ${token}`,
+          "Accept": "application/json",
+          "Content-Type": "application/json", 
         },
-        body: formData,
+        body: JSON.stringify({ input: cleanInput }),
       });
       
       if (res.status === 401) {
@@ -115,7 +120,7 @@ const StockAnalysisView = () => {
         handleLimitReached();
       }
     }
-  };
+  }; 
 
   const formatResponse = (stockData) => {
     const imageSrc = "/images/mind.svg"
@@ -710,15 +715,16 @@ const StockAnalysisView = () => {
                 id="input"
                 type="text"
                 value={input}
-                onChange={(e) => setInput(e.target.value.toUpperCase())}
+                onChange={(e) => {
+                  const value = e.target.value.toUpperCase();
+                  if (value.length <= 5) {
+                    setInput(value);
+                  }
+                }}
                 className="w-full p-4 text-xl border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-black text-gray-300 placeholder-gray-500"
                 placeholder="AAPL"
                 autoComplete="off"
                 spellCheck="false"
-                autoCapitalize="characters"
-                inputMode="text"
-                pattern="[A-Za-z]+"
-                maxLength="5"
               />
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
                 <span className="text-sm">Stock Symbol</span>
