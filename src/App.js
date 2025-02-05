@@ -9,6 +9,7 @@ import AgentUI from "./pages/AgentUI";
 import StockAnalysisAssistant from "./pages/StockAnalysisAssistant";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import Dashboard from './components/Dashboard/Dashboard';
 
 function App() {
   return (
@@ -23,6 +24,8 @@ function App() {
           <Route path="/forgetpassword" element={<Forgetpassword />} />
           <Route path="/agent" element={<AgentUI />} />
           <Route path="/stocks" element={<StockAnalysisAssistant />} />
+          <Route path="/quanta" element={<StockAnalysisAssistant />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
         <Footer />
       </BrowserRouter>
