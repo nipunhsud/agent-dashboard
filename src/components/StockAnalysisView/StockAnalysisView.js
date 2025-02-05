@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import brainLogo from '../../assets/brain-logo.png';
 import useCSRFToken from "../../hooks/useCSRFToken"
 import { useAuth } from "../../utils/AuthContext";
@@ -8,10 +8,11 @@ import useRagUrl from "../../hooks/useChatUrl";
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db, auth } from '../../config/firebase';
 import { sendEmailVerification } from "firebase/auth";
+import { useLocation, useNavigate } from 'react-router-dom';
 
 
 const StockAnalysisView = () => {
-  const [input, setInput] = useState("");
+  const [ticker, setTicker] = useState("");
   const [response, setResponse] = useState(null);
   const [error, setError] = useState("");
   const [aiQuestion, setAiQuestion] = useState("");
@@ -27,6 +28,12 @@ const StockAnalysisView = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showChatModal, setShowChatModal] = useState(false);
   const [showSubscribeModal, setShowSubscribeModal] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const requestPendingRef = useRef(false);
+  const MAX_RETRIES = 5;
+  const RETRY_DELAY = 1000;
+  const [showTradingRules, setShowTradingRules] = useState(false);
   const [emailVerified, setEmailVerified] = useState(true);
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -37,6 +44,27 @@ const StockAnalysisView = () => {
     script.async = true;
     document.body.appendChild(script);
   }, []);
+
+  // Sync URL ticker to input
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tickerParam = params.get('ticker');
+    if (tickerParam && tickerParam !== ticker) {
+      setTicker(tickerParam.toUpperCase());
+    }
+  }, [location.search]);
+
+  // Sync input ticker to URL
+  useEffect(() => {
+    if (ticker) {
+      const params = new URLSearchParams(location.search);
+      const currentTicker = params.get('ticker');
+      if (currentTicker !== ticker) {
+        params.set('ticker', ticker);
+        navigate(`?${params.toString()}`, { replace: true });
+      }
+    }
+  }, [ticker, navigate, location.search]);
 
   const handlePrintAnalysis = () => {
     const analysisContent = document.getElementById('analysis-content');
@@ -74,14 +102,14 @@ const StockAnalysisView = () => {
       return;
     }
 
-    const cleanInput = input.trim().toUpperCase();
+    const cleanTicker = ticker.trim().toUpperCase();
 
-    if (!cleanInput) {
+    if (!cleanTicker) {
       setError("Please enter a stock symbol");
       return;
     }
 
-    if (!isValidTickerSymbol(cleanInput)) {
+    if (!isValidTickerSymbol(cleanTicker)) {
       setError("Please enter a valid stock symbol (1-5 letters only)");
       return;
     }
@@ -98,7 +126,7 @@ const StockAnalysisView = () => {
 
     try {
       const formData = new FormData();
-      formData.append('input', cleanInput);
+      formData.append('input', cleanTicker);
 
       const res = await fetch(`${backendUrl}/research/stocks/`, {
         method: "POST",
@@ -691,6 +719,11 @@ const StockAnalysisView = () => {
     }
   };
 
+  const handleTickerChange = (e) => {
+    const newTicker = e.target.value.toUpperCase();
+    setTicker(newTicker);
+  };
+
   // Add this modal component
   const EmailVerificationModal = () => (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -760,26 +793,54 @@ const StockAnalysisView = () => {
           method="post"
         >
           <div className="space-y-4">
-            <label
-              htmlFor="input"
-              className="block text-xl font-semibold text-gray-300"
-            >
-              Enter Stock Ticker or Company Name
-            </label>
+            <div className="flex justify-between items-center">
+              <label
+                htmlFor="ticker"
+                className="block text-xl font-semibold text-gray-300"
+              >
+                Enter Stock Ticker or Company Name
+              </label>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowTradingRules(!showTradingRules)}
+                  className="bg-black text-white py-2 px-4 rounded-lg hover:bg-opacity-80 flex items-center space-x-2"
+                >
+                  <span>Trading Rules</span>
+                  <span>📋</span>
+                </button>
+                
+                {showTradingRules && (
+                  <div className="absolute z-50 w-96 p-4 bg-black border border-custom-purple rounded-lg shadow-xl mt-2 right-0">
+                    <h3 className="font-bold mb-3 text-custom-purple">Buy Rules</h3>
+                    <ul className="list-decimal pl-4 mb-4 space-y-2 text-sm">
+                      <li>Concentrate on listed stocks that sell for more than $20 a share with institutional acceptance.</li>
+                      <li>Insist on increasing earnings per share in past 3-4 quarters and current quarterly earnings up at least 20%.</li>
+                      <li>Buy at new highs after sound correction and consolidation, with 50%+ above average volume.</li>
+                      <li>For confirmation, the stock has a strong technical setup, such as a breakout from a consolidation pattern.</li>
+                      <li>Base decisions on price points, not attachment</li>
+                    </ul>
+                    
+                    <h3 className="font-bold mb-3 text-custom-purple">Sell Rules</h3>
+                    <ul className="list-disc pl-4 space-y-2 text-sm">
+                      <li>Sell if price drops 8% below purchase price</li>
+                      <li>Set specific profit potential expectations</li>
+                      <li>Consider selling when P/E ratio doubles</li>
+                      <li>Don't hold losing positions based on emotions</li>
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
             <p className="text-sm text-gray-400">
               Enter a stock symbol (e.g., AAPL) or company name for instant AI analysis
             </p>
             <div className="relative">
               <input
-                id="input"
+                id="ticker"
                 type="text"
-                value={input}
-                onChange={(e) => {
-                  const value = e.target.value.toUpperCase();
-                  if (value.length <= 5) {
-                    setInput(value);
-                  }
-                }}
+                value={ticker}
+                onChange={handleTickerChange}
                 className="w-full p-4 text-xl border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-black text-gray-300 placeholder-gray-500"
                 placeholder="AAPL"
                 autoComplete="off"
