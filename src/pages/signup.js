@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link,useNavigate } from "react-router-dom";
-import { auth, createUserWithEmailAndPassword } from "../config/firebase";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { auth } from "../config/firebase";
 
 
 const SignUp = () => {
@@ -10,7 +11,7 @@ const SignUp = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState(false);
   const navigate = useNavigate();
 
 
@@ -21,13 +22,15 @@ const SignUp = () => {
   const handleSignUp = async (e) => {
     e.preventDefault();
     setError(""); 
-    setSuccessMessage("");
+    setSuccessMessage(false);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      setSuccessMessage("Sign up successful!");
+      await sendEmailVerification(userCredential.user);
+      setSuccessMessage(true);
+      
       setTimeout(() => {
-        navigate('/stocks');
-      }, 1500);
+        navigate("/stocks");
+      }, 3000);
     } catch (err) {
       console.error("Error during sign up:", err.message);
       setError(err.message); 
@@ -54,9 +57,10 @@ const SignUp = () => {
           </div>
           <form className="contents" onSubmit={handleSignUp}>
             {successMessage && (
-                <div className="bg-[#6366f1]/10 border border-[#6366f1] text-[#6366f1] px-4 py-4 rounded-lg flex items-center justify-center">
-                  <p className="text-sm font-medium mb-0">Your sign up was succesful!.</p>
-                </div>
+              <div className="bg-[#6366f1]/10 border border-[#6366f1] text-[#6366f1] px-4 py-4 rounded-lg flex flex-col items-center justify-center">
+                <p className="text-sm font-medium mb-2">Sign up successful!</p>
+                <p className="text-sm font-medium mb-0">Please check your email to verify your account.</p>
+              </div>
             )}
             {error && (
               <p className="text-red-500 text-sm text-center">{error}</p>

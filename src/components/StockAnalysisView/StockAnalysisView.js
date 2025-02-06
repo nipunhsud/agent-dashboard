@@ -7,6 +7,7 @@ import useBackendUrl from "../../hooks/useBackendUrl";
 import useRagUrl from "../../hooks/useChatUrl";
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db, auth } from '../../config/firebase';
+import { sendEmailVerification } from "firebase/auth";
 import { useLocation, useNavigate } from 'react-router-dom';
 
 
@@ -33,6 +34,8 @@ const StockAnalysisView = () => {
   const MAX_RETRIES = 5;
   const RETRY_DELAY = 1000;
   const [showTradingRules, setShowTradingRules] = useState(false);
+  const [emailVerified, setEmailVerified] = useState(true);
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     // Load Stripe script
@@ -78,8 +81,38 @@ const StockAnalysisView = () => {
     document.querySelector('.print-button').onclick = handlePrintAnalysis;
   };
 
+  // Add this validation function
+  const isValidTickerSymbol = (ticker) => {
+    return /^[A-Z]{1,5}$/.test(ticker);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    // Check if user is logged in first
+    if (!auth.currentUser) {
+      setShowAuthModal(true);
+      return;
+    }
+
+    // Check if user's email is verified
+    if (auth.currentUser && !auth.currentUser.emailVerified) {
+      setError("Please verify your email first! Check your inbox for the verification link.");
+      setEmailVerified(false);
+      return;
+    }
+
+    const cleanTicker = ticker.trim().toUpperCase();
+
+    if (!cleanTicker) {
+      setError("Please enter a stock symbol");
+      return;
+    }
+
+    if (!isValidTickerSymbol(cleanTicker)) {
+      setError("Please enter a valid stock symbol (1-5 letters only)");
+      return;
+    }
 
     if (!csrfToken) {
       console.error("CSRF token is not set yet.");
@@ -87,14 +120,13 @@ const StockAnalysisView = () => {
       return;
     }
 
+    // Only set loading state after all checks pass
     setError("");
     setResponse(<LoadingState />);
 
     try {
       const formData = new FormData();
-      formData.append("input", ticker);
-
-      console.log('this is the backend url', backendUrl)
+      formData.append('input', cleanTicker);
 
       const res = await fetch(`${backendUrl}/research/stocks/`, {
         method: "POST",
@@ -134,7 +166,7 @@ const StockAnalysisView = () => {
         handleLimitReached();
       }
     }
-  };
+  }; 
 
   const formatResponse = (stockData) => {
     const imageSrc = "/images/mind.svg"
@@ -606,26 +638,18 @@ const StockAnalysisView = () => {
   };
 
   const handleAskAi = () => {
-    try {
-      // Check authentication first
-      if (!token) {
-        handleAuthPrompt();
-        return;
-      }
-
-      // If authenticated, check for analysis data
-      if (analysisData.ticker) {
-        const params = new URLSearchParams({
-          data: JSON.stringify(analysisData)
-        }).toString();
-        window.open(`${ragUrl}/ask?${params}`, '_blank');
-      } else {
-        setShowChatModal(true);
-      }
-    } catch (err) {
-      console.error('Error processing data:', err);
-      setShowChatModal(true);
+    // Check if user is logged in first
+    if (!auth.currentUser) {
+      setShowAuthModal(true);
+      return;
     }
+
+    if (auth.currentUser && !auth.currentUser.emailVerified) {
+      setEmailVerified(false);
+      return;
+    }
+
+    setShowChatModal(true);
   };
 
   const handleAuthPrompt = () => {
@@ -700,8 +724,57 @@ const StockAnalysisView = () => {
     setTicker(newTicker);
   };
 
+  // Add this modal component
+  const EmailVerificationModal = () => (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-custom-purple p-6 rounded-lg shadow-xl max-w-md w-full mx-4 relative">
+        <button
+          onClick={() => setEmailVerified(true)}
+          className="absolute top-2 right-2 text-gray-300 hover:text-white transition-colors"
+          aria-label="Close modal"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        
+        <h2 className="text-xl font-bold mb-4 text-center">Email Verification Required</h2>
+        <p className="text-center mb-6">
+          Please verify your email address to continue using Quanta AI. Check your inbox for the verification link.
+        </p>
+        <div className="flex justify-center space-x-4">
+          <button
+            onClick={async () => {
+              try {
+                await sendEmailVerification(auth.currentUser);
+                setSuccessMessage("Verification email sent! Please check your inbox.");
+                setEmailVerified(true);
+              } catch (error) {
+                setError("Error sending verification email. Please try again later.");
+              }
+            }}
+            className="bg-black text-white px-6 py-2 rounded-lg hover:bg-opacity-80 transition-colors"
+          >
+            Resend Verification Email
+          </button>
+          <button
+            onClick={() => setEmailVerified(true)}
+            className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-opacity-80 transition-colors"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="bg-black text-gray-300 min-h-screen flex flex-col items-center justify-start py-4 px-4 relative">
+      {successMessage && (
+        <div className="text-green-400 text-center mt-3 mb-3">
+          {successMessage}
+        </div>
+      )}
       <div className="w-full max-w-3xl mt-4 mx-auto">
         <div className="flex flex-col items-center">
           <img
@@ -722,7 +795,7 @@ const StockAnalysisView = () => {
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <label
-                htmlFor="input"
+                htmlFor="ticker"
                 className="block text-xl font-semibold text-gray-300"
               >
                 Enter Stock Ticker or Company Name
@@ -764,7 +837,7 @@ const StockAnalysisView = () => {
             </p>
             <div className="relative">
               <input
-                id="input"
+                id="ticker"
                 type="text"
                 value={ticker}
                 onChange={handleTickerChange}
@@ -772,10 +845,6 @@ const StockAnalysisView = () => {
                 placeholder="AAPL"
                 autoComplete="off"
                 spellCheck="false"
-                autoCapitalize="characters"
-                inputMode="text"
-                pattern="[A-Za-z]+"
-                maxLength="5"
               />
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
                 <span className="text-sm">Stock Symbol</span>
@@ -922,6 +991,9 @@ const StockAnalysisView = () => {
           </div>
         </div>
       )}
+
+      {/* Add the verification modal */}
+      {!emailVerified && <EmailVerificationModal />}
     </div>
   );
 };
