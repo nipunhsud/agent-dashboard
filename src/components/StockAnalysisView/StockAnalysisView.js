@@ -8,7 +8,7 @@ import useRagUrl from "../../hooks/useChatUrl";
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db, auth } from '../../config/firebase';
 import { sendEmailVerification } from "firebase/auth";
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 
 
 const StockAnalysisView = () => {
@@ -785,8 +785,17 @@ const StockAnalysisView = () => {
           <h1 className="text-3xl font-extrabold text-custom-purple text-center mt-4 mb-4">
             Quanta AI
           </h1>
-         
         </div>
+
+        <Link 
+          to="/dashboard" 
+          className="mb-4 bg-custom-purple text-white py-4 px-6 rounded-lg hover:bg-black hover:text-custom-purple hover:border hover:border-custom-purple transform hover:scale-[1.02] transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg group max-w-2xl w-full mx-auto"
+        >
+          <span className="text-lg font-bold">📊</span>
+          <span className="text-lg font-semibold">View Historical Analysis</span>
+          <span className="transform group-hover:translate-x-1 transition-transform duration-300">→</span>
+        </Link>
+
         <form
           onSubmit={handleSubmit}
           className="bg-custom-purple shadow-lg rounded-lg p-6 mb-6 max-w-2xl mx-auto"
