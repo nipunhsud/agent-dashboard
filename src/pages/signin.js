@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { auth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "../config/firebase"; 
 
+
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState(""); 
@@ -137,20 +138,25 @@ const SignIn = () => {
               value="Sign In"
               className="bg-[#6366f1] text-white rounded-lg py-2 px-3.5 font-medium cursor-pointer w-full mt-8"
             />
-            <button
-              type="button"
-              onClick={handleGoogleSignIn}
-              className="flex items-center justify-center gap-2 border border-gray-300 text-gray-700 rounded-lg py-2 px-3.5 font-medium cursor-pointer w-full mt-2.5 hover:bg-gray-50"
-            >
-              <img src="/images/google.svg" alt="Google" className="w-5 h-5" />
-              Sign in with Google
-            </button>
             <Link
               className="border-2 border-[#6366f1] text-[#6366f1] block text-center mt-2.5 rounded-lg py-2 px-3.5 font-medium cursor-pointer w-full"
               to={"/signup"}
             >
               Sign Up
             </Link>
+            {/*Google*/}
+            <button
+              type="button"
+              onClick={handleGoogleSignIn}
+              className="flex items-center justify-center gap-2 border border-gray-300 text-gray-700 rounded-lg py-2 px-3.5 font-medium cursor-pointer w-full mt-2.5 hover:bg-gray-50"
+            >
+              <img 
+                src="/images/google.svg"
+                alt="Google" 
+                className="w-5 h-5" 
+              />
+              Sign in with Google
+            </button>
           </form>
         </div>
       </div>
