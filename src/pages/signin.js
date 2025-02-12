@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
-import { auth, signInWithEmailAndPassword } from "../config/firebase"; 
+import { auth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "../config/firebase"; 
+
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -23,6 +24,19 @@ const SignIn = () => {
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      setSuccessMessage("Sign in successful!");
+      setTimeout(() => {
+        navigate('/stocks');
+      }, 1500);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
       setSuccessMessage("Sign in successful!");
       setTimeout(() => {
         navigate('/stocks');
@@ -122,14 +136,27 @@ const SignIn = () => {
               type="submit"
               name="commit"
               value="Sign In"
-              class="bg-[#6366f1] text-white rounded-lg py-2 px-3.5 font-medium cursor-pointer w-full mt-8"
+              className="bg-[#6366f1] text-white rounded-lg py-2 px-3.5 font-medium cursor-pointer w-full mt-8"
             />
             <Link
-              class="border-2 border-[#6366f1] text-[#6366f1] block text-center mt-2.5 rounded-lg py-2 px-3.5 font-medium cursor-pointer w-full"
+              className="border-2 border-[#6366f1] text-[#6366f1] block text-center mt-2.5 rounded-lg py-2 px-3.5 font-medium cursor-pointer w-full"
               to={"/signup"}
             >
               Sign Up
             </Link>
+            {/*Google*/}
+            <button
+              type="button"
+              onClick={handleGoogleSignIn}
+              className="flex items-center justify-center gap-2 border border-gray-300 text-gray-700 rounded-lg py-2 px-3.5 font-medium cursor-pointer w-full mt-2.5 hover:bg-gray-50"
+            >
+              <img 
+                src="/images/google.svg"
+                alt="Google" 
+                className="w-5 h-5" 
+              />
+              Sign in with Google
+            </button>
           </form>
         </div>
       </div>

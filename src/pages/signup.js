@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link,useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "../config/firebase";
 
 
@@ -34,6 +34,19 @@ const SignUp = () => {
     } catch (err) {
       console.error("Error during sign up:", err.message);
       setError(err.message); 
+    }
+  };
+
+  const handleGoogleSignUp = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      setSuccessMessage(true);
+      setTimeout(() => {
+        navigate('/stocks');
+      }, 1500);
+    } catch (error) {
+      setError(error.message);
     }
   };
 
@@ -146,6 +159,15 @@ const SignUp = () => {
             >
               Sign In
             </Link>
+            {/*Google*/}
+            <button
+              type="button"
+              onClick={handleGoogleSignUp}
+              className="flex items-center justify-center gap-2 border border-gray-300 text-gray-700 rounded-lg py-2 px-3.5 font-medium cursor-pointer w-full mt-2.5 hover:bg-gray-50"
+            >
+              <img src="/images/google.svg" alt="Google" className="w-5 h-5" />
+              Sign up with Google
+            </button>
           </form>
         </div>
       </div>
