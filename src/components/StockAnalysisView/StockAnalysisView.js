@@ -81,7 +81,6 @@ const StockAnalysisView = () => {
     document.querySelector('.print-button').onclick = handlePrintAnalysis;
   };
 
-  // Add this validation function
   const isValidTickerSymbol = (ticker) => {
     return /^[A-Z]{1,5}$/.test(ticker);
   };
@@ -89,13 +88,11 @@ const StockAnalysisView = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Check if user is logged in first
     if (!auth.currentUser) {
       setShowAuthModal(true);
       return;
     }
 
-    // Check if user's email is verified
     if (auth.currentUser && !auth.currentUser.emailVerified) {
       setError("Please verify your email first! Check your inbox for the verification link.");
       setEmailVerified(false);
