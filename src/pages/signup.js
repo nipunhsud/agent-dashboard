@@ -159,6 +159,7 @@ const SignUp = () => {
             >
               Sign In
             </Link>
+            {/*Google*/}
             <button
               type="button"
               onClick={handleGoogleSignUp}
