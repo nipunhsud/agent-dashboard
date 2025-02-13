@@ -6,7 +6,8 @@ import {
   signInWithEmailAndPassword, 
   signInWithRedirect, 
   GoogleAuthProvider,
-  getRedirectResult 
+  getRedirectResult,
+  onAuthStateChanged
 } from "../config/firebase"; 
 
 
@@ -39,37 +40,41 @@ const SignIn = () => {
       setError(error.message);
     }
   };
-
+  
   useEffect(() => {
-    // Handle redirect result when component mounts
+    console.log('Checking redirect result on mount...');
     getRedirectResult(auth)
       .then((result) => {
+        console.log('Got redirect result:', result);
         if (result) {
           // Get the credential
           const credential = GoogleAuthProvider.credentialFromResult(result);
-          const token = credential.accessToken;
+          console.log('Got credential:', credential);
           
-          // The signed-in user info
+          // Get the user
           const user = result.user;
-          console.log('User signed in:', user);
+          console.log('Got user:', user);
           
-          setSuccessMessage("Sign in successful!");
-          setTimeout(() => {
-            navigate('/stocks');
-          }, 1500);
+          // Wait for auth state to update
+          const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            if (currentUser) {
+              console.log('Auth state updated with user:', currentUser);
+              setSuccessMessage("Sign in successful!");
+              setTimeout(() => {
+                navigate('/stocks');
+              }, 1500);
+            }
+          });
+          
+          // Cleanup subscription
+          return () => unsubscribe();
+        } else {
+          console.log('No redirect result - normal page load');
         }
       })
       .catch((error) => {
-        // Handle Errors here
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used
-        const email = error.customData?.email;
-        // The AuthCredential type that was used
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        
-        console.error('Sign-in error:', { errorCode, errorMessage, email });
-        setError(errorMessage);
+        console.error('Redirect error:', error);
+        setError(error.message);
       });
   }, [navigate]);
 
@@ -80,21 +85,15 @@ const SignIn = () => {
       setIsRedirecting(true);
 
       const provider = new GoogleAuthProvider();
+      console.log('Starting Google sign in...');
       
-      // Optional: Add scopes if needed
-      // provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
-      
-      // Set language
-      auth.useDeviceLanguage();
-      
-      // Optional: Add custom parameters
+      // Force account selection
       provider.setCustomParameters({
         prompt: 'select_account'
       });
 
-      // Redirect to Google sign-in page
+      // Start redirect
       await signInWithRedirect(auth, provider);
-      
     } catch (error) {
       console.error('Google Sign In Error:', error);
       setError(error.message);
@@ -137,6 +136,7 @@ const SignIn = () => {
                 id="email_address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)} 
+                autoComplete="email"
               />
             </div>
 
@@ -154,6 +154,7 @@ const SignIn = () => {
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)} 
+                  autoComplete="current-password"
                 />
                 <button
                   className="absolute right-2.5 top-1/2 -translate-y-1/2"

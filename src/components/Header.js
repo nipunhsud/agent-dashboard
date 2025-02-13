@@ -15,6 +15,13 @@ const Header = () => {
   const auth = getAuth();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    console.log('Header received user update:', {
+      isUserSet: !!user,
+      userEmail: user?.email
+    });
+  }, [user]);
+
   const onLogout = () => {
     auth.signOut();
     navigate("/signin");
