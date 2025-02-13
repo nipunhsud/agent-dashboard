@@ -17,7 +17,7 @@ const News = () => {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 max-h-[800px] overflow-y-auto">
       {news.map((item) => (
         <NewsCard key={item.link} item={item} />
       ))}
