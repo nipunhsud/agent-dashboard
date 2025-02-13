@@ -1,7 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
-import { auth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "../config/firebase"; 
+import { 
+  auth,
+  signInWithEmailAndPassword, 
+  signInWithRedirect, 
+  GoogleAuthProvider,
+  getRedirectResult 
+} from "../config/firebase"; 
 
 
 const SignIn = () => {
@@ -10,6 +16,7 @@ const SignIn = () => {
   const [password, setPassword] = useState(""); 
   const [error, setError] = useState(""); 
   const [successMessage, setSuccessMessage] = useState("");
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const navigate = useNavigate();
 
 
@@ -33,16 +40,65 @@ const SignIn = () => {
     }
   };
 
-  const handleGoogleSignIn = async () => {
+  useEffect(() => {
+    // Handle redirect result when component mounts
+    getRedirectResult(auth)
+      .then((result) => {
+        if (result) {
+          // Get the credential
+          const credential = GoogleAuthProvider.credentialFromResult(result);
+          const token = credential.accessToken;
+          
+          // The signed-in user info
+          const user = result.user;
+          console.log('User signed in:', user);
+          
+          setSuccessMessage("Sign in successful!");
+          setTimeout(() => {
+            navigate('/stocks');
+          }, 1500);
+        }
+      })
+      .catch((error) => {
+        // Handle Errors here
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // The email of the user's account used
+        const email = error.customData?.email;
+        // The AuthCredential type that was used
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        
+        console.error('Sign-in error:', { errorCode, errorMessage, email });
+        setError(errorMessage);
+      });
+  }, [navigate]);
+
+  const handleGoogleSignIn = async (e) => {
+    e.preventDefault();
     try {
+      if (isRedirecting) return;
+      setIsRedirecting(true);
+
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-      setSuccessMessage("Sign in successful!");
-      setTimeout(() => {
-        navigate('/stocks');
-      }, 1500);
+      
+      // Optional: Add scopes if needed
+      // provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+      
+      // Set language
+      auth.useDeviceLanguage();
+      
+      // Optional: Add custom parameters
+      provider.setCustomParameters({
+        prompt: 'select_account'
+      });
+
+      // Redirect to Google sign-in page
+      await signInWithRedirect(auth, provider);
+      
     } catch (error) {
+      console.error('Google Sign In Error:', error);
       setError(error.message);
+      setIsRedirecting(false);
     }
   };
 
@@ -73,8 +129,7 @@ const SignIn = () => {
             <div class="my-5 relative">
               <input
                 required="required"
-                autofocus="autofocus"
-                autocomplete="username"
+                autoFocus={true}
                 placeholder="Email Address"
                 class="pl-10 block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full focus:border-[#6366f1]"
                 type="email"
@@ -131,6 +186,9 @@ const SignIn = () => {
             {error && (
               <p className="text-red-500 text-center mt-2">{error}</p> 
             )}
+            {successMessage && (
+              <p className="text-green-500 text-center mt-2">{successMessage}</p>
+            )}
 
             <input
               type="submit"
@@ -148,14 +206,17 @@ const SignIn = () => {
             <button
               type="button"
               onClick={handleGoogleSignIn}
-              className="flex items-center justify-center gap-2 border border-gray-300 text-gray-700 rounded-lg py-2 px-3.5 font-medium cursor-pointer w-full mt-2.5 hover:bg-gray-50"
+              disabled={isRedirecting}
+              className={`flex items-center justify-center gap-2 border border-gray-300 text-gray-700 rounded-lg py-2 px-3.5 font-medium w-full mt-2.5 hover:bg-gray-50 ${
+                isRedirecting ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+              }`}
             >
               <img 
                 src="/images/google.svg"
                 alt="Google" 
                 className="w-5 h-5" 
               />
-              Sign in with Google
+              {isRedirecting ? 'Redirecting...' : 'Sign in with Google'}
             </button>
           </form>
         </div>
