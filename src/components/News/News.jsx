@@ -17,10 +17,12 @@ const News = () => {
   }
 
   return (
-    <div className="p-6 space-y-6">
-      {news.map((item) => (
-        <NewsCard key={item.link} item={item} />
-      ))}
+    <div className="container mx-auto px-4 sm:px-8">
+      <div className="flex flex-row gap-6 overflow-x-auto py-6">
+        {news.map((item) => (
+          <NewsCard key={item.link} item={item} />
+        ))}
+      </div>
     </div>
   );
 };

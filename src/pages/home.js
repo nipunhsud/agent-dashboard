@@ -23,15 +23,10 @@ const Home = () => {
 
   return (
     <div>
-      <HeroSectionFast />
-
-      <Section 
-        name="Be the first to know" 
-        title="Your reasearch on steroids"
-        subtitle="Improve capabilities with our AI-powered research tools."
-      >
+      <div className="flex flex-col">
+        <HeroSectionFast />
         <News /> 
-      </Section>
+      </div>
 
       <Section 
         name="Why choose us?" 
