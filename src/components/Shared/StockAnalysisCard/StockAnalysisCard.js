@@ -202,9 +202,9 @@ const StockAnalysisCard = ({ analysis, onClose }) => {
                   <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
                     <span className="block font-bold mb-2">Overall Trend</span>
                     <div className={`text-lg font-semibold ${
-                      analysis.technical_analysis?.trend?.includes('Bullish') ? 'text-green-500' :
-                      analysis.technical_analysis?.trend?.includes('Bearish') ? 'text-red-500' :
-                      'text-yellow-500'
+                       analysis?.technical_analysis?.trend?.toLowerCase().includes('up') ? 'text-green-400' :
+                       analysis?.technical_analysis?.trend?.toLowerCase().includes('down') ? 'text-red-400' :
+                       'text-yellow-400'
                     }`}>
                       {analysis.technical_analysis?.trend || 'N/A'}
                     </div>

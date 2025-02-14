@@ -9,6 +9,7 @@ const Dashboard = () => {
   const [stockAnalyses, setStockAnalyses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
   const { token } = useAuth();
   const csrfToken = useCSRFToken();
   const backendUrl = useBackendUrl();
@@ -85,6 +86,11 @@ const Dashboard = () => {
     setExpandedAnalysis(null);
   };
 
+  const filteredStockAnalyses = stockAnalyses.filter(analysis => {
+    const ticker = analysis?.analysis?.stock_summary?.ticker?.toLowerCase() || '';
+    return ticker.includes(searchTerm.toLowerCase());
+  });
+
   if (loading) {
     return (
       <div className="min-h-screen bg-black flex flex-col items-center justify-center">
@@ -105,7 +111,27 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-black text-gray-300 p-8">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8 text-custom-purple">Your Stock Analysis History</h1>
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
+          <h1 className="text-3xl font-bold text-custom-purple mb-4 md:mb-0">Your Stock Analysis History</h1>
+          
+          <div className="relative w-full md:w-64">
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search by ticker..."
+              className="w-full px-4 py-2 bg-gray-900 border border-custom-purple rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-purple text-gray-300 placeholder-gray-500"
+            />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm('')}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-300"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+        </div>
         
         {stockAnalyses.length === 0 ? (
           <div className="text-center py-12">
@@ -117,12 +143,23 @@ const Dashboard = () => {
               Analyze Your First Stock
             </Link>
           </div>
+        ) : filteredStockAnalyses.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-xl text-gray-400">No matches found for "{searchTerm}"</p>
+            <button 
+              onClick={() => setSearchTerm('')}
+              className="mt-4 inline-block px-6 py-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-200"
+            >
+              Clear Search
+            </button>
+          </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {stockAnalyses.map((stockAnalysis) => {
+            {filteredStockAnalyses.map((stockAnalysis) => {
+              console.log(stockAnalysis)
               const analysis = stockAnalysis.analysis;
               const stockSummary = analysis.stock_summary;
-              console.log(stockAnalysis)
+              
               return (
                 <div 
                   key={stockAnalysis.id}
@@ -132,7 +169,7 @@ const Dashboard = () => {
                     <div className="flex flex-col">
                       <div className="flex items-center space-x-2">
                         <span className="text-2xl font-bold text-custom-purple">
-                          {stockSummary.ticker}
+                          {stockSummary?.ticker}
                         </span>
                         <button
                           type="button"
@@ -221,11 +258,11 @@ const Dashboard = () => {
                       <span className="block font-bold mb-2">Technical Analysis</span>
                       <div className="space-y-1">
                         <div className={`text-sm ${
-                          stockSummary.technical_analysis?.trend?.includes('Up') ? 'text-green-400' :
-                          stockSummary.technical_analysis?.trend?.includes('Down') ? 'text-red-400' :
+                          stockSummary?.technical_analysis?.trend?.toLowerCase().includes('up') ? 'text-green-400' :
+                          stockSummary?.technical_analysis?.trend?.toLowerCase().includes('down') ? 'text-red-400' :
                           'text-yellow-400'
                         }`}>
-                          Trend: {stockSummary.technical_analysis?.trend}
+                          Trend: {stockSummary?.technical_analysis?.trend || 'N/A'}
                         </div>
                         <div className="text-sm">
                           Volume: {stockSummary.technical_analysis?.volume_analysis}
