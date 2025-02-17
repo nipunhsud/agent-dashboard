@@ -22,7 +22,6 @@ function App() {
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/forgetpassword" element={<Forgetpassword />} />
-          <Route path="/agent" element={<AgentUI />} />
           <Route path="/stocks" element={<StockAnalysisAssistant />} />
           <Route path="/quanta" element={<StockAnalysisAssistant />} />
           <Route path="/dashboard" element={<Dashboard />} />
