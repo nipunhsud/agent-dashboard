@@ -10,6 +10,7 @@ import StockAnalysisAssistant from "./pages/StockAnalysisAssistant";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Dashboard from './components/Dashboard/Dashboard';
+import Upload from './components/Upload/Upload';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/stocks" element={<StockAnalysisAssistant />} />
           <Route path="/quanta" element={<StockAnalysisAssistant />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/upload" element={<Upload />} />
         </Routes>
         <Footer />
       </BrowserRouter>
