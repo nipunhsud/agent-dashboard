@@ -9,7 +9,7 @@ const HeroSectionFast = () => {
   return (
     <div className="flex flex-row items-center bg-custom-purple text-white pt-8 pb-8">
       <div className="flex flex-col px-4 sm:px-8 md:px-12 lg:px-16 w-1/2">
-        <h4 className="text-white font-black text-balance text-4xl sm:text-5xl lg:text-6xl">
+        <h4 className="text-white font-black text-balance text-xl sm:text-5xl lg:text-6xl">
           Simplify Investments
         </h4>
         <p className="mt-4 text-gray-200 font-light text-balance text-lg sm:text-xl lg:text-2xl">Level the playing field for individual investors.</p>
