@@ -225,6 +225,18 @@ const Dashboard = () => {
               const recommendation = stockSummary?.recommendation || {};
               const tradeSetup = stockSummary?.trade_setup || {};
               
+              // Helper function to safely format currency
+              const formatCurrency = (value) => {
+                const num = parseFloat(value);
+                return !isNaN(num) ? `$${num.toFixed(2)}` : 'N/A';
+              };
+
+              // Helper function to safely format number
+              const formatNumber = (value) => {
+                const num = parseFloat(value);
+                return !isNaN(num) ? num.toLocaleString() : 'N/A';
+              };
+
               return (
                 <div 
                   key={stockAnalysis.id}
@@ -283,11 +295,11 @@ const Dashboard = () => {
                     <div className="grid grid-cols-2 gap-2 text-sm">
                       <div className="p-2 bg-custom-purple rounded-lg">
                         <span className="block font-bold">Price</span>
-                        <span>${currentMetrics?.price?.toFixed(2) || 'N/A'}</span>
+                        <span>{formatCurrency(currentMetrics?.price)}</span>
                       </div>
                       <div className="p-2 bg-custom-purple rounded-lg">
                         <span className="block font-bold">Volume</span>
-                        <span>{currentMetrics?.volume?.toLocaleString() || 'N/A'}</span>
+                        <span>{formatNumber(currentMetrics?.volume)}</span>
                       </div>
                     </div>
 
@@ -309,11 +321,11 @@ const Dashboard = () => {
                       <div className="grid grid-cols-2 gap-2 text-sm">
                         <div>
                           <span className="text-gray-400">Buy Point:</span>
-                          <span className="ml-1">${tradeSetup?.buy_point?.toFixed(2) || 'N/A'}</span>
+                          <span className="ml-1">{formatCurrency(tradeSetup?.buy_point)}</span>
                         </div>
                         <div>
                           <span className="text-gray-400">Target:</span>
-                          <span className="ml-1">${tradeSetup?.target_price?.toFixed(2) || 'N/A'}</span>
+                          <span className="ml-1">{formatCurrency(tradeSetup?.target_price)}</span>
                         </div>
                       </div>
                     </div>
