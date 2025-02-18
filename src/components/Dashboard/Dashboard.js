@@ -5,6 +5,11 @@ import useCSRFToken from "../../hooks/useCSRFToken"
 import useBackendUrl from '../../hooks/useBackendUrl';
 import StockAnalysisCard from '../Shared/StockAnalysisCard/StockAnalysisCard';
 
+const capitalizeFirstLetter = (string) => {
+  if (!string) return 'N/A';
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+};
+
 const Dashboard = () => {
   const [stockAnalyses, setStockAnalyses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,6 +20,7 @@ const Dashboard = () => {
   const backendUrl = useBackendUrl();
   const navigate = useNavigate();
   const [expandedAnalysis, setExpandedAnalysis] = useState(null);
+  const [filterType, setFilterType] = useState('all');
 
   const parseAnalysisData = (analysisString) => {
     try {
@@ -88,7 +94,12 @@ const Dashboard = () => {
 
   const filteredStockAnalyses = stockAnalyses.filter(analysis => {
     const ticker = analysis?.analysis?.stock_summary?.ticker?.toLowerCase() || '';
-    return ticker.includes(searchTerm.toLowerCase());
+    const recommendation = analysis?.analysis?.stock_summary?.recommendation?.action?.toLowerCase() || '';
+    
+    const matchesSearch = ticker.includes(searchTerm.toLowerCase());
+    const matchesFilter = filterType === 'all' || recommendation.includes(filterType.toLowerCase());
+    
+    return matchesSearch && matchesFilter;
   });
 
   if (loading) {
@@ -133,6 +144,49 @@ const Dashboard = () => {
           </div>
         </div>
         
+        <div className="flex flex-wrap gap-3 mb-6">
+          <button
+            onClick={() => setFilterType('all')}
+            className={`px-4 py-2 rounded-lg transition-all duration-200 ${
+              filterType === 'all'
+                ? 'bg-custom-purple text-white'
+                : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+            }`}
+          >
+            All
+          </button>
+          <button
+            onClick={() => setFilterType('buy')}
+            className={`px-4 py-2 rounded-lg transition-all duration-200 ${
+              filterType === 'buy'
+                ? 'bg-green-600 text-white'
+                : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+            }`}
+          >
+            Buy
+          </button>
+          <button
+            onClick={() => setFilterType('wait')}
+            className={`px-4 py-2 rounded-lg transition-all duration-200 ${
+              filterType === 'wait'
+                ? 'bg-yellow-600 text-white'
+                : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+            }`}
+          >
+            Wait
+          </button>
+          <button
+            onClick={() => setFilterType('watch')}
+            className={`px-4 py-2 rounded-lg transition-all duration-200 ${
+              filterType === 'watch'
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+            }`}
+          >
+            Watch
+          </button>
+        </div>
+        
         {stockAnalyses.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-xl text-gray-400">No stock analyses found.</p>
@@ -145,20 +199,31 @@ const Dashboard = () => {
           </div>
         ) : filteredStockAnalyses.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-xl text-gray-400">No matches found for "{searchTerm}"</p>
+            <p className="text-xl text-gray-400">
+              No matches found
+              {searchTerm && ` for "${searchTerm}"`}
+              {filterType !== 'all' && ` with ${filterType.toUpperCase()} recommendation`}
+            </p>
             <button 
-              onClick={() => setSearchTerm('')}
+              onClick={() => {
+                setSearchTerm('');
+                setFilterType('all');
+              }}
               className="mt-4 inline-block px-6 py-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-200"
             >
-              Clear Search
+              Clear Filters
             </button>
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {filteredStockAnalyses.map((stockAnalysis) => {
-              console.log(stockAnalysis)
-              const analysis = stockAnalysis.analysis;
-              const stockSummary = analysis.stock_summary;
+              // Safely access the nested data
+              const analysis = stockAnalysis?.analysis || {};
+              const stockSummary = analysis?.stock_summary || {};
+              const currentMetrics = stockSummary?.current_metrics || {};
+              const technicalAnalysis = stockSummary?.technical_analysis || {};
+              const recommendation = stockSummary?.recommendation || {};
+              const tradeSetup = stockSummary?.trade_setup || {};
               
               return (
                 <div 
@@ -169,7 +234,7 @@ const Dashboard = () => {
                     <div className="flex flex-col">
                       <div className="flex items-center space-x-2">
                         <span className="text-2xl font-bold text-custom-purple">
-                          {stockSummary?.ticker}
+                          {stockSummary?.ticker || 'N/A'}
                         </span>
                         <button
                           type="button"
@@ -218,11 +283,11 @@ const Dashboard = () => {
                     <div className="grid grid-cols-2 gap-2 text-sm">
                       <div className="p-2 bg-custom-purple rounded-lg">
                         <span className="block font-bold">Price</span>
-                        <span>${stockSummary.current_metrics?.price?.toFixed(2)}</span>
+                        <span>${currentMetrics?.price?.toFixed(2) || 'N/A'}</span>
                       </div>
                       <div className="p-2 bg-custom-purple rounded-lg">
                         <span className="block font-bold">Volume</span>
-                        <span>{stockSummary.current_metrics?.volume?.toLocaleString()}</span>
+                        <span>{currentMetrics?.volume?.toLocaleString() || 'N/A'}</span>
                       </div>
                     </div>
 
@@ -230,11 +295,11 @@ const Dashboard = () => {
                     <div className="p-3 bg-custom-purple rounded-lg">
                       <span className="block font-bold mb-2">Recommendation</span>
                       <span className={`px-2 py-1 rounded text-sm ${
-                        stockSummary.recommendation?.action.includes('BUY') ? 'bg-green-900 text-green-300' :
-                        stockSummary.recommendation?.action.includes('SELL') ? 'bg-red-900 text-red-300' :
+                        recommendation?.action?.toLowerCase().includes('buy') ? 'bg-green-900 text-green-300' :
+                        recommendation?.action?.toLowerCase().includes('sell') ? 'bg-red-900 text-red-300' :
                         'bg-yellow-900 text-yellow-300'
                       }`}>
-                        {stockSummary.recommendation?.action}
+                        {recommendation?.action || 'N/A'}
                       </span>
                     </div>
 
@@ -244,11 +309,11 @@ const Dashboard = () => {
                       <div className="grid grid-cols-2 gap-2 text-sm">
                         <div>
                           <span className="text-gray-400">Buy Point:</span>
-                          <span className="ml-1">${stockSummary.trade_setup?.buy_point?.toFixed(2)}</span>
+                          <span className="ml-1">${tradeSetup?.buy_point?.toFixed(2) || 'N/A'}</span>
                         </div>
                         <div>
                           <span className="text-gray-400">Target:</span>
-                          <span className="ml-1">${stockSummary.trade_setup?.target_price?.toFixed(2)}</span>
+                          <span className="ml-1">${tradeSetup?.target_price?.toFixed(2) || 'N/A'}</span>
                         </div>
                       </div>
                     </div>
@@ -258,14 +323,14 @@ const Dashboard = () => {
                       <span className="block font-bold mb-2">Technical Analysis</span>
                       <div className="space-y-1">
                         <div className={`text-sm ${
-                          stockSummary?.technical_analysis?.trend?.toLowerCase().includes('up') ? 'text-green-400' :
-                          stockSummary?.technical_analysis?.trend?.toLowerCase().includes('down') ? 'text-red-400' :
+                          technicalAnalysis?.trend?.toLowerCase().includes('up') ? 'text-green-400' :
+                          technicalAnalysis?.trend?.toLowerCase().includes('down') ? 'text-red-400' :
                           'text-yellow-400'
                         }`}>
-                          Trend: {stockSummary?.technical_analysis?.trend || 'N/A'}
+                          Trend: {capitalizeFirstLetter(technicalAnalysis?.trend)}
                         </div>
                         <div className="text-sm">
-                          Volume: {stockSummary.technical_analysis?.volume_analysis}
+                          Volume: {technicalAnalysis?.volume_analysis || 'N/A'}
                         </div>
                       </div>
                     </div>
