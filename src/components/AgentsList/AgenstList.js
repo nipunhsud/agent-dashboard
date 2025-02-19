@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import FilterTabs from "./FilterTabs/FilterTabs";
 import AgentCard from "./AgentCard/AgentCard";
+import News from "../News/News";
 
 const AgentsList = ({ 
   dashOffset, 
@@ -11,6 +12,17 @@ const AgentsList = ({
   setSelectedFilter, 
   openModal 
 }) => {
+  const filterComponents = {
+    "Stock to watch": (
+      <div className="space-y-4">
+        {agents.map((agent, index) => (
+          <AgentCard key={index} agent={agent} openModal={openModal} />
+        ))}
+      </div>
+    ),
+    "News to read": <News />,
+  };
+
   return (
     <div className="px-8 py-6">
       <div className="agentSection">
@@ -20,11 +32,7 @@ const AgentsList = ({
           selectedFilter={selectedFilter}
           setSelectedFilter={setSelectedFilter}
         />
-        <div className="space-y-4">
-          {agents.map((agent, index) => (
-            <AgentCard key={index} agent={agent} openModal={openModal} />
-          ))}
-        </div>
+        {filterComponents[selectedFilter]}
       </div>
     </div>
   );

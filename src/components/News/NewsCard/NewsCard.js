@@ -2,7 +2,7 @@ import React from 'react';
 import NewsCardTickers from '../NewsCardTickers/NewsCardTickers';
 
 const NewsCard = ({ item }) => (
-    <div className="bg-black text-gray-300 rounded-lg shadow-md overflow-hidden hover:bg-opacity-80 transition-all duration-300 w-72">
+    <div className="bg-black text-gray-300 rounded-lg shadow-md overflow-hidden hover:bg-opacity-80 transition-all duration-300 w-120">
       <div className="flex flex-col">
         <div className="h-32">
           <img 

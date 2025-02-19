@@ -17,7 +17,7 @@ import AgentsList from '../components/AgentsList/AgenstList'
 const Home = () => {
   const { user, token } = useContext(AuthContext);
   const navigate = useNavigate();
-  const filters = ["All Agents", "The Newest", "Top Rated", "Most Popular"];
+  const filters = ["Stock to watch", "News to read"];
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAgent, setSelectedAgent] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -91,10 +91,7 @@ const Home = () => {
     },
   ];
 
-  if (!user) {
-    navigate('/signin');
-  }
-
+  
 
   return (
     <div>
