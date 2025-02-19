@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import FilterTabs from "./FilterTabs/FilterTabs";
 import AgentCard from "./AgentCard/AgentCard";
 import News from "../News/News";
+import StockRecommendation from '../StockRecommendation/StockRecommendation';
 
 const AgentsList = ({ 
   dashOffset, 
@@ -13,13 +14,7 @@ const AgentsList = ({
   openModal 
 }) => {
   const filterComponents = {
-    "Stock to watch": (
-      <div className="space-y-4">
-        {agents.map((agent, index) => (
-          <AgentCard key={index} agent={agent} openModal={openModal} />
-        ))}
-      </div>
-    ),
+    "Stock to watch": <StockRecommendation openModal={openModal} />,
     "News to read": <News />,
   };
 

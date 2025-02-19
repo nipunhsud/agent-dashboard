@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import landingPageBot from "../../assets/landing-page-bot.png"; 
+import quantaDemo from "../../assets/quanta-demo.mp4";
 import { applicationsData } from "../../helpers/applicationsData"
 import Integrations from "./Integrations";
 
@@ -27,15 +28,20 @@ const HeroSectionFast = () => {
         </button>
       </div>
      
-      {/* <Integrations /> */}
-
-      {/* <div className="mt-8 max-w-[400px] sm:max-w-[450px] lg:max-w-[500px]">
-        <img 
-          src={landingPageBot}
-          alt="Christmas Gifting Agent" 
-          className="w-full h-auto rounded-lg"
-        />
-      </div> */}
+      {/* Video placeholder */}
+      <div className="w-1/2 h-[400px] mx-4">
+        <video
+          className="w-full h-full rounded-lg object-cover"
+          autoPlay
+          loop
+          muted
+          playsInline
+        >
+          <source src={quantaDemo} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      
   
     </div>
   );
