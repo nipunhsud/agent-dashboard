@@ -1,6 +1,6 @@
 import React from "react";
 
-const AgentInfo = ({ agent }) => (
+const StockInfo = ({ agent }) => (
   <div className="flex items-center gap-[24px]">
     <div className="w-[64px] h-[64px] bg-white rounded-[12px] flex items-center justify-center">
       <img src={agent.svg} alt={agent.name} />
@@ -16,4 +16,4 @@ const AgentInfo = ({ agent }) => (
   </div>
 );
 
-export default AgentInfo;
+export default StockInfo;

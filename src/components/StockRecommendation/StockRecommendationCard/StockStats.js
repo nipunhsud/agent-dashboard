@@ -1,6 +1,6 @@
 import React from "react";
 
-const AgentStats = ({ agent, openModal }) => (
+const StockStats = ({ agent, openModal }) => (
   <div className="flex justify-between md:justify-normal items-center gap-4">
     <div className="flex items-center gap-[7px]">
       <img
@@ -33,4 +33,4 @@ const AgentStats = ({ agent, openModal }) => (
   </div>
 );
 
-export default AgentStats;
+export default StockStats;

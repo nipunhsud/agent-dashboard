@@ -12,7 +12,7 @@ import UseCases from "../components/UseCases/UseCases";
 import HeroSectionFast from "../components/HeroSectionFast/HeroSectionFast";
 import WhyUs from "../components/WhyUs/WhyUs";
 import News from "../components/News/News";
-import AgentsList from '../components/AgentsList/AgenstList'
+import StocksTabs from '../components/StockTabs/StocksTabs'
 
 const Home = () => {
   const { user, token } = useContext(AuthContext);
@@ -93,6 +93,7 @@ const Home = () => {
 
   
 
+
   return (
     <div>
       <div className="flex flex-col">
@@ -101,7 +102,7 @@ const Home = () => {
         </div>
         <div className="w-full bg-white flex justify-center">
           <div className="w-[800px] px-8">
-            <AgentsList 
+            <StocksTabs
               dashOffset={dashOffset}  
               validProgress={validProgress}
               agents={agents}

@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import FilterTabs from "./FilterTabs/FilterTabs";
-import AgentCard from "./AgentCard/AgentCard";
 import News from "../News/News";
 import StockRecommendation from '../StockRecommendation/StockRecommendation';
 
-const AgentsList = ({ 
+const StocksTabs = ({ 
   dashOffset, 
   validProgress, 
   agents, 
@@ -33,4 +32,4 @@ const AgentsList = ({
   );
 };
 
-export default AgentsList;
+export default StocksTabs;
