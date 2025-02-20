@@ -3,7 +3,7 @@ import { useRecommendedStocks } from '../../hooks/useRecommendedStocks';
 import StockRecommendationCard from './StockRecommendationCard/StockRecommendationCard';
 
 const StockRecommendation = ({ openModal }) => {
-  const { stocks, loading, error } = useRecommendedStocks();
+  // const { stocks, loading, error } = useRecommendedStocks();
 
   const agents = [
     {
@@ -52,41 +52,43 @@ const StockRecommendation = ({ openModal }) => {
 
   
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-40">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="flex justify-center items-center h-40">
+  //       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
+  //     </div>
+  //   );
+  // }
 
-  if (error) {
-    return (
-      <div className="text-red-500 text-center py-4">
-        Error loading recommendations: {error}
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="text-red-500 text-center py-4">
+  //       Error loading recommendations: {error}
+  //     </div>
+  //   );
+  // }
 
-  if (!stocks || stocks.length === 0) {
-    return (
-      <div className="text-gray-500 text-center py-4">
-        No stock recommendations available at the moment.
-      </div>
-    );
-  }
+  // if (!stocks || stocks.length === 0) {
+  //   return (
+  //     <div className="text-gray-500 text-center py-4">
+  //       No stock recommendations available at the moment.
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="space-y-4">
-      {agents.map((stock, index) => (
+      {agents.map((agent, index) => (
         <StockRecommendationCard
           key={index}
           agent={{
-            name: stock.name || 'Stock Researcher',
-            description: stock.description || 'Analysis not available',
-            rating: stock.rating || 4.9,
-            timeAgo: stock.timeAgo || '6h 30min',
-            provider: 'Purnam'
+            name: agent.name,
+            svg: agent.svg,
+            by: agent.by,
+            time: agent.time,
+            rating: agent.rating,
+            timeImg: agent.timeImg,
+            ratingImg: agent.ratingImg
           }}
           openModal={openModal}
         />

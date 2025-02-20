@@ -20,7 +20,7 @@ const StocksTabs = ({
   return (
     <div className="px-8 py-6">
       <div className="agentSection">
-        <h2 className="text-[24px] font-bold">Agents</h2>
+        <h2 className="text-[24px] font-bold font-jakarta">Passionate about stocks</h2>
         <FilterTabs
           filters={filters}
           selectedFilter={selectedFilter}
