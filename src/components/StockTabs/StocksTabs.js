@@ -5,8 +5,7 @@ import StockRecommendation from '../StockRecommendation/StockRecommendation';
 
 const StocksTabs = ({ 
   dashOffset, 
-  validProgress, 
-  agents, 
+  validProgress,  
   filters, 
   selectedFilter, 
   setSelectedFilter, 

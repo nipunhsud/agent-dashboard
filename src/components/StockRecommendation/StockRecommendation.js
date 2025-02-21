@@ -1,9 +1,19 @@
-import React from 'react';
-import { useRecommendedStocks } from '../../hooks/useRecommendedStocks';
+import React, { useEffect } from 'react';
+import useStockAnalyses from '../../hooks/useStockAnalyses';
 import StockRecommendationCard from './StockRecommendationCard/StockRecommendationCard';
 
 const StockRecommendation = ({ openModal }) => {
-  // const { stocks, loading, error } = useRecommendedStocks();
+  const { stockAnalyses, loading, error, fetchStockAnalyses } = useStockAnalyses();
+
+  // Call fetchStockAnalyses when component mounts
+  useEffect(() => {
+    fetchStockAnalyses();
+  }, [fetchStockAnalyses]);
+
+  // Just to see the data in console
+  useEffect(() => {
+    console.log('Stock Analyses:', stockAnalyses);
+  }, [stockAnalyses]);
 
   const agents = [
     {
@@ -50,49 +60,50 @@ const StockRecommendation = ({ openModal }) => {
     },
   ];
 
-  
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-40">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
+      </div>
+    );
+  }
 
-  // if (loading) {
-  //   return (
-  //     <div className="flex justify-center items-center h-40">
-  //       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
-  //     </div>
-  //   );
-  // }
+  if (error) {
+    return (
+      <div className="text-red-500 text-center py-4">
+        Error loading analyses: {error}
+      </div>
+    );
+  }
 
-  // if (error) {
-  //   return (
-  //     <div className="text-red-500 text-center py-4">
-  //       Error loading recommendations: {error}
-  //     </div>
-  //   );
-  // }
-
-  // if (!stocks || stocks.length === 0) {
-  //   return (
-  //     <div className="text-gray-500 text-center py-4">
-  //       No stock recommendations available at the moment.
-  //     </div>
-  //   );
-  // }
+  // ticker 
+  // 
 
   return (
     <div className="space-y-4">
-      {agents.map((agent, index) => (
-        <StockRecommendationCard
-          key={index}
-          agent={{
-            name: agent.name,
-            svg: agent.svg,
-            by: agent.by,
-            time: agent.time,
-            rating: agent.rating,
-            timeImg: agent.timeImg,
-            ratingImg: agent.ratingImg
-          }}
-          openModal={openModal}
-        />
-      ))}
+      {stockAnalyses.map((stockData) => {
+        const analysis = stockData.analysis.stock_summary;
+        return (
+          <StockRecommendationCard
+            key={stockData.id}
+            stock={{
+              id: stockData.id,
+              name: analysis.ticker,
+              svg: `/images/stock-icon.svg`,
+              by: "Stock Analysis",
+              time: new Date(stockData.timestamp).toLocaleDateString(),
+              rating: analysis.recommendation.action,
+              timeImg: "/images/time.svg",
+              ratingImg: "/images/flame.svg",
+              price: analysis.current_metrics.price,
+              volume: analysis.current_metrics.volume,
+              recommendation: analysis.recommendation,
+              technicalAnalysis: analysis.technical_analysis
+            }}
+            openModal={openModal}
+          />
+        );
+      })}
     </div>
   );
 };

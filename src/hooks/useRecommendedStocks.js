@@ -43,3 +43,4 @@ export const useRecommendedStocks = () => {
 
   return { stocks, loading, error };
 };
+

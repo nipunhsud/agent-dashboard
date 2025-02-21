@@ -25,9 +25,9 @@ const Home = () => {
   const [activeTab, setActiveTab] = useState("Learning Hours");
 
   const openModal = (id) => {
-    const agent = agents.find((agent) => agent.id === id);
-    setSelectedAgent(agent);
-    setIsModalOpen(true);
+    // const agent = agents.find((agent) => agent.id === id);
+    // setSelectedAgent(agent);
+    // setIsModalOpen(true);
   };
 
   const closeModal = () => {
@@ -46,54 +46,6 @@ const Home = () => {
 
   const [selectedFilter, setSelectedFilter] = useState(filters[0]);
 
-  const agents = [
-    {
-      id: 1,
-      name: "Stock  Researcher",
-      svg: "/images/Researcher.svg",
-      by: "Purnam",
-      time: "6h 30min",
-      rating: "4.9",
-      timeImg: "/images/time.svg",
-      ratingImg: "/images/flame.svg",
-    },
-    {
-      id: 2,
-      name: "Web Scraper",
-      svg: "/images/web.svg",
-      by: "Purnam",
-      time: "3h 15min",
-      rating: "4.7",
-      timeImg: "/images/time.svg",
-      ratingImg: "/images/flame.svg",
-    },
-    {
-      id: 3,
-      name: "Instagram Agent",
-      svg: "/images/insta.svg",
-
-      by: "Purnam",
-      time: "7h 40min",
-      rating: "4.6",
-      timeImg: "/images/time.svg",
-      ratingImg: "/images/flame.svg",
-    },
-    {
-      id: 4,
-      name: "Image Generator",
-      svg: "/images/pencil.svg",
-      icon: "🖼️",
-      by: "Purnam",
-      time: "11h 30min",
-      rating: "4.8",
-      timeImg: "/images/time.svg",
-      ratingImg: "/images/flame.svg",
-    },
-  ];
-
-  
-
-
   return (
     <div>
       <div className="flex flex-col">
@@ -105,7 +57,6 @@ const Home = () => {
             <StocksTabs
               dashOffset={dashOffset}  
               validProgress={validProgress}
-              agents={agents}
               filters={filters}
               selectedFilter={selectedFilter}
               setSelectedFilter={setSelectedFilter}
