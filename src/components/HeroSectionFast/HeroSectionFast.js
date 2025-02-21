@@ -1,29 +1,25 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import landingPageBot from "../../assets/landing-page-bot.png"; 
 import quantaDemo from "../../assets/quanta-demo.mp4";
-import { applicationsData } from "../../helpers/applicationsData"
-import Integrations from "./Integrations";
-
 
 const HeroSectionFast = () => {
   return (
-    <div className="flex flex-row items-center bg-custom-purple text-white pt-8 pb-8">
+    <div className="flex flex-row items-center bg-[#F7F7F7] text-[#0C0B0B] pt-8 pb-8">
       <div className="flex flex-col items-center px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 w-1/2">
-        <h4 className="text-[48px] font-bold font-jakarta leading-tight">
+        <h4 className="text-[48px] font-bold font-jakarta leading-tight text-[#0C0B0B]">
           Simplify Investments
         </h4>
-        <p className="text-gray-200 font-light text-[24px]">
+        <p className="text-[#0C0B0B] font-normal text-[24px] robotoFont -mb-1">
           Level the playing field for individual investors.
         </p>
-        <p className="font-medium text-[24px] leading-tight">
-          <span className="text-black">AI-driven investment research</span>{" "}
+        <p className="text-[#0C0B0B] font-normal text-[24px] robotoFont">
+          <span>AI-driven investment research</span>{" "}
           at your fingertips.
         </p>
         <button
-          className="mt-2 w-[140px] px-6 py-2.5 bg-black text-white font-medium rounded-lg text-base hover:bg-gray-900 transition-colors duration-300"
+          className="mt-2 w-[140px] px-6 py-2.5 border-2 border-[#0C0B0B] text-[#0C0B0B] font-bold rounded-[8px] text-base hover:bg-[#0C0B0B] hover:text-white transform transition-all duration-300 hover:scale-105 hover:shadow-lg"
         >
-          <Link to={'/stocks'} className="!text-white !no-underline block w-full h-full">
+          <Link to={'/stocks'} className="!text-inherit !no-underline block w-full h-full">
             Try it now!
           </Link>
         </button>
@@ -31,7 +27,7 @@ const HeroSectionFast = () => {
      
       <div className="w-1/2 h-[400px] mx-4 flex items-center justify-center">
         <video
-          className="w-full h-full rounded-[25px] object-cover"
+          className="w-full h-full rounded-[12px] object-cover"
           autoPlay
           loop
           muted

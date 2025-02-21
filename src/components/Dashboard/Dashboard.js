@@ -1,89 +1,19 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../utils/AuthContext';
-import useCSRFToken from "../../hooks/useCSRFToken"
-import useBackendUrl from '../../hooks/useBackendUrl';
+import useStockAnalyses from '../../hooks/useStockAnalyses';
+import useExpandedAnalysis from '../../hooks/useExpandedAnalysis';
 import StockAnalysisCard from '../Shared/StockAnalysisCard/StockAnalysisCard';
 
 const Dashboard = () => {
-  const [stockAnalyses, setStockAnalyses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const { token } = useAuth();
-  const csrfToken = useCSRFToken();
-  const backendUrl = useBackendUrl();
+  const { stockAnalyses, loading, error, fetchStockAnalyses } = useStockAnalyses();
+  const { expandedAnalysis, setExpandedAnalysis, closeExpandedView } = useExpandedAnalysis();
   const navigate = useNavigate();
-  const [expandedAnalysis, setExpandedAnalysis] = useState(null);
-
-  const parseAnalysisData = (analysisString) => {
-    try {
-      // Remove any control characters and escape sequences
-      const sanitizedString = analysisString
-        .replace(/[\u0000-\u001F\u007F-\u009F]/g, '')
-        .replace(/\n/g, '\\n')
-        .replace(/\r/g, '\\r')
-        .replace(/\t/g, '\\t');
-      
-      return JSON.parse(sanitizedString);
-    } catch (err) {
-      console.error('Error parsing analysis data:', err);
-      console.log('Problematic string:', analysisString);
-      return null;
-    }
-  };
-
-  const fetchStockAnalyses = useCallback(async () => {
-    if (!token || !csrfToken) {
-      setLoading(false);
-      return;
-    }
-    setLoading(true); 
-    try {
-      // Get ticker from URL params
-      const params = new URLSearchParams(window.location.search);
-      const urlTicker = params.get('ticker');
-      
-      // Build the URL with optional ticker parameter
-      const url = urlTicker 
-        ? `${backendUrl}/user/stock-analyses?ticker=${urlTicker}`
-        : `${backendUrl}/user/stock-analyses/`;
-
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          'X-CSRFToken': csrfToken,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch analyses');
-      }
-
-      const data = await response.json();
-      if (data.success) {
-        const parsedAnalyses = data.analyses.map(analysis => ({
-          ...analysis,
-          analysis: parseAnalysisData(analysis.analysis) || {}
-        }));
-        setStockAnalyses(parsedAnalyses);
-      }
-    } catch (err) {
-      console.error('Error fetching stock analyses:', err);
-      setError('Failed to load your stock analyses');
-    } finally {
-      setLoading(false);
-    }
-  }, [token, csrfToken, backendUrl]);
 
   useEffect(() => {
-    fetchStockAnalyses();
+    const params = new URLSearchParams(window.location.search);
+    const urlTicker = params.get('ticker');
+    fetchStockAnalyses(urlTicker);
   }, [fetchStockAnalyses]);
-
-  const closeExpandedView = () => {
-    setExpandedAnalysis(null);
-  };
 
   if (loading) {
     return (
