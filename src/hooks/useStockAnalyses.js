@@ -53,6 +53,7 @@ const useStockAnalyses = () => {
       }
 
       const data = await response.json();
+      console.log('data at stock recom', data)
       if (data.success) {
         const parsedAnalyses = data.analyses.map(analysis => ({
           ...analysis,

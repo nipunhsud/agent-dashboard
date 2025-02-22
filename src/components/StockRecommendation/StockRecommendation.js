@@ -91,13 +91,12 @@ const StockRecommendation = ({ openModal }) => {
               name: analysis.ticker,
               svg: `/images/stock-icon.svg`,
               by: "Stock Analysis",
-              time: new Date(stockData.timestamp).toLocaleDateString(),
-              rating: analysis.recommendation.action,
-              timeImg: "/images/time.svg",
-              ratingImg: "/images/flame.svg",
               price: analysis.current_metrics.price,
               volume: analysis.current_metrics.volume,
-              recommendation: analysis.recommendation,
+              recommendation: {
+                action: analysis.recommendation.action,
+                trade_setup: analysis.trade_setup
+              },
               technicalAnalysis: analysis.technical_analysis
             }}
             openModal={openModal}
