@@ -52,7 +52,6 @@ const Dashboard = () => {
             {stockAnalyses.map((stockAnalysis) => {
               const analysis = stockAnalysis.analysis;
               const stockSummary = analysis.stock_summary;
-              console.log(stockAnalysis)
               return (
                 <div 
                   key={stockAnalysis.id}
