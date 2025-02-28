@@ -32,7 +32,7 @@ const Header = () => {
   }, []);
 
   return (
-    <nav className="bg-black sticky top-0 z-50">
+    <nav className="bg-white sticky top-0 z-50 shadow-sm">
       {/* Desktop Header */}
       <header className="mx-auto flex items-center justify-between py-4 px-4 hidden md:flex">
         <Link to="/">
@@ -44,17 +44,17 @@ const Header = () => {
         </Link>
         {user?.email ? (
           <Menu as="div" className="relative inline-block text-left">
-            <MenuButton className="flex items-center gap-x-1.5 bg-white px-3 py-2 text-sm font-semibold text-gray-900 rounded-md shadow-sm hover:bg-gray-100">
+            <MenuButton className="flex items-center gap-x-1.5 bg-[#f5f5f7] px-[24px] py-[8px] robotoFont font-bold text-[13px] text-[#0C0B0B] rounded-[8px] hover:bg-[#0C0B0B] hover:text-white transform transition-all duration-300">
               {user.email}
-              <ChevronDownIcon className="w-4 h-4 text-gray-400" />
+              <ChevronDownIcon className="w-4 h-4" />
             </MenuButton>
-            <MenuItems className="absolute right-0 z-10 mt-2 w-40 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
+            <MenuItems className="absolute right-0 z-10 mt-2 w-40 bg-white rounded-[8px] shadow-lg ring-1 ring-black ring-opacity-5">
               <MenuItem>
                 {({ active }) => (
                   <button
                     onClick={onLogout}
-                    className={`w-full px-4 py-2 text-left text-sm ${
-                      active ? "bg-gray-100 text-gray-900" : "text-gray-700"
+                    className={`w-full px-4 py-2 text-left robotoFont text-[13px] ${
+                      active ? "bg-[#f5f5f7] text-[#0C0B0B]" : "text-gray-500"
                     }`}
                   >
                     Sign Out
@@ -67,13 +67,13 @@ const Header = () => {
           <div className="flex gap-4">
             <Link
               to="/signin"
-              className="text-white border border-white rounded-md px-4 py-2 hover:sbg-gradient-to-tr from-[#818cf8] "
+              className="border-2 text-nowrap robotoFont font-bold text-[13px] text-[#0C0B0B] border-[#0C0B0B] px-[24px] py-[8px] rounded-[8px] hover:bg-[#0C0B0B] hover:text-white transform transition-all duration-300 hover:scale-105"
             >
               Login
             </Link>
             <Link
               to="/signup"
-              className="text-white border border-white rounded-md px-4 py-2 hover:bg-purple-500"
+              className="border-2 text-nowrap robotoFont font-bold text-[13px] text-[#0C0B0B] border-[#0C0B0B] px-[24px] py-[8px] rounded-[8px] hover:bg-[#0C0B0B] hover:text-white transform transition-all duration-300 hover:scale-105"
             >
               Sign Up
             </Link>
@@ -90,10 +90,14 @@ const Header = () => {
             className="w-40 h-auto sm:w-44 md:w-48" 
           />
         </Link>
-        <button onClick={() => setIsCollapsed(!isCollapsed)} aria-label="Menu">
+        <button 
+          onClick={() => setIsCollapsed(!isCollapsed)} 
+          aria-label="Menu"
+          className="text-[#0C0B0B]"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="w-6 h-6 text-white"
+            className="w-6 h-6"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"

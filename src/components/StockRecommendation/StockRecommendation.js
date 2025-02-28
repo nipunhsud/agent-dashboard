@@ -20,11 +20,6 @@ const StockRecommendation = () => {
     fetchStockAnalyses(urlTicker);
   }, [fetchStockAnalyses]);
 
-  // Just to see the data in console
-  useEffect(() => {
-    console.log('Stock Analyses:', stockAnalyses);
-  }, [stockAnalyses]);
-
   const handleDetailsClick = (stock) => {
     setExpandedAnalysis(stock);
   };
