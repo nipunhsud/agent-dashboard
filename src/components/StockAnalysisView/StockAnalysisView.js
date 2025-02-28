@@ -82,7 +82,7 @@ const StockAnalysisView = () => {
       technical_setup_trigger: "Watch for breakout above $152 with volume"
     },
     fundamental_analysis: {
-      quarterly_eps_growth: [0.25, 0.32, 0.28, 0.35],
+      quarterly_eps_growth: [0.25, 0.32, 0.28],
       quarterly_eps_growth_trend: "Consistent growth over last 4 quarters",
       annual_growth_trend: "Strong year-over-year revenue growth",
       industry_position: "Market leader in sector",

@@ -1,6 +1,13 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-const StockStats = ({ stock, onDetailsClick }) => {
+const StockStats = ({ stock }) => {
+  const navigate = useNavigate();
+
+  const handleDetailsClick = () => {
+    navigate(`/stock/${stock.name}`);
+  };
+
   return (
     <div className="flex justify-between md:justify-normal items-center gap-4">
       <div className="flex items-center gap-[7px]">
@@ -17,7 +24,7 @@ const StockStats = ({ stock, onDetailsClick }) => {
         <div className="flex flex-col">
           <span className="text-gray-500 text-[10px] robotoFont">Buy Point</span>
           <span className="robotoFont text-[13px] font-bold text-green-600">
-            ${stock.recommendation.trade_setup.buy_point?.toFixed(2)}
+            ${stock?.recommendation?.trade_setup?.buy_point?.toFixed(2) || 'N/A'}
           </span>
         </div>
       </div>
@@ -35,13 +42,13 @@ const StockStats = ({ stock, onDetailsClick }) => {
         <div className="flex flex-col">
           <span className="text-gray-500 text-[10px] robotoFont">Stop Loss</span>
           <span className="robotoFont text-[13px] font-bold text-red-600">
-            ${stock.recommendation.trade_setup.stop_loss?.toFixed(2)}
+            ${stock?.recommendation?.trade_setup?.stop_loss?.toFixed(2) || 'N/A'}
           </span>
         </div>
       </div>
       <div>
         <button
-          onClick={() => onDetailsClick(stock)}
+          onClick={handleDetailsClick}
           className="border-2 text-nowrap robotoFont font-bold text-[13px] text-[#0C0B0B] border-[#0C0B0B] px-[24px] py-[8px] rounded-[8px] hover:bg-[#0C0B0B] hover:text-white transform transition-all duration-300 hover:scale-105 hover:shadow-lg"
         >
           Details

@@ -3,17 +3,17 @@ import useStockAnalyses from '../../hooks/useStockAnalyses';
 import useExpandedAnalysis from '../../hooks/useExpandedAnalysis';
 import StockRecommendationCard from './StockRecommendationCard/StockRecommendationCard';
 import StockAnalysisCard from '../Shared/StockAnalysisCard/StockAnalysisCard';
+import { Link, useNavigate } from 'react-router-dom';
 
 const StockRecommendation = () => {
   const { stockAnalyses, loading, error, fetchStockAnalyses } = useStockAnalyses();
   const { expandedAnalysis, setExpandedAnalysis, closeExpandedView } = useExpandedAnalysis();
+  const navigate = useNavigate();
 
-  // Call fetchStockAnalyses when component mounts
   useEffect(() => {
     fetchStockAnalyses();
   }, [fetchStockAnalyses]);
 
-  /////////
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const urlTicker = params.get('ticker');
@@ -21,7 +21,7 @@ const StockRecommendation = () => {
   }, [fetchStockAnalyses]);
 
   const handleDetailsClick = (stock) => {
-    setExpandedAnalysis(stock);
+    navigate(`/stock/${stock.name}`);
   };
 
   if (loading) {
@@ -39,9 +39,6 @@ const StockRecommendation = () => {
       </div>
     );
   }
-
-  // ticker 
-  // 
 
   return (
     <div className="space-y-4">

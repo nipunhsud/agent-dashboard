@@ -10,6 +10,7 @@ import StockAnalysisAssistant from "./pages/StockAnalysisAssistant";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Dashboard from './components/Dashboard/Dashboard';
+import StockDetail from "./components/StockDetail/StockDetail";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/forgetpassword" element={<Forgetpassword />} />
+          <Route path="/stock/:ticker" element={<StockDetail />} />
           <Route path="/stocks" element={<StockAnalysisAssistant />} />
           <Route path="/quanta" element={<StockAnalysisAssistant />} />
           <Route path="/dashboard" element={<Dashboard />} />
