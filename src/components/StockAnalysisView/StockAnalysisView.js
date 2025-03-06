@@ -774,7 +774,7 @@ const StockAnalysisView = () => {
         // Fallback to copy link
         const url = window.location.href;
         await navigator.clipboard.writeText(url);
-        // You might want to add a toast notification here
+
         alert("Link copied to clipboard!");
       }
     } catch (err) {
@@ -831,10 +831,6 @@ const StockAnalysisView = () => {
     </div>
   );
 
-  // Add this function to handle demo render
-  const handleRenderDemo = () => {
-    setResponse(formatResponse(dummyStockData));
-  };
 
   return (
     <div className="bg-[#f5f5f7] text-[#0C0B0B] min-h-screen flex flex-col items-center justify-start py-4 px-4 relative">
@@ -939,16 +935,6 @@ const StockAnalysisView = () => {
             </button>
           </div>
         </form>
-
-        {/* Add Demo Button */}
-        <button
-          onClick={handleRenderDemo}
-          className="mb-4 border-2 text-nowrap robotoFont font-bold text-[13px] text-[#0C0B0B] border-[#0C0B0B] px-[24px] py-[8px] rounded-[8px] hover:bg-[#0C0B0B] hover:text-white transform transition-all duration-300 hover:scale-105 hover:shadow-lg flex items-center justify-center space-x-2 max-w-2xl w-full mx-auto"
-        >
-          <span className="text-lg">🎮</span>
-          <span>View Demo Analysis</span>
-          <span className="transform group-hover:translate-x-1 transition-transform duration-300">→</span>
-        </button>
 
         <button
           onClick={handleAskAi}

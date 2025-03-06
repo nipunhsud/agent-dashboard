@@ -9,7 +9,7 @@ const StockRecommendation = () => {
   const { stockAnalyses, loading, error, fetchStockAnalyses } = useStockAnalyses();
   const { expandedAnalysis, setExpandedAnalysis, closeExpandedView } = useExpandedAnalysis();
   const navigate = useNavigate();
-
+  
   useEffect(() => {
     fetchStockAnalyses();
   }, [fetchStockAnalyses]);
@@ -44,13 +44,14 @@ const StockRecommendation = () => {
     <div className="space-y-4">
       {stockAnalyses.map((stockData) => {
         const analysis = stockData.analysis;
+        const ticker = analysis.stock_summary.ticker;
+
         return (
           <StockRecommendationCard
             key={stockData.id}
             stock={{
               id: stockData.id,
-              name: analysis.stock_summary.ticker,
-              svg: `/images/stock-icon.svg`,
+              name: ticker,
               by: "Stock Analysis",
               price: analysis.stock_summary.current_metrics.price,
               volume: analysis.stock_summary.current_metrics.volume,

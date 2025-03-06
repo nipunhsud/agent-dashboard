@@ -2,8 +2,8 @@ import React from "react";
 
 const StockInfo = ({ stock }) => (
   <div className="flex items-center gap-[24px]">
-    <div className="w-[64px] h-[64px] bg-white rounded-[12px] flex items-center justify-center">
-      <img src={stock.svg} alt={stock.name} />
+    <div className="w-[64px] h-[64px] rounded-[12px] flex items-center justify-center">
+      <img src={stock.svg} alt={`${stock.name} logo`} className="object-contain w-full h-full" />
     </div>
     <div className="flex flex-col text-nowrap gap-[2px]">
       <div className="font-bold text-[20px]">

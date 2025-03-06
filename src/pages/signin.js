@@ -34,35 +34,34 @@ const SignIn = () => {
 
   return (
     <>
-      <div class="bg-black flex justify-center items-center min-h-screen">
-        <div class="mx-auto bg-white rounded-2xl max-w-md p-8 shadow-lg">
-          <Link class="flex items-center" to={"/"}>
+      <div className="bg-[#f5f5f7] flex justify-center items-center min-h-screen">
+        <div className="mx-auto bg-white rounded-[12px] max-w-md p-8 shadow-md transform transition-transform duration-300 hover:-translate-y-1">
+          <Link className="flex items-center" to={"/"}>
             <img src="/images/back.svg" alt="" />
-            <span class="text-sm text-[#6366f1] underline decoration-[#6366f1]">
+            <span className="text-sm text-[#0C0B0B] underline decoration-[#0C0B0B]">
               Back
             </span>
           </Link>
-          <div class="mt-4 mb-6">
-            <h1 class="font-bold text-3xl text-center text-[#6366f1] mb-2">
+          <div className="mt-4 mb-6">
+            <h1 className="font-bold text-3xl text-center text-[#0C0B0B] mb-2">
               Sign In
             </h1>
-            <h4 class="text-gray-600 text-center">Book your AI Agent Today!</h4>
           </div>
 
-          <form class="contents" onSubmit={handleSubmit}>
+          <form className="contents" onSubmit={handleSubmit}>
             {successMessage && (
-                <div className="bg-[#6366f1]/10 border border-[#6366f1] text-[#6366f1] px-4 py-4 rounded-lg flex items-center justify-center">
-                  <p className="text-sm font-medium mb-0">Your sign in was succesful!.</p>
+                <div className="bg-[#22c55e]/10 border border-[#22c55e] text-[#22c55e] px-4 py-4 rounded-lg flex items-center justify-center">
+                  <p className="text-sm font-medium mb-0">Your sign in was successful!</p>
                 </div>
             )}
-            <input type="hidden" name="" value="" autocomplete="off" />
-            <div class="my-5 relative">
+            <input type="hidden" name="" value="" autoComplete="off" />
+            <div className="my-5 relative">
               <input
                 required="required"
-                autofocus="autofocus"
-                autocomplete="username"
+                autoFocus="autofocus"
+                autoComplete="username"
                 placeholder="Email Address"
-                class="pl-10 block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full focus:border-[#6366f1]"
+                className="pl-10 block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full focus:border-[#0C0B0B]"
                 type="email"
                 name="email_address"
                 id="email_address"
@@ -78,7 +77,7 @@ const SignIn = () => {
                   autoComplete="current-password"
                   placeholder="Password"
                   maxLength="72"
-                  className="pl-10 pr-12 block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full focus:border-[#6366f1]"
+                  className="pl-10 pr-12 block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full focus:border-[#0C0B0B]"
                   size="72"
                   type={showPassword ? "text" : "password"}
                   name="password"
@@ -122,10 +121,10 @@ const SignIn = () => {
               type="submit"
               name="commit"
               value="Sign In"
-              class="bg-[#6366f1] text-white rounded-lg py-2 px-3.5 font-medium cursor-pointer w-full mt-8"
+              className="bg-[#0C0B0B] text-white rounded-[8px] py-2 px-3.5 font-bold cursor-pointer w-full mt-8 hover:bg-opacity-80 transform transition-all duration-300 hover:scale-105 hover:shadow-lg"
             />
             <Link
-              class="border-2 border-[#6366f1] text-[#6366f1] block text-center mt-2.5 rounded-lg py-2 px-3.5 font-medium cursor-pointer w-full"
+              className="border-2 border-[#0C0B0B] text-[#0C0B0B] block text-center mt-2.5 rounded-[8px] py-2 px-3.5 font-bold cursor-pointer w-full hover:bg-[#0C0B0B] hover:text-white transform transition-all duration-300 hover:scale-105 hover:shadow-lg"
               to={"/signup"}
             >
               Sign Up

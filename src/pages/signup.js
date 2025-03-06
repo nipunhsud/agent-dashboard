@@ -39,25 +39,22 @@ const SignUp = () => {
 
   return (
     <div>
-      <div className="bg-black flex justify-center items-center min-h-screen">
-        <div className="mx-auto bg-white rounded-2xl max-w-md p-8 shadow-lg">
+      <div className="bg-[#f5f5f7] flex justify-center items-center min-h-screen">
+        <div className="mx-auto bg-white rounded-[12px] max-w-md p-8 shadow-md transform transition-transform duration-300 hover:-translate-y-1">
           <a className="flex items-center" href="/">
             <img src="/images/back.svg" alt="" />
-            <span className="text-sm text-[#6366f1] underline decoration-[#6366f1]">
+            <span className="text-sm text-[#0C0B0B] underline decoration-[#0C0B0B]">
               Back
             </span>
           </a>
           <div className="mt-4 mb-6">
-            <h1 className="font-bold text-3xl text-center text-[#6366f1] mb-2">
+            <h1 className="font-bold text-3xl text-center text-[#0C0B0B] mb-2">
               Sign Up
             </h1>
-            <h4 className="text-gray-600 text-center">
-              Sign Up today and use our AI agents!
-            </h4>
           </div>
           <form className="contents" onSubmit={handleSignUp}>
             {successMessage && (
-              <div className="bg-[#6366f1]/10 border border-[#6366f1] text-[#6366f1] px-4 py-4 rounded-lg flex flex-col items-center justify-center">
+              <div className="bg-[#22c55e]/10 border border-[#22c55e] text-[#22c55e] px-4 py-4 rounded-lg flex flex-col items-center justify-center">
                 <p className="text-sm font-medium mb-2">Sign up successful!</p>
                 <p className="text-sm font-medium mb-0">Please check your email to verify your account.</p>
               </div>
@@ -72,7 +69,7 @@ const SignUp = () => {
                 autoFocus
                 autoComplete="username"
                 placeholder="Email Address"
-                className="block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full focus:border-[#6366f1]"
+                className="block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full focus:border-[#0C0B0B]"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -86,7 +83,7 @@ const SignUp = () => {
                   autoComplete="current-password"
                   placeholder="Password"
                   maxLength="72"
-                  className="pr-12 block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full focus:border-[#6366f1]"
+                  className="pr-12 block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full focus:border-[#0C0B0B]"
                   size="72"
                   type={showPassword ? "text" : "password"}
                   value={password}
@@ -136,12 +133,12 @@ const SignUp = () => {
 
             <button
               type="submit"
-              className="bg-[#6366f1] text-white rounded-lg py-2 px-3.5 font-medium cursor-pointer w-full mt-8"
+              className="bg-[#0C0B0B] text-white rounded-[8px] py-2 px-3.5 font-bold cursor-pointer w-full mt-8 hover:bg-opacity-80 transform transition-all duration-300 hover:scale-105 hover:shadow-lg"
             >
               Sign Up
             </button>
             <Link
-              className="border-2 border-[#6366f1] text-[#6366f1] block text-center mt-2.5 rounded-lg py-2 px-3.5 font-medium cursor-pointer w-full"
+              className="border-2 border-[#0C0B0B] text-[#0C0B0B] block text-center mt-2.5 rounded-[8px] py-2 px-3.5 font-bold cursor-pointer w-full hover:bg-[#0C0B0B] hover:text-white transform transition-all duration-300 hover:scale-105 hover:shadow-lg"
               to={"/signin"}
             >
               Sign In
