@@ -13,7 +13,7 @@ const Card = ({ children, className = "" }) => (
   <div className={` rounded-[14px]  ${className}`}>{children}</div>
 );
 
-const Dashboard = () => {
+const AgentUI = () => {
   const filters = ["All Agents", "The Newest", "Top Rated", "Most Popular"];
   const [selectedFilter, setSelectedFilter] = useState(filters[0]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -237,4 +237,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default AgentUI;

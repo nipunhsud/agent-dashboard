@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, useState} from "react";
 import Header from "../components/Header";
 import HeroSection from "../components/HeroSection";
 import Applications from "../components/Applications/Applications";
@@ -11,23 +11,60 @@ import Testimonials from "../components/Testimonials/Testimonials";
 import UseCases from "../components/UseCases/UseCases";
 import HeroSectionFast from "../components/HeroSectionFast/HeroSectionFast";
 import WhyUs from "../components/WhyUs/WhyUs";
+import News from "../components/News/News";
+import StocksTabs from '../components/StockTabs/StocksTabs'
 
 const Home = () => {
   const { user, token } = useContext(AuthContext);
   const navigate = useNavigate();
-  if (!user) {
-    navigate('/signin');
-  }
+  const filters = ["Stock to watch", "News to read"];
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedAgent, setSelectedAgent] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isOpenNotification, setIsOpenNotification] = useState(false);
+  const [activeTab, setActiveTab] = useState("Learning Hours");
 
+  const openModal = (id) => {
+    // const agent = agents.find((agent) => agent.id === id);
+    // setSelectedAgent(agent);
+    // setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedAgent(null);
+  };
+  const openNotificatiClose = () => {
+    setIsOpenNotification(true);
+  };
+  const NotificatiClose = () => {
+    setIsOpenNotification(false);
+  };
+
+  const validProgress = Math.min(100, Math.max(0, 0));
+  const dashOffset = 100 - validProgress;
+
+  const [selectedFilter, setSelectedFilter] = useState(filters[0]);
 
   return (
     <div>
-      <HeroSectionFast />
-
-      {/* <p className="mt-6 text-gray-200 font-light text-center max-w-3xl text-lg sm:text-xl lg:text-2xl leading-relaxed">
-        Investing shouldn't be complicated. At 
-        <span className="text-white font-semibold px-1">Purnam</span>, we use AI to turn complex market data into clear, actionable insights. No jargon, no noise—just the information you need to make smarter decisions. Simplify your research. Make confident moves.
-      </p> */}
+      <div className="flex flex-col">
+        <div className="w-full bg-custom-purple">
+          <HeroSectionFast />
+        </div>
+        <div className="w-full bg-white flex justify-center">
+          <div className="w-[800px] px-8">
+            <StocksTabs
+              dashOffset={dashOffset}  
+              validProgress={validProgress}
+              filters={filters}
+              selectedFilter={selectedFilter}
+              setSelectedFilter={setSelectedFilter}
+              openModal={openModal}
+            />
+          </div>
+        </div>
+      </div>
 
       <Section 
         name="Why choose us?" 
@@ -45,44 +82,11 @@ const Home = () => {
         <Benefits /> 
       </Section>
 
-      {/* <HeroSection />
-
-      <Section
-        name="Applications"
-        title="Agents that integrate with everyday tools to automate daily processes."
-        subtitle="Discover the agents that enhance your daily tasks."
-      >
-        <Applications /> 
-      </Section>
-
-      <Section 
-        name="Use cases" 
-        title="Many problems we can solve"
-        subtitle="Our agents are diversa and range from to y"
-      >
-        <UseCases/>
-      </Section>
-
-      <Section 
-        name="Technology" 
-        title="Our Innovative Solutions"
-        subtitle="Discover how our technology is shaping the future."
-      >
-        <Benefits /> 
-      </Section>
-
-      <Section 
-        name="Testimonials" 
-        title="People love us!"
-        subtitle="You are more than welcome to our family, come share some love."
-      >
-        <Testimonials /> 
-      </Section> */}
-
+  
       <Section
         name="Contact Us"
         title="Get in Touch"
-        subtitle="We’d love to hear from you. Drop us a message!"
+        subtitle="We'd love to hear from you. Drop us a message!"
       >
         <ContactForm /> 
       </Section>

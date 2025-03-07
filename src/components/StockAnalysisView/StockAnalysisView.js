@@ -37,6 +37,72 @@ const StockAnalysisView = () => {
   const [emailVerified, setEmailVerified] = useState(true);
   const [successMessage, setSuccessMessage] = useState("");
 
+  // Add this dummy data object
+  const dummyStockData = {
+    ticker: "DEMO",
+    current_metrics: {
+      price: 150.25,
+      volume: 1234567,
+      fifty_two_week: {
+        high: 180.50,
+        low: 120.75
+      }
+    },
+    recommendation: {
+      action: "STRONG BUY",
+      triggers: [
+        "Breaking out of consolidation pattern",
+        "Strong volume confirmation",
+        "Positive earnings momentum"
+      ],
+      risk_factors: [
+        "Market volatility",
+        "Sector rotation risk",
+        "Technical resistance at $160"
+      ],
+      risk_management: "Set stop loss at $145 to limit downside risk. Consider scaling in positions."
+    },
+    trade_setup: {
+      buy_point: 152.50,
+      target_price: 175.00,
+      stop_loss: 145.00,
+      setup_type: "Bull Flag Breakout"
+    },
+    technical_analysis: {
+      moving_averages: {
+        ema_50: 148.50,
+        ema_150: 145.75,
+        ema_200: 142.25
+      },
+      trend: "Bullish",
+      distance_from_52_week_high: "-16.8%",
+      volume_analysis: "Above average volume showing institutional interest",
+      volatility_pattern: "Decreasing volatility indicating potential breakout",
+      technical_setup: "Forming bullish consolidation pattern",
+      technical_setup_trigger: "Watch for breakout above $152 with volume"
+    },
+    fundamental_analysis: {
+      quarterly_eps_growth: [0.25, 0.32, 0.28],
+      quarterly_eps_growth_trend: "Consistent growth over last 4 quarters",
+      annual_growth_trend: "Strong year-over-year revenue growth",
+      industry_position: "Market leader in sector",
+      sector_performance: "Technology sector showing strength"
+    },
+    institutional_ownership: {
+      institutional_ownership: "72% institutional ownership",
+      institutional_ownership_trend: "Increasing institutional accumulation"
+    },
+    market_analysis: {
+      market_sentiment: "Bullish",
+      market_trend: "Uptrend"
+    },
+    risk_assessment: {
+      market_conditions: "Favorable market conditions with strong sector performance",
+      technical_risks: "Watch for potential resistance at previous highs",
+      setup_risks: "Monitor volume for confirmation of breakout"
+    }
+  };
+
   useEffect(() => {
     // Load Stripe script
     const script = document.createElement('script');
@@ -81,7 +147,6 @@ const StockAnalysisView = () => {
     document.querySelector('.print-button').onclick = handlePrintAnalysis;
   };
 
-  // Add this validation function
   const isValidTickerSymbol = (ticker) => {
     return /^[A-Z]{1,10}$/.test(ticker);
   };
@@ -89,13 +154,11 @@ const StockAnalysisView = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Check if user is logged in first
     if (!auth.currentUser) {
       setShowAuthModal(true);
       return;
     }
 
-    // Check if user's email is verified
     if (auth.currentUser && !auth.currentUser.emailVerified) {
       setError("Please verify your email first! Check your inbox for the verification link.");
       setEmailVerified(false);
@@ -168,13 +231,13 @@ const StockAnalysisView = () => {
     return (
       <div>
         {/* Primary Analysis Section */}
-        <div className="bg-black text-gray-300 shadow-md rounded-lg p-6 max-w-4xl mx-auto mb-6">
+        <div className="bg-white text-[#0C0B0B] shadow-md rounded-[12px] p-6 max-w-4xl mx-auto mb-6">
           {/* Stock Analysis Title */}
           <div className="flex flex-col items-center justify-center p-4 mb-4">  
-            <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-16 h-16 sm:w-20 sm:h-20 sm:mb-2 sm:mb-0 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
+            <div className="flex items-center justify-center p-4 bg-[#f5f5f7] rounded-[12px] w-16 h-16 sm:w-20 sm:h-20 sm:mb-2 sm:mb-0 transition-all duration-300 hover:bg-[#e5e5e7] hover:scale-105">
                 <img src={imageSrc} alt={'hola'} className="w-8 h-8 sm:w-12 sm:h-12 transition-transform duration-300 group-hover:scale-110 object-contain"/>
             </div>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center text-custom-purple">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center text-[#0C0B0B]">
               {stockData.ticker} Analysis
             </h2>
           
@@ -183,76 +246,76 @@ const StockAnalysisView = () => {
           {/* Current Metrics */}
           <div className="mb-6">
             <div className="flex items-center mb-3">
-              <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+              <div className="bg-[#f5f5f7] rounded-[12px] w-12 h-12 flex items-center justify-center mr-3">
                 <span className="text-lg">📊</span>
               </div>
-              <h4 className="text-xl font-bold">Important Metrics</h4>
+              <h4 className="text-xl font-bold text-[#0C0B0B]">Important Metrics</h4>
             </div>
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
-                <span className="block font-bold">Current Price</span>
-                <span className="text-lg">${stockData.current_metrics?.price?.toFixed(2) || 'N/A'}</span>
+              <div className="p-3 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
+                <span className="block font-bold text-[#0C0B0B]">Current Price</span>
+                <span className="text-lg text-[#0C0B0B]">${stockData.current_metrics?.price?.toFixed(2) || 'N/A'}</span>
               </div>
-              <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
-                <span className="block font-bold">Volume</span>
-                <span className="text-lg">{stockData.current_metrics?.volume?.toLocaleString() || 'N/A'}</span>
+              <div className="p-3 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
+                <span className="block font-bold text-[#0C0B0B]">Volume</span>
+                <span className="text-lg text-[#0C0B0B]">{stockData.current_metrics?.volume?.toLocaleString() || 'N/A'}</span>
               </div>
-              <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
-                <span className="block font-bold">52W High</span>
-                <span className="text-lg">${stockData.current_metrics?.fifty_two_week?.high?.toFixed(2) || 'N/A'}</span>
+              <div className="p-3 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
+                <span className="block font-bold text-[#0C0B0B]">52W High</span>
+                <span className="text-lg text-[#0C0B0B]">${stockData.current_metrics?.fifty_two_week?.high?.toFixed(2) || 'N/A'}</span>
               </div>
-              <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
-                <span className="block font-bold">52W Low</span>
-                <span className="text-lg">${stockData.current_metrics?.fifty_two_week?.low?.toFixed(2) || 'N/A'}</span>
+              <div className="p-3 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
+                <span className="block font-bold text-[#0C0B0B]">52W Low</span>
+                <span className="text-lg text-[#0C0B0B]">${stockData.current_metrics?.fifty_two_week?.low?.toFixed(2) || 'N/A'}</span>
               </div>
             </div>
           </div>
 
           {/* Recommendation Section */}
-          <div className="border-t border-custom-purple py-4">
+          <div className="border-t border-[#f5f5f7] py-4">
             {/* Recommendation Title */}
             <div className="flex flex-col items-center justify-center p-4 mb-4">
-              <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-16 h-16 sm:w-20 sm:h-20 mb-2 sm:mb-0 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
+              <div className="flex items-center justify-center p-4 bg-[#f5f5f7] rounded-[12px] w-16 h-16 sm:w-20 sm:h-20 mb-2 sm:mb-0 transition-all duration-300 hover:bg-[#e5e5e7] hover:scale-105">
                   <img src={imageSrc} alt={'hola'} className="w-8 h-8 sm:w-12 sm:h-12 transition-transform duration-300 group-hover:scale-110 object-contain"/>
               </div> 
-              <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center">Recommendation</h3>
+              <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center text-[#0C0B0B]">Recommendation</h3>
             </div>
 
             {/* Action Recommendation */}
-            <div className="p-6 bg-custom-purple rounded-lg mb-4 hover:bg-opacity-80 transition-all duration-300">
-              <div className={`text-3xl font-bold text-center py-3 px-6 rounded-lg ${
-                stockData.recommendation.action.toLowerCase().includes('buy') ? 'bg-green-500/20 text-green-400' :
-                stockData.recommendation.action.toLowerCase().includes('sell') ? 'bg-red-500/20 text-red-400' :
-                'bg-yellow-500/20 text-yellow-400'
+            <div className="p-6 bg-[#f5f5f7] rounded-[12px] mb-4 hover:bg-[#e5e5e7] transition-all duration-300">
+              <div className={`text-3xl font-bold text-center py-3 px-6 rounded-[12px] ${
+                stockData.recommendation.action.toLowerCase().includes('buy') ? 'bg-green-100 text-green-600' :
+                stockData.recommendation.action.toLowerCase().includes('sell') ? 'bg-red-100 text-red-600' :
+                'bg-yellow-100 text-yellow-600'
               }`}>
                 {stockData.recommendation.action}
               </div>
             </div>
 
             <div className="space-y-4">
-              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+              <div className="p-4 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
                 <div className="flex items-center mb-3">
-                  <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                  <div className="bg-white rounded-[12px] w-12 h-12 flex items-center justify-center mr-3 shadow-sm">
                     <span className="text-lg">🎯</span>
                   </div>
-                  <h4 className="text-xl font-bold">Key Triggers</h4>
+                  <h4 className="text-xl font-bold text-[#0C0B0B]">Key Triggers</h4>
                 </div>
-                <ul className="list-disc list-inside ml-11">
+                <ul className="list-disc list-inside ml-11 text-[#0C0B0B]">
                   {stockData.recommendation.triggers.map((trigger, index) => (
                     <li key={index}>{trigger}</li>
                   ))}
                 </ul>
               </div>
 
-              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+              <div className="p-4 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
                 <div className="flex items-center mb-3">
-                  <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                  <div className="bg-white rounded-[12px] w-12 h-12 flex items-center justify-center mr-3 shadow-sm">
                     <span className="text-lg">⚠️</span>
                   </div>
-                  <h4 className="text-xl font-bold">Risk Factors</h4>
+                  <h4 className="text-xl font-bold text-[#0C0B0B]">Risk Factors</h4>
                 </div>
-                <ul className="list-disc list-inside ml-11">
+                <ul className="list-disc list-inside ml-11 text-[#0C0B0B]">
                   {stockData.recommendation.risk_factors.map((risk, index) => (
                     <li key={index}>{risk}</li>
                   ))}
@@ -263,30 +326,30 @@ const StockAnalysisView = () => {
             {/* Trade Setup Section */}
             <div className="mt-6">
               <div className="flex items-center mb-3">
-                <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                <div className="bg-white rounded-[12px] w-12 h-12 flex items-center justify-center mr-3">
                   <span className="text-lg">📈</span>
                 </div>
-                <h4 className="text-xl font-bold">Trade Setup</h4>
+                <h4 className="text-xl font-bold text-[#0C0B0B]">Trade Setup</h4>
               </div>
               
               <div className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-3">
-                  <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
-                    <span className="block font-bold">Buy Point</span>
-                    <span className="text-lg">${stockData.trade_setup?.buy_point?.toFixed(2) || 'N/A'}</span>
+                  <div className="p-3 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
+                    <span className="block font-bold text-[#0C0B0B]">Buy Point</span>
+                    <span className="text-lg text-[#0C0B0B]">${stockData.trade_setup?.buy_point?.toFixed(2) || 'N/A'}</span>
                   </div>
-                  <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
-                    <span className="block font-bold">Target</span>
-                    <span className="text-lg">${stockData.trade_setup?.target_price?.toFixed(2) || 'N/A'}</span>
+                  <div className="p-3 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
+                    <span className="block font-bold text-[#0C0B0B]">Target</span>
+                    <span className="text-lg text-[#0C0B0B]">${stockData.trade_setup?.target_price?.toFixed(2) || 'N/A'}</span>
                   </div>
-                  <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
-                    <span className="block font-bold">Stop Loss</span>
-                    <span className="text-lg">${stockData.trade_setup?.stop_loss?.toFixed(2) || 'N/A'}</span>
+                  <div className="p-3 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
+                    <span className="block font-bold text-[#0C0B0B]">Stop Loss</span>
+                    <span className="text-lg text-[#0C0B0B]">${stockData.trade_setup?.stop_loss?.toFixed(2) || 'N/A'}</span>
                   </div>
                 </div>
-                <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
-                  <span className="block font-bold">Setup Type</span>
-                  <span className="text-lg">{stockData.trade_setup?.setup_type || 'N/A'}</span>
+                <div className="p-3 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
+                  <span className="block font-bold text-[#0C0B0B]">Setup Type</span>
+                  <span className="text-lg text-[#0C0B0B]">{stockData.trade_setup?.setup_type || 'N/A'}</span>
                 </div>
               </div>
             </div>
@@ -294,14 +357,14 @@ const StockAnalysisView = () => {
             {/* Risk Management Section */}
             <div className="mt-6">
               <div className="flex items-center mb-3">
-                <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                <div className="bg-white rounded-[12px] w-12 h-12 flex items-center justify-center mr-3">
                   <span className="text-lg">🛡️</span>
                 </div>
-                <h4 className="text-xl font-bold">Risk Management</h4>
+                <h4 className="text-xl font-bold text-[#0C0B0B]">Risk Management</h4>
               </div>
               
-              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
-                <p className="text-lg">{stockData.recommendation.risk_management || 'N/A'}</p>
+              <div className="p-4 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
+                <p className="text-lg text-[#0C0B0B]">{stockData.recommendation.risk_management || 'N/A'}</p>
               </div>
             </div>
           </div>
@@ -309,35 +372,35 @@ const StockAnalysisView = () => {
           {/* <Chart/> */}
 
           {/* Technical Analysis */}
-          <div className="border-t border-custom-purple py-4 space-y-4">
+          <div className="border-t border-[#f5f5f7] py-4 space-y-4">
             {/* Technical Analysis Title */}
             <div className="flex flex-col items-center justify-center p-4 mb-4">
-              <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-16 h-16 sm:w-20 sm:h-20 mb-2 sm:mb-0 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
+              <div className="flex items-center justify-center p-4 bg-[#f5f5f7] rounded-[12px] w-16 h-16 sm:w-20 sm:h-20 mb-2 sm:mb-0 transition-all duration-300 hover:bg-[#e5e5e7] hover:scale-105">
                   <img src={imageSrc} alt={'hola'} className="w-8 h-8 sm:w-12 sm:h-12 transition-transform duration-300 group-hover:scale-110 object-contain"/>
               </div> 
-              <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center">Technical Analysis</h3>
+              <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center text-[#0C0B0B]">Technical Analysis</h3>
             </div>
 
             {/* Moving Averages Section */}
             <div className="mb-6">
               <div className="flex items-center mb-3">
-                <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                <div className="bg-white rounded-[12px] w-12 h-12 flex items-center justify-center mr-3">
                   <span className="text-lg">📈</span>
                 </div>
-                <h4 className="text-xl font-bold">Moving Averages (EMA)</h4>
+                <h4 className="text-xl font-bold text-[#0C0B0B]">Moving Averages (EMA)</h4>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-3">
-                <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
-                  <span className="block font-bold">EMA 50</span>
-                  <span>${stockData.technical_analysis?.moving_averages?.ema_50?.toFixed(2) || 'N/A'}</span>
+                <div className="p-3 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
+                  <span className="block font-bold text-[#0C0B0B]">EMA 50</span>
+                  <span className="text-lg text-[#0C0B0B]">${stockData.technical_analysis?.moving_averages?.ema_50?.toFixed(2) || 'N/A'}</span>
                 </div>
-                <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
-                  <span className="block font-bold">EMA 150</span>
-                  <span>${stockData.technical_analysis?.moving_averages?.ema_150?.toFixed(2) || 'N/A'}</span>
+                <div className="p-3 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
+                  <span className="block font-bold text-[#0C0B0B]">EMA 150</span>
+                  <span className="text-lg text-[#0C0B0B]">${stockData.technical_analysis?.moving_averages?.ema_150?.toFixed(2) || 'N/A'}</span>
                 </div>
-                <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
-                  <span className="block font-bold">EMA 200</span>
-                  <span>${stockData.technical_analysis?.moving_averages?.ema_200?.toFixed(2) || 'N/A'}</span>
+                <div className="p-3 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
+                  <span className="block font-bold text-[#0C0B0B]">EMA 200</span>
+                  <span className="text-lg text-[#0C0B0B]">${stockData.technical_analysis?.moving_averages?.ema_200?.toFixed(2) || 'N/A'}</span>
                 </div>
               </div>
             </div>
@@ -345,14 +408,14 @@ const StockAnalysisView = () => {
             {/* Trend Analysis Section */}
             <div className="mb-6">
               <div className="flex items-center mb-3">
-                <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                <div className="bg-white rounded-[12px] w-12 h-12 flex items-center justify-center mr-3">
                   <span className="text-lg">🎯</span>
                 </div>
-                <h4 className="text-xl font-bold">Trend Analysis</h4>
+                <h4 className="text-xl font-bold text-[#0C0B0B]">Trend Analysis</h4>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
-                  <span className="block font-bold mb-2">Overall Trend</span>
+                <div className="p-4 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
+                  <span className="block font-bold mb-2 text-[#0C0B0B]">Overall Trend</span>
                   <div className={`text-lg font-semibold ${
                     stockData.technical_analysis?.trend?.includes('Bullish') ? 'text-green-500' :
                     stockData.technical_analysis?.trend?.includes('Bearish') ? 'text-red-500' :
@@ -361,9 +424,9 @@ const StockAnalysisView = () => {
                     {stockData.technical_analysis?.trend || 'N/A'}
                   </div>
                 </div>
-                <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
-                  <span className="block font-bold mb-2">Distance from 52W High</span>
-                  <span className="text-lg">
+                <div className="p-4 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
+                  <span className="block font-bold mb-2 text-[#0C0B0B]">Distance from 52W High</span>
+                  <span className="text-lg text-[#0C0B0B]">
                     {stockData.technical_analysis?.distance_from_52_week_high || 'N/A'}
                   </span>
                 </div>
@@ -371,130 +434,130 @@ const StockAnalysisView = () => {
             </div>
 
             {/* Volume Analysis */}
-            <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
-              <span className="block font-bold mb-2">Volume and Volatility Pattern Analysis</span>
-              <p className="text-sm">{stockData.technical_analysis?.volume_analysis || 'N/A'}</p>
-              <p className="text-sm">{stockData.technical_analysis?.volatility_pattern || 'N/A'}</p>
+            <div className="p-3 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
+              <span className="block font-bold mb-2 text-[#0C0B0B]">Volume and Volatility Pattern Analysis</span>
+              <p className="text-sm text-[#0C0B0B]">{stockData.technical_analysis?.volume_analysis || 'N/A'}</p>
+              <p className="text-sm text-[#0C0B0B]">{stockData.technical_analysis?.volatility_pattern || 'N/A'}</p>
             </div>
 
             {/* Technical Setup */}
             <div className="space-y-3">
-              <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
-                <span className="block font-bold mb-2">Technical Setup</span>
-                <p className="text-sm">{stockData.technical_analysis?.technical_setup || 'N/A'}</p>
-                <p className="text-sm">{stockData.technical_analysis?.technical_setup_trigger || 'N/A'}</p>
+              <div className="p-3 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
+                <span className="block font-bold mb-2 text-[#0C0B0B]">Technical Setup</span>
+                <p className="text-sm text-[#0C0B0B]">{stockData.technical_analysis?.technical_setup || 'N/A'}</p>
+                <p className="text-sm text-[#0C0B0B]">{stockData.technical_analysis?.technical_setup_trigger || 'N/A'}</p>
               </div>
 
               {/* Key Triggers */}
-              <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
-                <span className="block font-bold mb-2">Key Triggers and Risks</span>
-                <p className="text-sm">{stockData.technical_analysis?.technical_setup_trigger_key_triggers || 'N/A'}</p>
-                <p className="text-sm">{stockData.technical_analysis?.technical_setup_trigger_risk_factors || 'N/A'}</p>
+              <div className="p-3 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
+                <span className="block font-bold mb-2 text-[#0C0B0B]">Key Triggers and Risks</span>
+                <p className="text-sm text-[#0C0B0B]">{stockData.technical_analysis?.technical_setup_trigger_key_triggers || 'N/A'}</p>
+                <p className="text-sm text-[#0C0B0B]">{stockData.technical_analysis?.technical_setup_trigger_risk_factors || 'N/A'}</p>
               </div>
             </div>
           </div>
         
           {/* Fundamental Analysis */}
-          <div className="border-t border-custom-purple py-4 space-y-4">
+          <div className="border-t border-[#f5f5f7] py-4 space-y-4">
             {/* Fundamental Analysis Title */}
             <div className="flex flex-col items-center justify-center p-4 mb-4">
-                <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-16 h-16 sm:w-20 sm:h-20 mb-2 sm:mb-0 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
+                <div className="flex items-center justify-center p-4 bg-[#f5f5f7] rounded-[12px] w-16 h-16 sm:w-20 sm:h-20 mb-2 sm:mb-0 transition-all duration-300 hover:bg-[#e5e5e7] hover:scale-105">
                   <img src={imageSrc} alt={'hola'} className="w-8 h-8 sm:w-12 sm:h-12 transition-transform duration-300 group-hover:scale-110 object-contain"/>
                 </div> 
-                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center">Fundamental Analysis</h3>
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center text-[#0C0B0B]">Fundamental Analysis</h3>
             </div>
             
             {/* EPS Growth */}
             <div className="mb-6">
               <div className="flex items-center mb-3">
-                <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                <div className="bg-white rounded-[12px] w-12 h-12 flex items-center justify-center mr-3">
                   <span className="text-lg">📈</span>
                 </div>
-                <h4 className="text-xl font-bold">Quarterly EPS Growth</h4>
+                <h4 className="text-xl font-bold text-[#0C0B0B]">Quarterly EPS Growth</h4>
               </div>
               
-              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+              <div className="p-4 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-3">
                   {stockData.fundamental_analysis?.quarterly_eps_growth?.map((growth, index) => (
-                    <div key={index} className="text-center p-2 bg-black rounded-lg">
-                      <span className="block font-bold">Q{3 - index}</span>
+                    <div key={index} className="text-center p-2 bg-white rounded-[12px]">
+                      <span className="block font-bold text-[#0C0B0B]">Q{3 - index}</span>
                       <span className={`text-lg font-semibold ${growth > 0 ? 'text-green-500' : 'text-red-500'}`}>
                         {(growth * 100).toFixed(1)}%
                       </span>
                     </div>
                   ))}
                 </div>
-                <p className="text-sm mt-2">{stockData.fundamental_analysis?.quarterly_eps_growth_trend}</p>
+                <p className="text-sm text-[#0C0B0B] mt-2">{stockData.fundamental_analysis?.quarterly_eps_growth_trend}</p>
               </div>
             </div>
 
             {/* Growth Trends */}  
             <div className="mb-6">
               <div className="flex items-center mb-3">
-                <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                <div className="bg-white rounded-[12px] w-12 h-12 flex items-center justify-center mr-3">
                   <span className="text-lg">📊</span>
                 </div>
-                <h4 className="text-xl font-bold">Growth Analysis</h4>
+                <h4 className="text-xl font-bold text-[#0C0B0B]">Growth Analysis</h4>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <div className="p-3 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
                   <div className="flex items-center mb-2">
-                    <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-2">
-                      <span className="text-sm">📅</span>
+                    <div className="bg-white rounded-[12px] w-12 h-12 flex items-center justify-center mr-2">
+                      <span className="text-sm text-[#0C0B0B]">📅</span>
                     </div>
-                    <h4 className="font-bold">Annual Growth</h4>
+                    <h4 className="font-bold text-[#0C0B0B]">Annual Growth</h4>
                   </div>
-                  <p className="text-sm">{stockData.fundamental_analysis?.annual_growth_trend}</p>
+                  <p className="text-sm text-[#0C0B0B]">{stockData.fundamental_analysis?.annual_growth_trend}</p>
                 </div>
-                <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <div className="p-3 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
                   <div className="flex items-center mb-2">
-                    <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-2">
-                      <span className="text-sm">🏢</span>
+                    <div className="bg-white rounded-[12px] w-12 h-12 flex items-center justify-center mr-2">
+                      <span className="text-sm text-[#0C0B0B]">🏢</span>
                     </div>
-                    <h4 className="font-bold">Industry Position</h4>
+                    <h4 className="font-bold text-[#0C0B0B]">Industry Position</h4>
                   </div>
-                  <p className="text-sm">{stockData.fundamental_analysis?.industry_position}</p>
+                  <p className="text-sm text-[#0C0B0B]">{stockData.fundamental_analysis?.industry_position}</p>
                 </div>
               </div>
             </div>
 
             {/* Sector Performance */}
-            <div className="p-3 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
-              <h4 className="font-bold mb-2">Sector Performance</h4>
-              <p className="text-sm">{stockData.fundamental_analysis?.sector_performance}</p>
+            <div className="p-3 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
+              <h4 className="font-bold mb-2 text-[#0C0B0B]">Sector Performance</h4>
+              <p className="text-sm text-[#0C0B0B]">{stockData.fundamental_analysis?.sector_performance}</p>
             </div>
           </div>
 
           {/* Institutional Ownership */}
-          <div className="border-t border-custom-purple py-4">    
+          <div className="border-t border-[#f5f5f7] py-4">    
               <div className="flex flex-col items-center justify-center p-4 mb-4">
-                <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-16 h-16 sm:w-20 sm:h-20 mb-2 sm:mb-0 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
+                <div className="flex items-center justify-center p-4 bg-[#f5f5f7] rounded-[12px] w-16 h-16 sm:w-20 sm:h-20 mb-2 sm:mb-0 transition-all duration-300 hover:bg-[#e5e5e7] hover:scale-105">
                     <img src={imageSrc} alt={'hola'} className="w-8 h-8 sm:w-12 sm:h-12 transition-transform duration-300 group-hover:scale-110 object-contain"/>
                 </div>  
-                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center">Institutional Ownership</h3>
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center text-[#0C0B0B]">Institutional Ownership</h3>
               </div>
               
               <div className="space-y-3">
-                <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <div className="p-4 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
                   <div className="flex items-center mb-2">
-                    <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
-                      <span className="text-lg">🏦</span>
+                    <div className="bg-white rounded-[12px] w-12 h-12 flex items-center justify-center mr-3">
+                      <span className="text-lg text-[#0C0B0B]">🏦</span>
                     </div>
-                    <span className="text-xl font-bold">Current Ownership</span>
+                    <span className="text-xl font-bold text-[#0C0B0B]">Current Ownership</span>
                   </div>
-                  <p className="text-sm ml-11">
+                  <p className="text-sm text-[#0C0B0B] ml-11">
                     {stockData.institutional_ownership?.institutional_ownership || 'No ownership data available'}
                   </p>
                 </div>
-                <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+                <div className="p-4 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
                   <div className="flex items-center mb-2">
-                    <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
-                      <span className="text-lg">📈</span>
+                    <div className="bg-white rounded-[12px] w-12 h-12 flex items-center justify-center mr-3">
+                      <span className="text-lg text-[#0C0B0B]">📈</span>
                     </div>
-                    <span className="text-xl font-bold">Ownership Trend</span>
+                    <span className="text-xl font-bold text-[#0C0B0B]">Ownership Trend</span>
                   </div>
-                  <p className="text-sm ml-11">
+                  <p className="text-sm text-[#0C0B0B] ml-11">
                     {stockData.institutional_ownership?.institutional_ownership_trend || 'No trend data available'}
                   </p>
                 </div>
@@ -502,21 +565,21 @@ const StockAnalysisView = () => {
           </div>
 
           {/* Market Analysis */}
-          <div className="border-t border-custom-purple py-4">
+          <div className="border-t border-[#f5f5f7] py-4">
             {/* Market Analysis Title */}
             <div className="flex flex-col items-center justify-center p-4 mb-4">
-                <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-16 h-16 sm:w-20 sm:h-20 mb-2 sm:mb-0 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
+                <div className="flex items-center justify-center p-4 bg-[#f5f5f7] rounded-[12px] w-16 h-16 sm:w-20 sm:h-20 mb-2 sm:mb-0 transition-all duration-300 hover:bg-[#e5e5e7] hover:scale-105">
                   <img src={imageSrc} alt={'hola'} className="w-8 h-8 sm:w-12 sm:h-12 transition-transform duration-300 group-hover:scale-110 object-contain"/>
                 </div>
-                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center">Market Analysis</h3>
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center text-[#0C0B0B]">Market Analysis</h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+              <div className="p-4 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
                 <div className="flex items-center mb-2">
-                  <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
-                    <span className="text-lg">🎯</span>
+                  <div className="bg-white rounded-[12px] w-12 h-12 flex items-center justify-center mr-3">
+                    <span className="text-lg text-[#0C0B0B]">🎯</span>
                   </div>
-                  <span className="text-xl font-bold">Market Sentiment</span>
+                  <span className="text-xl font-bold text-[#0C0B0B]">Market Sentiment</span>
                 </div>
                 <div className={`ml-11 text-lg font-semibold ${
                   stockData.market_analysis?.market_sentiment?.toLowerCase().includes('bullish') ? 'text-green-400' :
@@ -526,12 +589,12 @@ const StockAnalysisView = () => {
                   {stockData.market_analysis?.market_sentiment || 'N/A'}
                 </div>
               </div>
-              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+              <div className="p-4 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
                 <div className="flex items-center mb-2">
-                  <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
-                    <span className="text-lg">📊</span>
+                  <div className="bg-white rounded-[12px] w-12 h-12 flex items-center justify-center mr-3">
+                    <span className="text-lg text-[#0C0B0B]">📊</span>
                   </div>
-                  <span className="text-xl font-bold">Market Trend</span>
+                  <span className="text-xl font-bold text-[#0C0B0B]">Market Trend</span>
                 </div>
                 <div className={`ml-11 text-lg font-semibold ${
                   stockData.market_analysis?.market_trend?.toLowerCase().includes('up') ? 'text-green-400' :
@@ -545,41 +608,41 @@ const StockAnalysisView = () => {
           </div>
 
           {/* Risk Assessment */}
-          <div className="border-t border-custom-purple py-4">
+          <div className="border-t border-[#f5f5f7] py-4">
             {/* Risk Assessment Title */}
             <div className="flex flex-col items-center justify-center p-4 mb-4">
-               <div className="flex items-center justify-center p-4 bg-[#6366f1]/10 rounded-2xl w-16 h-16 sm:w-20 sm:h-20 mb-2 sm:mb-0 transition-all duration-300 group-hover:bg-[#6366f1]/20 group-hover:scale-110">
+               <div className="flex items-center justify-center p-4 bg-[#f5f5f7] rounded-[12px] w-16 h-16 sm:w-20 sm:h-20 mb-2 sm:mb-0 transition-all duration-300 hover:bg-[#e5e5e7] hover:scale-105">
                   <img src={imageSrc} alt={'hola'} className="w-8 h-8 sm:w-12 sm:h-12 transition-transform duration-300 group-hover:scale-110 object-contain"/>
                 </div>
-                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center">Risk Assessment</h3>
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold break-words text-center text-[#0C0B0B]">Risk Assessment</h3>
             </div>
             <div className="space-y-3">
-              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+              <div className="p-4 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
                 <div className="flex items-center mb-2">
-                  <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
-                    <span className="text-lg">🌍</span>
+                  <div className="bg-white rounded-[12px] w-12 h-12 flex items-center justify-center mr-3">
+                    <span className="text-lg text-[#0C0B0B]">🌍</span>
                   </div>
-                  <span className="text-xl font-bold">Market Conditions</span>
+                  <span className="text-xl font-bold text-[#0C0B0B]">Market Conditions</span>
                 </div>
-                <p className="text-sm ml-11">{stockData.risk_assessment?.market_conditions || 'N/A'}</p>
+                <p className="text-sm text-[#0C0B0B] ml-11">{stockData.risk_assessment?.market_conditions || 'N/A'}</p>
               </div>
-              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+              <div className="p-4 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
                 <div className="flex items-center mb-2">
-                  <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
-                    <span className="text-lg">⚠️</span>
+                  <div className="bg-white rounded-[12px] w-12 h-12 flex items-center justify-center mr-3">
+                    <span className="text-lg text-[#0C0B0B]">⚠️</span>
                   </div>
-                  <span className="text-xl font-bold">Technical Risks</span>
+                  <span className="text-xl font-bold text-[#0C0B0B]">Technical Risks</span>
                 </div>
-                <p className="text-sm ml-11">{stockData.risk_assessment?.technical_risks || 'N/A'}</p>
+                <p className="text-sm text-[#0C0B0B] ml-11">{stockData.risk_assessment?.technical_risks || 'N/A'}</p>
               </div>
-              <div className="p-4 bg-custom-purple rounded-lg hover:bg-opacity-80 transition-all duration-300">
+              <div className="p-4 bg-[#f5f5f7] rounded-[12px] hover:bg-[#e5e5e7] transition-all duration-300">
                 <div className="flex items-center mb-2">
-                  <div className="bg-black rounded-full w-12 h-12 flex items-center justify-center mr-3">
-                    <span className="text-lg">🎯</span>
+                  <div className="bg-white rounded-[12px] w-12 h-12 flex items-center justify-center mr-3">
+                    <span className="text-lg text-[#0C0B0B]">🎯</span>
                   </div>
-                  <span className="text-xl font-bold">Setup Risks</span>
+                  <span className="text-xl font-bold text-[#0C0B0B]">Setup Risks</span>
                 </div>
-                <p className="text-sm ml-11">{stockData.risk_assessment?.setup_risks || 'N/A'}</p>
+                <p className="text-sm text-[#0C0B0B] ml-11">{stockData.risk_assessment?.setup_risks || 'N/A'}</p>
               </div>
             </div>
           </div>
@@ -706,7 +769,7 @@ const StockAnalysisView = () => {
         // Fallback to copy link
         const url = window.location.href;
         await navigator.clipboard.writeText(url);
-        // You might want to add a toast notification here
+
         alert("Link copied to clipboard!");
       }
     } catch (err) {
@@ -763,44 +826,45 @@ const StockAnalysisView = () => {
     </div>
   );
 
+
   return (
-    <div className="bg-black text-gray-300 min-h-screen flex flex-col items-center justify-start py-4 px-4 relative">
+    <div className="bg-[#f5f5f7] text-[#0C0B0B] min-h-screen flex flex-col items-center justify-start py-4 px-4 relative">
       {successMessage && (
-        <div className="text-green-400 text-center mt-3 mb-3">
+        <div className="text-green-600 text-center mt-3 mb-3 robotoFont text-[13px]">
           {successMessage}
         </div>
       )}
       <div className="w-full max-w-3xl mt-4 mx-auto">
-        <div className="flex flex-col items-center">
+        {/* <div className="flex flex-col items-center">
           <img
             src={brainLogo}
-            alt="Logo"
-            className="w-60 h-60 rounded-full"
+            alt="Quanta AI Logo"
+            className="w-60 h-60 rounded-[12px]"
           />
-          <h1 className="text-3xl font-extrabold text-custom-purple text-center mt-4 mb-4">
+          <h1 className="text-[28px] font-bold text-[#6366f1] text-center mt-4 mb-4">
             Quanta AI
           </h1>
-        </div>
+        </div> */}
 
         <Link 
           to="/dashboard" 
-          className="mb-4 bg-custom-purple text-white py-4 px-6 rounded-lg hover:bg-black hover:text-custom-purple hover:border hover:border-custom-purple transform hover:scale-[1.02] transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg group max-w-2xl w-full mx-auto"
+          className="mb-4 border-2 text-nowrap robotoFont font-bold text-[13px] text-[#0C0B0B] border-[#0C0B0B] px-[24px] py-[8px] rounded-[8px] hover:bg-[#0C0B0B] hover:text-white transform transition-all duration-300 hover:scale-105 hover:shadow-lg flex items-center justify-center space-x-2 max-w-2xl w-full mx-auto"
         >
-          <span className="text-lg font-bold">📊</span>
-          <span className="text-lg font-semibold">View Historical Analysis</span>
+          <span className="text-lg">📊</span>
+          <span>View Historical Analysis</span>
           <span className="transform group-hover:translate-x-1 transition-transform duration-300">→</span>
         </Link>
 
         <form
           onSubmit={handleSubmit}
-          className="bg-custom-purple shadow-lg rounded-lg p-6 mb-6 max-w-2xl mx-auto"
+          className="bg-white shadow-md rounded-[12px] p-6 mb-6 max-w-2xl mx-auto"
           method="post"
         >
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <label
                 htmlFor="ticker"
-                className="block text-xl font-semibold text-gray-300"
+                className="block text-[20px] font-bold text-[#0C0B0B] robotoFont"
               >
                 Enter Stock Ticker or Company Name
               </label>
@@ -808,16 +872,16 @@ const StockAnalysisView = () => {
                 <button
                   type="button"
                   onClick={() => setShowTradingRules(!showTradingRules)}
-                  className="bg-black text-white py-2 px-4 rounded-lg hover:bg-opacity-80 flex items-center space-x-2"
+                  className="bg-[#0C0B0B] text-[#f5f5f7] py-2 px-4 rounded-[12px] hover:bg-opacity-80 flex items-center space-x-2"
                 >
-                  <span>Trading Rules</span>
+                  <span className="robotoFont text-[13px]">Trading Rules</span>
                   <span>📋</span>
                 </button>
                 
                 {showTradingRules && (
-                  <div className="absolute z-50 w-96 p-4 bg-black border border-custom-purple rounded-lg shadow-xl mt-2 right-0">
-                    <h3 className="font-bold mb-3 text-custom-purple">Buy Rules</h3>
-                    <ul className="list-decimal pl-4 mb-4 space-y-2 text-sm">
+                  <div className="absolute z-50 w-96 p-4 bg-[#0C0B0B] border border-[#f5f5f7] rounded-[12px] shadow-xl mt-2 right-0">
+                    <h3 className="font-bold mb-3 text-[#6366f1] text-[20px]">Buy Rules</h3>
+                    <ul className="list-decimal pl-4 mb-4 space-y-2 robotoFont text-[13px] text-[#f5f5f7]">
                       <li>Concentrate on listed stocks that sell for more than $20 a share with institutional acceptance.</li>
                       <li>Insist on increasing earnings per share in past 3-4 quarters and current quarterly earnings up at least 20%.</li>
                       <li>Buy at new highs after sound correction and consolidation, with 50%+ above average volume.</li>
@@ -825,8 +889,8 @@ const StockAnalysisView = () => {
                       <li>Base decisions on price points, not attachment</li>
                     </ul>
                     
-                    <h3 className="font-bold mb-3 text-custom-purple">Sell Rules</h3>
-                    <ul className="list-disc pl-4 space-y-2 text-sm">
+                    <h3 className="font-bold mb-3 text-[#6366f1] text-[20px]">Sell Rules</h3>
+                    <ul className="list-disc pl-4 space-y-2 robotoFont text-[13px] text-[#f5f5f7]">
                       <li>Sell if price drops 8% below purchase price</li>
                       <li>Set specific profit potential expectations</li>
                       <li>Consider selling when P/E ratio doubles</li>
@@ -836,7 +900,7 @@ const StockAnalysisView = () => {
                 )}
               </div>
             </div>
-            <p className="text-sm text-gray-400">
+            <p className="robotoFont text-[13px] text-[#6C7280]">
               Enter a stock symbol (e.g., AAPL) or company name for instant AI analysis
             </p>
             <div className="relative">
@@ -845,13 +909,13 @@ const StockAnalysisView = () => {
                 type="text"
                 value={ticker}
                 onChange={handleTickerChange}
-                className="w-full p-4 text-xl border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-black text-gray-300 placeholder-gray-500"
+                className="w-full p-4 text-[20px] border-2 border-[#6C7280] rounded-[12px] focus:outline-none focus:ring-2 focus:ring-[#6366f1] focus:border-transparent bg-[#0C0B0B] text-[#f5f5f7] placeholder-[#6C7280]"
                 placeholder="AAPL"
                 autoComplete="off"
                 spellCheck="false"
               />
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                <span className="text-sm">Stock Symbol</span>
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#6C7280]">
+                <span className="robotoFont text-[13px]">Stock Symbol</span>
               </div>
             </div>
             <button
@@ -859,37 +923,39 @@ const StockAnalysisView = () => {
                 e.preventDefault();
                 handleSubmit(e);
               }}
-              className="w-full bg-black text-white py-4 px-6 rounded-lg text-lg font-semibold hover:bg-opacity-80 transform hover:scale-[1.02] transition-all duration-200 flex items-center justify-center space-x-2"
+              className="w-full border-2 text-nowrap robotoFont font-bold text-[13px] text-[#0C0B0B] border-[#0C0B0B] px-[24px] py-[8px] rounded-[8px] hover:bg-[#0C0B0B] hover:text-white transform transition-all duration-300 hover:scale-105 hover:shadow-lg flex items-center justify-center space-x-2"
             >
               <span>Analyze Stock</span>
               <span className="text-xl">📈</span>
             </button>
           </div>
         </form>
+
         <button
-              onClick={handleAskAi}
-              className="mb-4 bg-custom-purple text-white py-4 px-6 rounded-lg hover:bg-black hover:text-custom-purple hover:border hover:border-custom-purple transform hover:scale-[1.02] transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg group max-w-2xl w-full mx-auto"
-            >
-              <span className="text-lg font-bold">💬</span>
-              <span className="text-lg font-semibold">Chat with Quanta</span>
-              <span className="transform group-hover:translate-x-1 transition-transform duration-300">→</span>
-            </button>
+          onClick={handleAskAi}
+          className="mb-4 border-2 text-nowrap robotoFont font-bold text-[13px] text-[#0C0B0B] border-[#0C0B0B] px-[24px] py-[8px] rounded-[8px] hover:bg-[#0C0B0B] hover:text-white transform transition-all duration-300 hover:scale-105 hover:shadow-lg flex items-center justify-center space-x-2 max-w-2xl w-full mx-auto"
+        >
+          <span className="text-lg">💬</span>
+          <span>Chat with Quanta</span>
+          <span className="transform group-hover:translate-x-1 transition-transform duration-300">→</span>
+        </button>
+
         {response && <div>{response}</div>}
-        {error && <div className="text-red-400 text-center mt-3">{error}</div>}
+        {error && <div className="text-red-600 text-center mt-3 robotoFont text-[13px]">{error}</div>}
       </div>
 
       {/* Share and Print Buttons */}
       <div className="fixed bottom-4 right-4 flex space-x-2">
         <button
           onClick={handleShare}
-          className="bg-custom-purple text-white py-2 px-4 rounded-lg shadow-lg hover:bg-black hover:text-custom-purple hover:border hover:border-custom-purple flex items-center space-x-2"
+          className="border-2 text-nowrap robotoFont font-bold text-[13px] text-[#0C0B0B] border-[#0C0B0B] px-[24px] py-[8px] rounded-[8px] hover:bg-[#0C0B0B] hover:text-white transform transition-all duration-300 hover:scale-105 hover:shadow-lg flex items-center space-x-2"
         >
           <span>Share</span>
           <span className="text-xl">📤</span>
         </button>
         <button
           onClick={() => window.print()}
-          className="bg-custom-purple text-white py-2 px-4 rounded-lg shadow-lg hover:bg-black hover:text-custom-purple hover:border hover:border-custom-purple flex items-center space-x-2"
+          className="border-2 text-nowrap robotoFont font-bold text-[13px] text-[#0C0B0B] border-[#0C0B0B] px-[24px] py-[8px] rounded-[8px] hover:bg-[#0C0B0B] hover:text-white transform transition-all duration-300 hover:scale-105 hover:shadow-lg flex items-center space-x-2"
         >
           <span>Print</span>
           <span className="text-xl">🖨️</span>

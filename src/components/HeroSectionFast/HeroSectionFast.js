@@ -1,40 +1,42 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import landingPageBot from "../../assets/landing-page-bot.png"; 
-import { applicationsData } from "../../helpers/applicationsData"
-import Integrations from "./Integrations";
-
+import quantaDemo from "../../assets/quanta-demo.mp4";
 
 const HeroSectionFast = () => {
   return (
-    <div className="flex flex-col items-center mt-6 mx-auto container bg-custom-purple text-white pt-8 pb-8 rounded-lg px-4 sm:px-8">
-      <h4 className="text-white font-black text-center max-w-xl xl:max-w-2xl text-balance mx-2.5 text-4xl sm:text-5xl lg:text-6xl">
-        Simplify Investments
-      </h4>
-      <p className="mt-4 text-gray-200 font-light text-center max-w-2xl text-balance text-lg sm:text-xl lg:text-2xl">Level the playing field for individual investors.</p>
-      <h3 className="font-bold text-balance text-center max-w-4xl text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl text-white">
-        {" "}
-        <span className="text-black">AI-driven investment research </span>
-        at your fingertips.
-      </h3>
-      <button
-        className="mt-6 px-6 py-3.5 bg-black text-white font-semibold rounded-lg text-lg hover:!bg-gray-950 hover:!bg-opacity-90 transition-colors duration-300"
-      >
-        <Link to={'/stocks'} className="!text-white !no-underline block w-full h-full">
-          Try right now!
-        </Link>
-      </button>
-
-      <Integrations />
-
-      <div className="mt-8 max-w-[400px] sm:max-w-[450px] lg:max-w-[500px] mx-auto">
-        <img 
-          src={landingPageBot}
-          alt="Christmas Gifting Agent" 
-          className="w-full h-auto rounded-lg"
-        />
+    <div className="flex flex-row items-center bg-[#F7F7F7] text-[#0C0B0B] pt-8 pb-8">
+      <div className="flex flex-col items-center px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 w-1/2">
+        <h4 className="text-[48px] font-bold font-jakarta leading-tight text-[#0C0B0B]">
+          Simplify Investments
+        </h4>
+        <p className="text-[#0C0B0B] font-normal text-[24px] robotoFont -mb-1">
+          Level the playing field for individual investors.
+        </p>
+        <p className="text-[#0C0B0B] font-normal text-[24px] robotoFont">
+          <span>AI-driven investment research</span>{" "}
+          at your fingertips.
+        </p>
+        <button
+          className="mt-2 w-[140px] px-6 py-2.5 border-2 border-[#0C0B0B] text-[#0C0B0B] font-bold rounded-[8px] text-base hover:bg-[#0C0B0B] hover:text-white transform transition-all duration-300 hover:scale-105 hover:shadow-lg"
+        >
+          <Link to={'/stocks'} className="!text-inherit !no-underline block w-full h-full">
+            Try it now!
+          </Link>
+        </button>
       </div>
-  
+     
+      <div className="w-1/2 h-[400px] mx-4 flex items-center justify-center">
+        <video
+          className="w-full h-full rounded-[12px] object-cover"
+          autoPlay
+          loop
+          muted
+          playsInline
+        >
+          <source src={quantaDemo} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
     </div>
   );
 };
