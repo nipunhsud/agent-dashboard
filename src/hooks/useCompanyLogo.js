@@ -17,19 +17,14 @@ const useCompanyLogo = (ticker) => {
         const baseUrl = process.env.REACT_APP_STOCK_LOGO_BASE_URL;
         const url = `${baseUrl}${ticker}.png`;
 
-        console.log('url', baseUrl, url);
-      
         const response = await fetch(url, { method: 'HEAD' });
 
         if (response.ok) {
-          console.log(`Logo found for ticker: ${ticker}`);
           setLogoUrl(url);
         } else {
-          console.error(`Logo not found for ticker: ${ticker}`);
           throw new Error('Logo not found');
         }
       } catch (err) {
-        console.error(`Error fetching logo for ticker: ${ticker}`, err);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -42,4 +37,4 @@ const useCompanyLogo = (ticker) => {
   return { logoUrl, error, loading };
 };
 
-export default useCompanyLogo; 
+export default useCompanyLogo;
