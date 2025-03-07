@@ -148,7 +148,7 @@ const StockAnalysisView = () => {
   };
 
   const isValidTickerSymbol = (ticker) => {
-    return /^[A-Z]{1,5}$/.test(ticker);
+    return /^[A-Z]{1,10}$/.test(ticker);
   };
 
   const handleSubmit = async (event) => {
@@ -169,11 +169,6 @@ const StockAnalysisView = () => {
 
     if (!cleanTicker) {
       setError("Please enter a stock symbol");
-      return;
-    }
-
-    if (!isValidTickerSymbol(cleanTicker)) {
-      setError("Please enter a valid stock symbol (1-5 letters only)");
       return;
     }
 
