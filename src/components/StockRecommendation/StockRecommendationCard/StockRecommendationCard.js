@@ -7,10 +7,6 @@ import useCompanyLogo from '../../../hooks/useCompanyLogo';
 const StockRecommendationCard = ({ stock, onDetailsClick }) => {
   const { logoUrl, error, loading } = useCompanyLogo(stock.name);
 
-  // Log the stock and logoUrl for debugging
-  console.log('Stock:', stock);
-  console.log('Logo URL:', logoUrl);
-
   return (
     <Card className="flex flex-col gap-5 p-4 bg-[#f5f5f7] rounded-[12px] cursor-pointer transform transition-transform duration-300 hover:-translate-y-1">
       <div className="md:flex items-center justify-between">

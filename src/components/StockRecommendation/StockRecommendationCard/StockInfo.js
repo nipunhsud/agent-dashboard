@@ -1,12 +1,8 @@
 import React from "react";
 
 const StockInfo = ({ stock }) => {
-  const { svg } = stock; // Ensure logoUrl is extracted from stock
-
-  // Log the stock and logoUrl for debugging
-  console.log('Stock Info:', stock);
-  console.log('Logo URL in StockInfo:', svg);
-
+  const { svg } = stock;
+  
   return (
     <div className="flex items-center gap-[24px]">
       <div className="w-[64px] h-[64px] rounded-[12px] flex items-center justify-center">
