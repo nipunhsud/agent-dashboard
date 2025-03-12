@@ -64,25 +64,41 @@ const StockRecommendation = () => {
   // Debugging - raw data display
   return (
     <div className="space-y-4">
-      <div className="bg-gray-100 p-4 rounded mb-4">
-        <h3 className="font-bold mb-2">Raw Stock Data:</h3>
-        <pre className="text-xs overflow-auto max-h-60">
-          {JSON.stringify(stocks, null, 2)}
-        </pre>
-        <button 
-          className="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-          onClick={refetch}
-        >
-          Refresh Data
-        </button>
-      </div>
-      
-      {/* We'll implement the proper rendering once we see the actual data structure */}
-      <div className="bg-white shadow rounded-lg p-4">
-        <p className="text-gray-600">Once we confirm the data structure, we'll implement the proper stock cards here.</p>
-      </div>
+      {stocks.map((stockData) => {
+        // Parse the analysis JSON string into an object
+        const analysis = JSON.parse(stockData.analysis);
+        const ticker = analysis.stock_summary.ticker;
+
+        return (
+          <StockRecommendationCard
+            key={stockData.id}
+            stock={{
+              id: stockData.id,
+              name: ticker,
+              by: "Stock Analysis",
+              price: analysis.stock_summary.current_metrics.price,
+              volume: analysis.stock_summary.current_metrics.volume,
+              fiftyTwoWeekHigh: analysis.stock_summary.current_metrics.fifty_two_week?.high,
+              fiftyTwoWeekLow: analysis.stock_summary.current_metrics.fifty_two_week?.low,
+              recommendation: {
+                action: analysis.stock_summary.recommendation.action,
+                triggers: analysis.stock_summary.recommendation.triggers,
+                risk_factors: analysis.stock_summary.recommendation.risk_factors,
+                risk_management: analysis.stock_summary.recommendation.risk_management,
+                trade_setup: analysis.stock_summary.trade_setup
+              },
+              technicalAnalysis: analysis.stock_summary.technical_analysis,
+              fundamentalAnalysis: analysis.stock_summary.fundamental_analysis,
+              institutionalOwnership: analysis.stock_summary.institutional_ownership,
+              marketAnalysis: analysis.stock_summary.market_analysis,
+              riskAssessment: analysis.stock_summary.risk_assessment
+            }}
+            onDetailsClick={handleDetailsClick}
+          />
+        );
+      })}
     </div>
-  );
+  )
 };
 
 export default StockRecommendation;
