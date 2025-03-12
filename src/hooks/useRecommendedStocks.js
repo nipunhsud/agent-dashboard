@@ -1,46 +1,49 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import useBackendUrl from './useBackendUrl';
 
 export const useRecommendedStocks = () => {
   const [stocks, setStocks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const backendUrl = useBackendUrl();
+
+  const fetchStockRecommendations = useCallback(async () => {
+   
+    setLoading(true);
+    
+    try {
+      const url = `${backendUrl}/api/public-buy-stocks/`;
+      console.log('Fetching from URL:', url);
+      
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      console.log('Response status:', response.status);
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch stock recommendations: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Raw stock data:', data);
+      setStocks(data.analyses || []); 
+    } catch (err) {
+      console.error('Error fetching stock recommendations:', err);
+      setError(`Failed to load stock recommendations: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }, [backendUrl]);
 
   useEffect(() => {
-    const fetchStocks = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch('/recommended-stocks');
-        
-        console.log('Response:', response);
+    console.log('useEffect triggered in useRecommendedStocks');
+    fetchStockRecommendations();
+  }, [fetchStockRecommendations]);
 
-        if (!response.ok) {
-          throw new Error(`Failed to fetch stocks: ${response.status}`);
-        }
-
-        const text = await response.text();
-        console.log('Raw response text:', text);
-
-        try {
-          const data = JSON.parse(text);
-          console.log('Parsed stocks data:', data);
-          setStocks(data || []);
-        } catch (parseError) {
-          console.error('Failed to parse JSON:', parseError);
-          if (text.includes('<!DOCTYPE html>')) {
-            setError('API returned HTML instead of JSON. Please check API access.');
-          }
-        }
-      } catch (err) {
-        console.error('Fetch error:', err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStocks();
-  }, []); // Empty dependency array since we don't have any parameters
-
-  return { stocks, loading, error };
+  return { stocks, loading, error, refetch: fetchStockRecommendations };
 };
 
