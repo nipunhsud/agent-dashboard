@@ -54,11 +54,9 @@ const StockRecommendation = () => {
     );
   }
 
-  // Debugging - raw data display
   return (
     <div className="space-y-4">
       {stocks.map((stockData) => {
-        // Parse the analysis JSON string into an object
         const analysis = JSON.parse(stockData.analysis);
         const ticker = analysis.stock_summary.ticker;
 
