@@ -745,7 +745,6 @@ const StockAnalysisView = () => {
     }
   };
 
-  // Update handleLimitReached to use this check
   const handleLimitReached = async () => {
     const hasSubscription = await checkSubscription();
     if (!hasSubscription) {
