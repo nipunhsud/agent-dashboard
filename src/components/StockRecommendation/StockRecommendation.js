@@ -8,16 +8,9 @@ const StockRecommendation = () => {
   const { stocks, loading, error, refetch } = useRecommendedStocks();
   const navigate = useNavigate();
   
-  useEffect(() => {
-    console.log('StockRecommendation component mounted');
-    // We can manually trigger a refetch if needed
+  useEffect(() => {  
     refetch();
   }, []);
-
-  // For debugging
-  useEffect(() => {
-    console.log('Current stocks state:', stocks);
-  }, [stocks]);
 
   const handleDetailsClick = (stock) => {
     navigate(`/stock/${stock.name}`);
