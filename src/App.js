@@ -12,6 +12,7 @@ import Footer from "./components/Footer";
 import Dashboard from './components/Dashboard/Dashboard';
 import StockDetail from "./components/StockDetail/StockDetail";
 import Upload from './components/Upload/Upload';
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 
 
 function App() {
@@ -25,7 +26,14 @@ function App() {
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/forgetpassword" element={<Forgetpassword />} />
-          <Route path="/stock/:ticker" element={<StockDetail />} />
+          <Route
+            path="/stock/:ticker"
+            element={
+              <ProtectedRoute>
+                <StockDetail />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/stocks" element={<StockAnalysisAssistant />} />
           <Route path="/quanta" element={<StockAnalysisAssistant />} />
           <Route path="/dashboard" element={<Dashboard />} />

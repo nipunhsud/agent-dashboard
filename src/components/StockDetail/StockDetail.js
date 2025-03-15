@@ -1,21 +1,19 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import useStockAnalyses from '../../hooks/useStockAnalyses';
+import { useRecommendedStocks } from '../../hooks/useRecommendedStocks';
 import StockAnalysisCard from '../Shared/StockAnalysisCard/StockAnalysisCard';
 
 const StockDetail = () => {
   const navigate = useNavigate();
   const { ticker } = useParams();
-  const { stockAnalyses, loading, error, fetchStockAnalyses } = useStockAnalyses();
-
-  useEffect(() => {
-    if (ticker) {
-      fetchStockAnalyses(ticker);
-    }
-  }, [ticker, fetchStockAnalyses]);
+  const { stocks, loading, error } = useRecommendedStocks(ticker);
 
   const handleClose = () => {
     navigate('/');
+  };
+
+  const handleDetailsClick = (stock) => {
+    navigate(`/stock/${stock.name}`, { state: { stock } });
   };
 
   if (loading) {
@@ -27,6 +25,8 @@ const StockDetail = () => {
     );
   }
 
+  const stock = stocks.length > 0 ? stocks[0] : null;
+
   if (error) {
     return (
       <div className="min-h-screen bg-black text-red-500 flex items-center justify-center">
@@ -34,9 +34,8 @@ const StockDetail = () => {
       </div>
     );
   }
-
-  // Find the most recent analysis for this ticker
-  const analysis = stockAnalyses.length > 0 ? stockAnalyses[0].analysis.stock_summary : null;
+  
+  const analysis = JSON.parse(stock.analysis).stock_summary;
 
   if (!analysis) {
     return (
