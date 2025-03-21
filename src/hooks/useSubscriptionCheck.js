@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { db, auth } from '../../config/firebase';
+import { db, auth } from '../config/firebase';
 
 const useSubscriptionCheck = () => {
   const [showSubscribeModal, setShowSubscribeModal] = useState(false);
