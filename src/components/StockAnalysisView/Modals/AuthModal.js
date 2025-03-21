@@ -31,3 +31,5 @@ const AuthModal = ({setShowAuthModal}) => {
         </div>
     )
 }
+
+export default AuthModal;

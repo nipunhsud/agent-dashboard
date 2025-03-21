@@ -40,7 +40,7 @@ const StockAnalysisView = () => {
   const backendUrl = useBackendUrl();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showChatModal, setShowChatModal] = useState(false);
-  const [error]=useState("");
+  const [error, setError]=useState("");
   const location = useLocation();
   const navigate = useNavigate();
   const requestPendingRef = useRef(false);
@@ -150,8 +150,9 @@ const StockAnalysisView = () => {
     setTicker(newTicker);
   };
 
-  // Add this modal component
-  
+  const attachEventListeners = () => {
+    document.querySelector('.print-button').onclick = () => handlePrintAnalysis(attachEventListeners);
+  };
 
   return (
     <div className="bg-[#f5f5f7] text-[#0C0B0B] min-h-screen flex flex-col items-center justify-start py-4 px-4 relative">
@@ -256,7 +257,7 @@ const StockAnalysisView = () => {
       {/* Share and Print Buttons */}
       <div className="fixed bottom-4 right-4 flex space-x-2">
         <button
-          onClick={() => window.print()}
+          onClick={() => handlePrintAnalysis(attachEventListeners)}
           className="border-2 text-nowrap robotoFont font-bold text-[13px] text-[#0C0B0B] border-[#0C0B0B] px-[24px] py-[8px] rounded-[8px] hover:bg-[#0C0B0B] hover:text-white transform transition-all duration-300 hover:scale-105 hover:shadow-lg flex items-center space-x-2"
         >
           <span>Print</span>
