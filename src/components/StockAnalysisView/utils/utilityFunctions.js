@@ -2,7 +2,7 @@ export const isValidTickerSymbol = (ticker) => {
   return /^[A-Z]{1,10}$/.test(ticker);
 };
 
-export const handlePrintAnalysis = () => {
+export const handlePrintAnalysis = (attachEventListeners) => {
   const analysisContent = document.getElementById('analysis-content');
   const originalContent = document.body.innerHTML;
 
@@ -12,6 +12,10 @@ export const handlePrintAnalysis = () => {
 
   attachEventListeners();
 };
+
+// const attachEventListeners = () => {
+//     document.querySelector('.print-button').onclick = handlePrintAnalysis;
+// };
 
 export const handleShare = async (analysisData) => {
   try {
