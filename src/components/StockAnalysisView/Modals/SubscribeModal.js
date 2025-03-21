@@ -29,3 +29,5 @@ const SubscribeModal = ({setShowSubscribeModal}) => {
       </div>
     )
 }
+
+export default SubscribeModal;

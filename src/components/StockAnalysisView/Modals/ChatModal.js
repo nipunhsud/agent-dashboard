@@ -38,3 +38,5 @@ const ChatModal = ({setShowChatModal, ragUrl}) => {
             </div> 
     )
 }
+
+export default ChatModal;

@@ -1,6 +1,6 @@
 import React from "react";
 import { sendEmailVerification } from "firebase/auth";
-import { auth } from '../../config/firebase';
+import { auth } from '../../../config/firebase';
 
 const EmailVerificationModal = ({ setEmailVerified, setSuccessMessage, setError }) => (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
