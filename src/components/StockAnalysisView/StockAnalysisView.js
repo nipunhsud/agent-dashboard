@@ -256,9 +256,10 @@ const StockAnalysisView = () => {
 
       {/* Share and Print Buttons */}
       <div className="fixed bottom-4 right-4 flex space-x-2">
-        <button
-          onClick={handleShare}
-          className="border-2 text-nowrap robotoFont font-bold text-[13px] text-[#0C0B0B] border-[#0C0B0B] px-[24px] py-[8px] rounded-[8px] hover:bg-[#0C0B0B] hover:text-white transform transition-all duration-300 hover:scale-105 hover:shadow-lg flex items-center space-x-2"
+        <button 
+          onClick={() => handleShare(analysisData)} 
+          disabled={!analysisData || !analysisData.ticker}
+          className={`border-2 text-nowrap robotoFont font-bold text-[13px] text-[#0C0B0B] border-[#0C0B0B] px-[24px] py-[8px] rounded-[8px] ${(!analysisData || !analysisData.ticker) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#0C0B0B] hover:text-white transform transition-all duration-300 hover:scale-105 hover:shadow-lg'} flex items-center justify-center space-x-2`}
         >
           <span>Share</span>
           <span className="text-xl">📤</span>

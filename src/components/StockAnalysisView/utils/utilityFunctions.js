@@ -21,6 +21,7 @@ export const handleShare = async (analysisData) => {
   try {
     if (navigator.share) {
       // Mobile share API
+      console.log('this is the ana', analysisData)
       await navigator.share({
         title: `${analysisData.ticker} Stock Analysis by Quanta AI`,
         text: ` Buy point: ${analysisData.trade_setup?.buy_point} Target Price: ${analysisData.trade_setup?.target_price} Stop Loss: ${analysisData.trade_setup?.stop_loss}`,
