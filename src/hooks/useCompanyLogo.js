@@ -14,8 +14,8 @@ const useCompanyLogo = (ticker) => {
     const fetchLogo = async () => {
       setLoading(true);
       try {
-        const baseUrl = process.env.REACT_APP_STOCK_LOGO_BASE_URL;
-        const url = `${baseUrl}${ticker}.png`;
+        const baseUrl = process.env.REACT_APP_FINANCIAL_MODEL_BASE_URL;
+        const url = `${baseUrl}/image-stock/${ticker}.png`;
 
         const response = await fetch(url, { method: 'HEAD' });
 

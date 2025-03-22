@@ -9,28 +9,20 @@ export const useFinancialNews = (page = 0, size = 10) => {
     const fetchNews = async () => {
       try {
         setLoading(true);
-        // Using direct URL with your API key
-        const url = `https://financialmodelingprep.com/api/v3/fmp/articles?page=${page}&size=${size}&apikey=auwuq0m14ftY4djuV11W8x8d6Szq6Zxx`;
-        
-        console.log('Fetching from:', url);
-        
+        const apiKey =  process.env.REACT_APP_FINANCIAL_MODEL_API_KEY
+        const url = `https://financialmodelingprep.com/api/v3/fmp/articles?page=${page}&size=${size}&apikey=${apiKey}`;
         const response = await fetch(url);
-        console.log('Response:', response);
-
+      
         if (!response.ok) {
           throw new Error(`Failed to fetch news: ${response.status}`);
         }
 
-        const text = await response.text(); // Get response as text first
-        console.log('Raw response text:', text);
+        const text = await response.text(); 
 
         try {
-          const data = JSON.parse(text); // Try to parse as JSON
-          console.log('Parsed data:', data);
+          const data = JSON.parse(text); 
           setNews(data.content || []);
         } catch (parseError) {
-          console.error('Failed to parse JSON:', parseError);
-          // If it's HTML, we might want to handle it differently
           if (text.includes('<!DOCTYPE html>')) {
             setError('API returned HTML instead of JSON. Please check API access.');
           }
