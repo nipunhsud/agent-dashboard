@@ -50,7 +50,29 @@ const StockAnalysisView = () => {
   const [emailVerified, setEmailVerified] = useState(true);
   const [successMessage, setSuccessMessage] = useState("");
   const { checkSubscription, showSubscribeModal, setShowSubscribeModal } = useSubscriptionCheck();
-  const { fetchStockAnalysis, error: fetchError } = useFetchStockAnalysis(backendUrl, csrfToken, token, setAnalysisData);
+
+  // Define functions that the hook will use
+  const handleAuthPrompt = useCallback(() => {
+    setShowAuthModal(true);
+  }, []);
+
+  const handleLimitReached = useCallback(async () => {
+    const hasSubscription = await checkSubscription();
+    if (!hasSubscription) {
+      setShowSubscribeModal(true);
+    } else {
+      setError("Unexpected error: Limit reached with active subscription. Please contact support.");
+    }
+  }, [checkSubscription, setShowSubscribeModal]);
+
+  const { fetchStockAnalysis, error: fetchError } = useFetchStockAnalysis({
+    backendUrl, 
+    csrfToken, 
+    token,
+    setAnalysisData,
+    handleAuthPrompt,
+    handleLimitReached
+  });
 
   useEffect(() => {
     // Load Stripe script
@@ -130,19 +152,6 @@ const StockAnalysisView = () => {
     }
 
     setShowChatModal(true);
-  };
-
-  const handleAuthPrompt = () => {
-    setShowAuthModal(true);
-  };
-
-  const handleLimitReached = async () => {
-    const hasSubscription = await checkSubscription();
-    if (!hasSubscription) {
-      setShowSubscribeModal(true);
-    } else {
-      setError("Unexpected error: Limit reached with active subscription. Please contact support.");
-    }
   };
 
   const handleTickerChange = (e) => {
