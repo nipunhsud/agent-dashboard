@@ -1,15 +1,17 @@
 import React from "react";
 
-const StockInfo = ({ stock }) => {
+const StockInfo = ({ stock, isLoading }) => {
   const { svg } = stock;
   
   return (
     <div className="flex items-center gap-[24px]">
       <div className="w-[64px] h-[64px] rounded-[12px] flex items-center justify-center">
-        {svg ? (
+        {isLoading ? (
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
+        ) : svg ? (
           <img src={svg} alt={`${stock.name} logo`} className="object-contain w-full h-full" />
         ) : (
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
+          <div className="text-gray-400 text-sm">No logo</div>
         )}
       </div>
       <div className="flex flex-col text-nowrap gap-[2px]">
