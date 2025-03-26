@@ -13,6 +13,7 @@ const useCompanyLogo = (ticker) => {
 
     const fetchLogo = async () => {
       setLoading(true);
+      setError(null);
       try {
         const baseUrl = process.env.REACT_APP_FINANCIAL_MODEL_BASE_URL;
         const url = `${baseUrl}/image-stock/${ticker}.png`;
@@ -22,10 +23,12 @@ const useCompanyLogo = (ticker) => {
         if (response.ok) {
           setLogoUrl(url);
         } else {
-          throw new Error('Logo not found');
+          setError('Logo not found');
+          setLogoUrl('');
         }
       } catch (err) {
         setError(err.message);
+        setLogoUrl('');
       } finally {
         setLoading(false);
       }
