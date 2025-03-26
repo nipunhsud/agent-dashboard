@@ -50,7 +50,29 @@ const StockAnalysisView = () => {
   const [emailVerified, setEmailVerified] = useState(true);
   const [successMessage, setSuccessMessage] = useState("");
   const { checkSubscription, showSubscribeModal, setShowSubscribeModal } = useSubscriptionCheck();
-  const { fetchStockAnalysis, error: fetchError } = useFetchStockAnalysis(backendUrl, csrfToken, token, setAnalysisData);
+
+  // Define functions that the hook will use
+  const handleAuthPrompt = useCallback(() => {
+    setShowAuthModal(true);
+  }, []);
+
+  const handleLimitReached = useCallback(async () => {
+    const hasSubscription = await checkSubscription();
+    if (!hasSubscription) {
+      setShowSubscribeModal(true);
+    } else {
+      setError("Unexpected error: Limit reached with active subscription. Please contact support.");
+    }
+  }, [checkSubscription, setShowSubscribeModal]);
+
+  const { fetchStockAnalysis, error: fetchError } = useFetchStockAnalysis({
+    backendUrl, 
+    csrfToken, 
+    token,
+    setAnalysisData,
+    handleAuthPrompt,
+    handleLimitReached
+  });
 
   useEffect(() => {
     // Load Stripe script
@@ -130,19 +152,6 @@ const StockAnalysisView = () => {
     }
 
     setShowChatModal(true);
-  };
-
-  const handleAuthPrompt = () => {
-    setShowAuthModal(true);
-  };
-
-  const handleLimitReached = async () => {
-    const hasSubscription = await checkSubscription();
-    if (!hasSubscription) {
-      setShowSubscribeModal(true);
-    } else {
-      setError("Unexpected error: Limit reached with active subscription. Please contact support.");
-    }
   };
 
   const handleTickerChange = (e) => {
@@ -256,8 +265,16 @@ const StockAnalysisView = () => {
 
       {/* Share and Print Buttons */}
       <div className="fixed bottom-4 right-4 flex space-x-2">
+        <button 
+          onClick={() => handleShare(analysisData)} 
+          disabled={!analysisData || !analysisData.ticker}
+          className={`border-2 text-nowrap robotoFont font-bold text-[13px] text-[#0C0B0B] border-[#0C0B0B] px-[24px] py-[8px] rounded-[8px] ${(!analysisData || !analysisData.ticker) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#0C0B0B] hover:text-white transform transition-all duration-300 hover:scale-105 hover:shadow-lg'} flex items-center justify-center space-x-2`}
+        >
+          <span>Share</span>
+          <span className="text-xl">📤</span>
+        </button>
         <button
-          onClick={() => handlePrintAnalysis(attachEventListeners)}
+          onClick={() => window.print()}
           className="border-2 text-nowrap robotoFont font-bold text-[13px] text-[#0C0B0B] border-[#0C0B0B] px-[24px] py-[8px] rounded-[8px] hover:bg-[#0C0B0B] hover:text-white transform transition-all duration-300 hover:scale-105 hover:shadow-lg flex items-center space-x-2"
         >
           <span>Print</span>

@@ -1,7 +1,14 @@
 import { useState } from 'react';
 import parseAIData from '../components/StockAnalysisView/utils/parseAIData';
 
-const useFetchStockAnalysis = (backendUrl, csrfToken, token, setAnalysisData) => {
+const useFetchStockAnalysis = ({
+  backendUrl, 
+  csrfToken, 
+  token, 
+  setAnalysisData, 
+  handleAuthPrompt, 
+  handleLimitReached
+}) => {
   const [error, setError] = useState("");
 
   const fetchStockAnalysis = async (ticker) => {
@@ -19,8 +26,22 @@ const useFetchStockAnalysis = (backendUrl, csrfToken, token, setAnalysisData) =>
         body: formData,
       });
 
+      if (res.status === 401) {
+        handleAuthPrompt();
+        return null;
+      }
+
+      if (res.status === 429) {
+        handleLimitReached();
+        return null;
+      }
+
       if (!res.ok) {
         const errorData = await res.json();
+        if (errorData.error?.toLowerCase().includes('daily limit')) {
+          handleLimitReached();
+          return null;
+        }
         throw new Error(errorData.error || "Failed to fetch stock analysis");
       }
 

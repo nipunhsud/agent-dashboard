@@ -13,10 +13,6 @@ export const handlePrintAnalysis = (attachEventListeners) => {
   attachEventListeners();
 };
 
-// const attachEventListeners = () => {
-//     document.querySelector('.print-button').onclick = handlePrintAnalysis;
-// };
-
 export const handleShare = async (analysisData) => {
   try {
     if (navigator.share) {
