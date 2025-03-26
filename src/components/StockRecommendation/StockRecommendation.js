@@ -4,13 +4,14 @@ import StockRecommendationCard from './StockRecommendationCard/StockRecommendati
 import StockAnalysisCard from '../Shared/StockAnalysisCard/StockAnalysisCard';
 import { Link, useNavigate } from 'react-router-dom';
 
-const StockRecommendation = () => {
-  const { stocks, loading, error, refetch } = useRecommendedStocks();
+const StockRecommendation = ({ filter, ticker = null }) => {
+  console.log('filter', filter)
+  const { stocks, loading, error, refetch } = useRecommendedStocks(ticker, filter);
   const navigate = useNavigate();
   
   useEffect(() => {  
     refetch();
-  }, []);
+  }, [filter, refetch])
 
   const handleDetailsClick = (stock) => {
     navigate(`/stock/${stock.name}`);

@@ -12,8 +12,9 @@ const StocksTabs = ({
   openModal 
 }) => {
   const filterComponents = {
-    "Stock to watch": <StockRecommendation openModal={openModal} />,
-    "News to read": <News />,
+    "Stocks to buy": <StockRecommendation key="buy" filter="BUY" openModal={openModal}/>,
+    "Stocks to watch": <StockRecommendation key="watch" filter="WATCH" openModal={openModal} />,
+    "News to read": <News key="news" />,
   };
 
   return (

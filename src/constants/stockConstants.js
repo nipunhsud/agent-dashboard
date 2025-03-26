@@ -1,0 +1,1 @@
+export const INVALID_BUY_POINTS = [null, 0, 0.0, "0", "N/A"]; 

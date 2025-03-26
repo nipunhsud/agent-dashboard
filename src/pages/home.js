@@ -17,7 +17,7 @@ import StocksTabs from '../components/StockTabs/StocksTabs'
 const Home = () => {
   const { user, token } = useContext(AuthContext);
   const navigate = useNavigate();
-  const filters = ["Stock to watch", "News to read"];
+  const filters = ["Stocks to buy","Stocks to watch", "News to read"];
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAgent, setSelectedAgent] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
