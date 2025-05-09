@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useState, useEffect} from "react";
 import Header from "../components/Header";
 import HeroSection from "../components/HeroSection";
 import Applications from "../components/Applications/Applications";
@@ -45,6 +45,32 @@ const Home = () => {
   const dashOffset = 100 - validProgress;
 
   const [selectedFilter, setSelectedFilter] = useState(filters[0]);
+
+  useEffect(() => {
+    if (window.location.hash === "#buy-list") {
+      setSelectedFilter(filters[0]);
+      setTimeout(() => {
+        const section = document.querySelector('.agentSection');
+        if (section) section.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      if (window.location.hash === "#buy-list") {
+        setSelectedFilter(filters[0]);
+        setTimeout(() => {
+          const section = document.querySelector('.agentSection');
+          if (section) section.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+      }
+    };
+    window.addEventListener("hashchange", handleHashChange);
+    // Initial check
+    handleHashChange();
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
 
   return (
     <div>
