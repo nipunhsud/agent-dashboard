@@ -37,7 +37,7 @@ const SignUp = () => {
       setSuccessMessage(true);
       
       setTimeout(() => {
-        navigate("/stocks");
+        navigate("/#buy-list");
       }, 3000);
     } catch (err) {
       console.error("Error during sign up:", err.message);
@@ -51,7 +51,7 @@ const SignUp = () => {
       await signInWithPopup(auth, provider);
       setSuccessMessage(true);
       setTimeout(() => {
-        navigate('/stocks');
+        navigate('/#buy-list');
       }, 1500);
     } catch (error) {
       setError(error.message);
