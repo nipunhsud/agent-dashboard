@@ -122,11 +122,13 @@ const Dashboard = () => {
                     <div className="p-3 bg-custom-purple rounded-lg">
                       <span className="block font-bold mb-2">Recommendation</span>
                       <span className={`px-2 py-1 rounded text-sm ${
-                        stockSummary.recommendation?.action.includes('BUY') ? 'bg-green-900 text-green-300' :
-                        stockSummary.recommendation?.action.includes('SELL') ? 'bg-red-900 text-red-300' :
-                        'bg-yellow-900 text-yellow-300'
+                        stockSummary.recommendation?.action ? (
+                          stockSummary.recommendation.action.includes('BUY') ? 'bg-green-900 text-green-300' :
+                          stockSummary.recommendation.action.includes('SELL') ? 'bg-red-900 text-red-300' :
+                          'bg-yellow-900 text-yellow-300'
+                        ) : 'bg-gray-700 text-gray-300'
                       }`}>
-                        {stockSummary.recommendation?.action}
+                        {stockSummary.recommendation?.action || 'No Recommendation'}
                       </span>
                     </div>
 

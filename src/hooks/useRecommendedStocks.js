@@ -38,6 +38,7 @@ export const useRecommendedStocks = (ticker = null, filter = null) => {
       }
 
       const data = await response.json();
+      console.log('Backend response data:', data);
       let filteredStocks = data.analyses || [];
       
       filteredStocks = filteredStocks.filter(stock => {
@@ -61,6 +62,7 @@ export const useRecommendedStocks = (ticker = null, filter = null) => {
         });
       }
       
+      console.log('Filtered stocks:', filteredStocks);
       setStocks(filteredStocks); 
     } catch (err) {
       console.error('Error fetching stock recommendations:', err);

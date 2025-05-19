@@ -11,18 +11,30 @@ const useStockAnalyses = () => {
   const csrfToken = useCSRFToken();
   const backendUrl = useBackendUrl();
 
-  const parseAnalysisData = (analysisString) => {
+  const parseAnalysisData = (analysisData) => {
     try {
-      const sanitizedString = analysisString
-        .replace(/[\u0000-\u001F\u007F-\u009F]/g, '')
-        .replace(/\n/g, '\\n')
-        .replace(/\r/g, '\\r')
-        .replace(/\t/g, '\\t');
-      
-      return JSON.parse(sanitizedString);
+      // If analysisData is already an object, return it
+      if (typeof analysisData === 'object' && analysisData !== null) {
+        return analysisData;
+      }
+
+      // If it's a string, parse it
+      if (typeof analysisData === 'string') {
+        const sanitizedString = analysisData
+          .replace(/[\u0000-\u001F\u007F-\u009F]/g, '')
+          .replace(/\n/g, '\\n')
+          .replace(/\r/g, '\\r')
+          .replace(/\t/g, '\\t');
+        
+        return JSON.parse(sanitizedString);
+      }
+
+      // If it's neither string nor object, return null
+      console.error('Invalid analysis data type:', typeof analysisData);
+      return null;
     } catch (err) {
       console.error('Error parsing analysis data:', err);
-      console.log('Problematic string:', analysisString);
+      console.log('Problematic data:', analysisData);
       return null;
     }
   };

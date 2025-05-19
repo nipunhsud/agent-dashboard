@@ -37,6 +37,14 @@ function App() {
           <Route path="/stocks" element={<StockAnalysisAssistant />} />
           <Route path="/quanta" element={<StockAnalysisAssistant />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route 
+            path="/analyses/*" 
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } 
+          />
           <Route path="/upload" element={<Upload />} />
         </Routes>
         <Footer />
