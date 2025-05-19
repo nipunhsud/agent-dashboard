@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Analysis Update</title>
+    <style>
+        /* Email client friendly styles */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px; /* Increased from 600px to accommodate longer text */
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+        .header {
+            background-color: #6366f1;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+        .stock-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #ffffff;
+            table-layout: fixed; /* Added to control column widths */
+        }
+        .stock-table th {
+            background-color: #f3f4f6;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .stock-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+            word-wrap: break-word; /* Ensures long words don't break layout */
+        }
+        /* Column width specifications */
+        .stock-table th:nth-child(1), /* Ticker */
+        .stock-table td:nth-child(1) {
+            width: 15%;
+        }
+        .stock-table th:nth-child(2), /* Current Price */
+        .stock-table td:nth-child(2) {
+            width: 20%;
+        }
+        .stock-table th:nth-child(3), /* Buy Point */
+        .stock-table td:nth-child(3) {
+            width: 20%;
+        }
+        .stock-table th:nth-child(4), /* Trend */
+        .stock-table td:nth-child(4) {
+            width: 45%;
+            min-width: 200px; /* Ensures minimum width for trend column */
+        }
+        .ticker {
+            font-weight: bold;
+            color: #6366f1;
+        }
+        .trend-up {
+            color: #059669;
+        }
+        .trend-down {
+            color: #dc2626;
+        }
+        .trend-neutral {
+            color: #d97706;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #6b7280;
+            font-size: 12px;
+        }
+        /* Media query for mobile responsiveness */
+        @media screen and (max-width: 600px) {
+            .container {
+                width: 100%;
+                padding: 10px;
+            }
+            .stock-table {
+                font-size: 14px; /* Slightly smaller font on mobile */
+            }
+            .stock-table td, 
+            .stock-table th {
+                padding: 8px; /* Reduced padding on mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Stock Analysis Update</h1>
+        </div>
+
+        <table class="stock-table">
+            <thead>
+                <tr>
+                    <th>Ticker</th>
+                    <th>Current Price</th>
+                    <th>Buy Point</th>
+                    <th>Trend</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Example row with longer trend text -->
+                <tr>
+                    <td class="ticker">PLTR</td>
+                    <td>$128.58</td>
+                    <td>$130.00</td>
+                    <td class="trend-up">Strong uptrend with higher highs and higher lows, showing consolidation near $120-$130 range. Volume analysis indicates potential institutional buying.</td>
+                </tr>
+                <tr>
+                    <td class="ticker">CRWD</td>
+                    <td>$439.54</td>
+                    <td>$455.00</td>
+                    <td class="trend-up">Uptrend with shallow consolidation near 52-week high. Current volume below average but showing signs of accumulation. Technical setup suggests potential breakout.</td>
+                </tr>
+                <tr>
+                    <td class="ticker">UBER</td>
+                    <td>$82.81</td>
+                    <td>$83.00</td>
+                    <td class="trend-up">Consolidating near 52-week high with positive moving average alignment. Volume needs confirmation for breakout above $87.00 resistance level.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="footer">
+            <p>This is an automated stock analysis update. Please do not reply to this email.</p>
+            <p>© 2024 Quanta AI. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html> 
